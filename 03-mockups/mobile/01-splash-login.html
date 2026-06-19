@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Splash + Login · Pantalla 1</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    /* Superficies */
+    --bg-page: #FDFAF6;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #F5EFE6;
+    --bg-divider: #EDE5D7;
+
+    /* Texto */
+    --text-primary: #1F1A15;
+    --text-secondary: #524A42;
+    --text-tertiary: #6E635A;
+
+    /* Marca · coral profundo */
+    --brand-soft: #FAECE7;
+    --brand-base: #993C1D;
+    --brand-strong: #712B13;
+    --brand-darkest: #4A1B0C;
+
+    /* FODMAP */
+    --fodmap-low-bg: #EAF3DE;
+    --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA;
+    --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB;
+    --fodmap-high-text: #A32D2D;
+
+    /* Estados semánticos */
+    --success-bg: #EAF3DE;
+    --success-text: #27500A;
+    --warning-bg: #FAEEDA;
+    --warning-text: #854F0B;
+    --danger-bg: #FCEBEB;
+    --danger-text: #A32D2D;
+    --info-bg: #E6F1FB;
+    --info-text: #0C447C;
+
+    /* Tipografía */
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+    /* Radios */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* Bordes */
+    --border-subtle: 0.5px solid #EDE5D7;
+    --border-default: 1px solid #EDE5D7;
+    --border-strong: 1.5px solid #6E635A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { min-height: 100%; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 32px 24px;
+  }
+
+  /* ============================================
+     LAYOUT DE PRESENTACIÓN
+     Frame de página para sustentación visual
+     ============================================ */
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+
+  .page-header {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .page-header h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .page-header .meta-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .meta-tag {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-full);
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+
+  .device-stage {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+  }
+
+  /* ============================================
+     FRAME DE DISPOSITIVO · iPhone 14 Pro
+     393 × 852 px (área usable del lienzo)
+     ============================================ */
+  .device-frame {
+    width: 393px;
+    height: 852px;
+    background: #1F1A15;
+    border-radius: 56px;
+    padding: 10px;
+    box-shadow: 0 30px 60px rgba(31, 26, 21, 0.18), 0 0 0 1px rgba(31, 26, 21, 0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-page);
+    border-radius: 46px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dynamic island del iPhone 14 Pro */
+  .dynamic-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 34px;
+    background: #1F1A15;
+    border-radius: 20px;
+    z-index: 20;
+  }
+
+  /* Status bar nativa iOS · 47px de altura */
+  .status-bar {
+    height: 54px;
+    padding: 16px 28px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-bar .status-icons {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .status-bar .status-icons i { font-size: 16px; }
+
+  /* Contenido scrolleable */
+  .screen-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* ============================================
+     HERO · SPLASH SUPERIOR
+     ============================================ */
+  .hero-splash {
+    padding: 8px 0 16px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .hero-illustration {
+    width: 152px;
+    height: 152px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--brand-soft) 0%, var(--bg-subtle) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .hero-illustration .main-icon {
+    color: var(--brand-base);
+    font-size: 60px;
+    z-index: 1;
+  }
+  .hero-illustration .leaf {
+    position: absolute;
+    line-height: 1;
+  }
+  .hero-illustration .leaf-tr {
+    top: 18px;
+    right: 14px;
+    color: var(--fodmap-low-text);
+    font-size: 22px;
+  }
+  .hero-illustration .leaf-bl {
+    bottom: 22px;
+    left: 16px;
+    color: var(--fodmap-low-text);
+    font-size: 20px;
+  }
+  .hero-illustration .leaf-br {
+    top: 22px;
+    left: 18px;
+    color: var(--fodmap-mod-text);
+    font-size: 16px;
+    opacity: 0.85;
+  }
+
+  .hero-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.15;
+    margin-bottom: 10px;
+    letter-spacing: -0.4px;
+  }
+  .hero-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 290px;
+    margin: 0 auto;
+  }
+
+  /* ============================================
+     FORMULARIO DE LOGIN
+     ============================================ */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .form-group { width: 100%; }
+  .ds-label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .ds-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .ds-input:focus {
+    outline: none;
+    border-color: var(--brand-base);
+    box-shadow: 0 0 0 3px var(--brand-soft);
+  }
+  .ds-input::placeholder { color: var(--text-tertiary); }
+
+  .input-with-icon { position: relative; }
+  .input-with-icon .ds-input { padding-left: 44px; }
+  .input-with-icon.has-trailing .ds-input { padding-right: 48px; }
+  .input-with-icon .input-leading-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    font-size: 20px;
+    pointer-events: none;
+  }
+  .input-with-icon .input-trailing-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .input-with-icon .input-trailing-btn:hover {
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+  }
+
+  .forgot-link-row {
+    text-align: right;
+    margin-top: -4px;
+  }
+  .forgot-link {
+    color: var(--brand-base);
+    background: transparent;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .forgot-link:hover { color: var(--brand-strong); text-decoration: underline; }
+
+  /* Botones · idénticos al Design System */
+  .ds-btn-primary {
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .ds-btn-primary:hover { background: var(--brand-strong); }
+  .ds-btn-primary:active { background: var(--brand-darkest); }
+
+  .divider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0 2px;
+  }
+  .divider-row::before,
+  .divider-row::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--bg-divider);
+  }
+  .divider-row span {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  .ds-btn-secondary {
+    background: transparent;
+    color: var(--brand-strong);
+    border: 1.5px solid var(--brand-base);
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: 100%;
+  }
+  .ds-btn-secondary:hover { background: var(--brand-soft); }
+
+  /* Footer interno · sello de seguridad y normativa */
+  .screen-security-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .screen-security-footer i {
+    font-size: 16px;
+    color: var(--fodmap-low-text);
+  }
+
+  /* Home indicator iOS · 34px */
+  .home-indicator {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-page);
+    flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: '';
+    width: 134px;
+    height: 5px;
+    background: var(--text-primary);
+    border-radius: 3px;
+  }
+
+  /* ============================================
+     PANEL DE ESPECIFICACIÓN ACADÉMICA
+     Información para sustentación · no es parte
+     de la pantalla móvil, solo del lienzo de revisión
+     ============================================ */
+  .spec-panel {
+    max-width: 720px;
+    margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .spec-grid dd {
+    color: var(--text-primary);
+    line-height: 1.55;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral {
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+  }
+
+  /* Footer página */
+  .page-footer {
+    max-width: 720px;
+    margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+
+  /* Responsive · permitir ver el frame en pantallas pequeñas */
+  @media (max-width: 480px) {
+    body { padding: 16px 0; }
+    .device-frame {
+      width: 100%;
+      max-width: 393px;
+      height: auto;
+      min-height: 760px;
+      border-radius: 36px;
+    }
+    .device-screen { border-radius: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 1 · Splash + Inicio de sesión</h1>
+    <p>Primera pantalla del flujo del paciente con SII. Combina presentación de marca y autenticación segura contra Keycloak.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-user"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US05 · US07</span>
+      <span class="meta-tag"><i class="ti ti-shield-check"></i>EP01 · Identidad</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- HERO · SPLASH -->
+          <div class="hero-splash">
+            <div class="hero-illustration" aria-hidden="true">
+              <i class="ti ti-leaf leaf leaf-tr"></i>
+              <i class="ti ti-bowl main-icon"></i>
+              <i class="ti ti-plant-2 leaf leaf-bl"></i>
+              <i class="ti ti-seedling leaf leaf-br"></i>
+            </div>
+            <h2 class="hero-title">Tu dieta,<br />tu bienestar</h2>
+            <p class="hero-subtitle">Recomendaciones personalizadas para controlar los síntomas del Síndrome del Intestino Irritable.</p>
+          </div>
+
+          <!-- FORMULARIO DE LOGIN -->
+          <form class="login-form" onsubmit="event.preventDefault();" autocomplete="off" novalidate>
+            <div class="form-group">
+              <label class="ds-label" for="email">Correo electrónico</label>
+              <div class="input-with-icon">
+                <i class="ti ti-mail input-leading-icon"></i>
+                <input class="ds-input" type="email" id="email" placeholder="tu@correo.com" autocomplete="off" inputmode="email" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="ds-label" for="password">Contraseña</label>
+              <div class="input-with-icon has-trailing">
+                <i class="ti ti-lock input-leading-icon"></i>
+                <input class="ds-input" type="password" id="password" placeholder="••••••••" autocomplete="off" />
+                <button type="button" class="input-trailing-btn" id="togglePwd" aria-label="Mostrar contraseña">
+                  <i class="ti ti-eye" id="pwdIcon"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="forgot-link-row">
+              <button type="button" class="forgot-link" aria-label="Recuperar contraseña">¿Olvidaste tu contraseña?</button>
+            </div>
+
+            <button type="submit" class="ds-btn-primary">Iniciar sesión</button>
+
+            <div class="divider-row"><span>o</span></div>
+
+            <button type="button" class="ds-btn-secondary">Crear cuenta</button>
+          </form>
+
+          <div class="screen-security-footer">
+            <i class="ti ti-shield-lock"></i>
+            <span>Datos protegidos · Ley N° 29733</span>
+          </div>
+
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ESPECIFICACIÓN ACADÉMICA -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Splash de bienvenida + Inicio de sesión del paciente. Vista única con scroll vertical para mantener la presentación de marca y reducir la fricción del primer acceso.</dd>
+
+      <dt>Historias de usuario</dt>
+      <dd>
+        <span class="spec-tag">US05 · Inicio de sesión del paciente</span>
+        <span class="spec-tag">US07 · Recuperación de contraseña</span>
+      </dd>
+
+      <dt>CA cubiertos</dt>
+      <dd>
+        US05-CA01 · Autenticación contra Keycloak (OIDC/JWT) y redirección al Home.<br />
+        US05-CA02 · Mensaje y estado de bloqueo temporal tras cinco intentos fallidos consecutivos.<br />
+        US07-CA01 · Acceso al flujo de recuperación con token de expiración 30 min.
+      </dd>
+
+      <dt>Actor primario</dt>
+      <dd>Paciente con Síndrome del Intestino Irritable (rol único en aplicación móvil).</dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">API Gateway · ASP.NET Core</span>
+        <span class="spec-tag neutral">Módulo de Identidad</span>
+        <span class="spec-tag neutral">Keycloak · OIDC/JWT</span>
+      </dd>
+
+      <dt>Cumplimiento</dt>
+      <dd>
+        WCAG 2.1 AA · contrastes mínimos 4.5:1 verificados · áreas de toque ≥ 48×48 px.<br />
+        Ley N° 29733 · sello visible de protección de datos al pie de pantalla.<br />
+        Soporte de teclado iOS sin zoom forzado (font-size base 16 px).
+      </dd>
+
+      <dt>Estados previstos</dt>
+      <dd>
+        Default (mostrado) · Error de credenciales · Bloqueo temporal por intentos fallidos · Cuenta sin verificar. Los estados secundarios se documentan en la pantalla de variantes asociada.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base</span>
+        <span class="spec-tag">brand-strong</span>
+        <span class="spec-tag">brand-soft</span>
+        <span class="spec-tag">bg-page</span>
+        <span class="spec-tag">bg-card</span>
+        <span class="spec-tag">text-primary</span>
+        <span class="spec-tag">text-secondary</span>
+        <span class="spec-tag">radius-md</span>
+        <span class="spec-tag">font-sans</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 1 de 18 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+<script>
+  /* Toggle de visibilidad de contraseña · accesible */
+  (function () {
+    var btn   = document.getElementById('togglePwd');
+    var input = document.getElementById('password');
+    var icon  = document.getElementById('pwdIcon');
+    if (!btn || !input || !icon) return;
+    btn.addEventListener('click', function () {
+      var hidden = input.type === 'password';
+      input.type = hidden ? 'text' : 'password';
+      icon.classList.toggle('ti-eye', !hidden);
+      icon.classList.toggle('ti-eye-off', hidden);
+      btn.setAttribute('aria-label', hidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Onboarding · Paso 3 · Alergias e intolerancias</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* App bar */
+  .app-bar {
+    padding: 6px 16px 8px;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .app-bar-title {
+    font-size: 17px; font-weight: 500; color: var(--text-primary); flex: 1;
+  }
+  .app-bar .skip-link {
+    background: transparent; border: none;
+    font-family: var(--font-sans); font-size: 14px;
+    color: var(--text-tertiary); cursor: pointer;
+    padding: 8px 4px;
+  }
+  .app-bar .skip-link:hover { color: var(--brand-base); }
+
+  /* Stepper */
+  .stepper-block {
+    padding: 4px 24px 16px;
+    flex-shrink: 0;
+  }
+  .stepper {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .step-item {
+    display: flex; align-items: center; gap: 6px;
+    flex: 1;
+  }
+  .step-item:last-child { flex: 0; }
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px;
+    background: var(--bg-card);
+    color: var(--text-tertiary);
+    border: 1.5px solid var(--bg-divider);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .step-num.done {
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border-color: var(--brand-base);
+  }
+  .step-num.current {
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border-color: var(--brand-base);
+    box-shadow: 0 0 0 4px var(--brand-soft);
+  }
+  .step-line {
+    height: 2px; flex: 1;
+    background: var(--bg-divider);
+    border-radius: 1px;
+    transition: background 0.3s;
+  }
+  .step-line.done { background: var(--brand-base); }
+
+  .step-labels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-align: center;
+  }
+  .step-labels span.current { color: var(--brand-strong); font-weight: 500; }
+  .step-labels span.done { color: var(--text-primary); font-weight: 500; }
+
+  /* Contenido de paso · scrollable */
+  .step-content {
+    flex: 1; overflow-y: auto;
+    padding: 4px 24px 12px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .step-content::-webkit-scrollbar { display: none; }
+
+  .step-section { display: none; }
+  .step-section.active { display: block; }
+
+  .step-intro { margin-bottom: 18px; }
+  .step-intro h2 {
+    font-size: 20px; font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2; letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .step-intro p {
+    font-size: 13px; color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Labels e inputs */
+  .form-group { margin-bottom: 14px; }
+  .ds-label {
+    display: block; font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px; font-weight: 500;
+  }
+  .ds-label .optional {
+    color: var(--text-tertiary); font-weight: 400; margin-left: 4px;
+  }
+  .ds-input, .ds-textarea {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans); font-size: 16px;
+    background: var(--bg-card); color: var(--text-primary);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .ds-input { height: 48px; }
+  .ds-textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+  .ds-input:focus, .ds-textarea:focus {
+    outline: none; border-color: var(--brand-base);
+    box-shadow: 0 0 0 3px var(--brand-soft);
+  }
+  .ds-input::placeholder { color: var(--text-tertiary); }
+
+  /* Input con sufijo (kg, cm) */
+  .input-with-suffix {
+    position: relative;
+  }
+  .input-with-suffix .ds-input { padding-right: 50px; }
+  .input-suffix {
+    position: absolute; right: 16px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary); font-size: 14px;
+    font-weight: 500; pointer-events: none;
+  }
+
+  /* Segmented control · sexo biológico */
+  .segmented-control {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--bg-card);
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    gap: 2px;
+  }
+  .segmented-control input { display: none; }
+  .segmented-control label {
+    text-align: center;
+    padding: 10px 4px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+  }
+  .segmented-control input:checked + label {
+    background: var(--brand-base);
+    color: #FFFFFF;
+  }
+
+  /* Tarjeta de BMI calculado */
+  .bmi-card {
+    background: var(--brand-soft);
+    border: 1px solid var(--brand-base);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-top: 12px;
+    display: none;
+    align-items: center; gap: 12px;
+  }
+  .bmi-card.visible { display: flex; }
+  .bmi-card .bmi-icon {
+    width: 36px; height: 36px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-base);
+    font-size: 18px; flex-shrink: 0;
+  }
+  .bmi-card .bmi-info { flex: 1; }
+  .bmi-card .bmi-label {
+    font-size: 11px; color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+  }
+  .bmi-card .bmi-value {
+    font-size: 15px; font-weight: 500;
+    color: var(--text-primary);
+  }
+  .bmi-card .bmi-value strong {
+    color: var(--brand-strong);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+
+  /* Cards seleccionables · subtipo SII */
+  .option-cards {
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .option-card {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .option-card:hover { border-color: var(--brand-base); }
+  .option-card input { display: none; }
+  .option-card.selected {
+    background: var(--brand-soft);
+    border-color: var(--brand-base);
+  }
+  .option-card .option-icon {
+    width: 36px; height: 36px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-base);
+    font-size: 18px; flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .option-card.selected .option-icon {
+    background: var(--brand-base);
+    color: #FFFFFF;
+  }
+  .option-card .option-text { flex: 1; }
+  .option-card .option-title {
+    font-size: 14px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .option-card .option-desc {
+    font-size: 12px; color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .option-card .option-check {
+    color: var(--brand-base); font-size: 22px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .option-card.selected .option-check { opacity: 1; }
+
+  /* Date picker mes/año custom */
+  .month-year-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 8px;
+  }
+  select.ds-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23524A42' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  /* Lista de alergias */
+  .allergies-list { display: flex; flex-direction: column; gap: 8px; }
+  .allergy-item {
+    background: var(--bg-card);
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .allergy-item.selected { border-color: var(--brand-base); }
+  .allergy-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .allergy-row input { display: none; }
+  .allergy-row .allergy-icon {
+    width: 32px; height: 32px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-base);
+    font-size: 18px; flex-shrink: 0;
+  }
+  .allergy-row .allergy-name {
+    font-size: 14px; font-weight: 500;
+    color: var(--text-primary); flex: 1;
+  }
+  .allergy-row .ds-checkbox-mini {
+    width: 22px; height: 22px;
+    border: 2px solid var(--bg-divider);
+    border-radius: 6px;
+    background: var(--bg-card);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .allergy-item.selected .ds-checkbox-mini {
+    background: var(--brand-base);
+    border-color: var(--brand-base);
+  }
+  .allergy-item.selected .ds-checkbox-mini::after {
+    content: '✓'; color: #FFFFFF; font-size: 14px; font-weight: 700;
+  }
+
+  .severity-row {
+    display: none;
+    padding: 0 14px 12px;
+    border-top: var(--border-subtle);
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  .allergy-item.selected .severity-row { display: block; }
+  .severity-row .ds-label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  .severity-pills {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .severity-pill {
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 12px; font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .severity-pill input { display: none; }
+  .severity-pill.mild { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); border: 1.5px solid transparent; }
+  .severity-pill.moderate { background: var(--fodmap-mod-bg); color: var(--fodmap-mod-text); border: 1.5px solid transparent; }
+  .severity-pill.severe { background: var(--fodmap-high-bg); color: var(--fodmap-high-text); border: 1.5px solid transparent; }
+  .severity-pill.selected.mild { border-color: var(--fodmap-low-text); }
+  .severity-pill.selected.moderate { border-color: var(--fodmap-mod-text); }
+  .severity-pill.selected.severe { border-color: var(--fodmap-high-text); }
+
+  /* Toggle "no tengo alergias" */
+  .no-allergies-toggle {
+    background: var(--bg-card);
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: all 0.15s;
+  }
+  .no-allergies-toggle.active {
+    background: var(--fodmap-low-bg);
+    border-color: var(--fodmap-low-text);
+  }
+  .no-allergies-toggle input { display: none; }
+  .no-allergies-toggle .toggle-icon {
+    width: 36px; height: 36px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary);
+    font-size: 20px;
+    transition: all 0.15s;
+  }
+  .no-allergies-toggle.active .toggle-icon {
+    background: var(--fodmap-low-text);
+    color: #FFFFFF;
+  }
+  .no-allergies-toggle .toggle-text { flex: 1; }
+  .no-allergies-toggle .toggle-title {
+    font-size: 14px; font-weight: 500;
+    color: var(--text-primary);
+  }
+  .no-allergies-toggle .toggle-desc {
+    font-size: 12px; color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .allergies-list.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Navegación inferior · sticky */
+  .wizard-nav {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 16px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .nav-btn-back {
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 15px; font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: background 0.15s;
+  }
+  .nav-btn-back:hover { background: var(--bg-divider); }
+  .nav-btn-back:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .nav-btn-next {
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 15px; font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background 0.15s;
+  }
+  .nav-btn-next:hover { background: var(--brand-strong); }
+  .nav-btn-next:disabled {
+    background: var(--bg-divider);
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+  }
+
+  /* Home indicator */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* Spec panel */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral {
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+  }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 4 · Onboarding clínico · Paso 3</h1>
+    <p>Estado del wizard durante la captura de alergias e intolerancias. El paciente ya completó los pasos 1 y 2, y se encuentra en el paso final antes de cerrar el onboarding. El botón principal cambia a "Finalizar onboarding".</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-user-cog"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US03 · Paso 3/3</span>
+      <span class="meta-tag"><i class="ti ti-alert-triangle"></i>Alergias e intolerancias</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <span class="app-bar-title">Configura tu perfil clínico</span>
+          <button class="skip-link">Después</button>
+        </div>
+
+        <!-- STEPPER -->
+        <div class="stepper-block">
+          <div class="stepper">
+            <div class="step-item">
+              <div class="step-num current" id="step-num-1">1</div>
+              <div class="step-line" id="step-line-1"></div>
+            </div>
+            <div class="step-item">
+              <div class="step-num" id="step-num-2">2</div>
+              <div class="step-line" id="step-line-2"></div>
+            </div>
+            <div class="step-item">
+              <div class="step-num" id="step-num-3">3</div>
+            </div>
+          </div>
+          <div class="step-labels">
+            <span class="current" id="step-label-1">Datos personales</span>
+            <span id="step-label-2">Información clínica</span>
+            <span id="step-label-3">Alergias</span>
+          </div>
+        </div>
+
+        <!-- CONTENIDO POR PASO -->
+        <div class="step-content">
+
+          <!-- ============ PASO 1 · DEMOGRÁFICOS ============ -->
+          <section class="step-section active" id="section-1">
+
+            <div class="step-intro">
+              <h2>Cuéntanos sobre ti</h2>
+              <p>Estos datos nos permiten personalizar tus recomendaciones.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="ds-label" for="birthdate">Fecha de nacimiento</label>
+              <input class="ds-input" type="date" id="birthdate" value="1995-08-15" />
+            </div>
+
+            <div class="form-group">
+              <label class="ds-label">Sexo biológico</label>
+              <div class="segmented-control" role="radiogroup">
+                <input type="radio" name="bioSex" id="sex-m" value="MALE" />
+                <label for="sex-m">Masculino</label>
+                <input type="radio" name="bioSex" id="sex-f" value="FEMALE" checked />
+                <label for="sex-f">Femenino</label>
+                <input type="radio" name="bioSex" id="sex-o" value="OTHER" />
+                <label for="sex-o">Prefiero no decir</label>
+              </div>
+            </div>
+
+            <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div>
+                <label class="ds-label" for="weight">Peso</label>
+                <div class="input-with-suffix">
+                  <input class="ds-input" type="number" id="weight" placeholder="68" min="20" max="250" step="0.1" inputmode="decimal" value="62" />
+                  <span class="input-suffix">kg</span>
+                </div>
+              </div>
+              <div>
+                <label class="ds-label" for="height">Talla</label>
+                <div class="input-with-suffix">
+                  <input class="ds-input" type="number" id="height" placeholder="170" min="80" max="220" step="0.1" inputmode="decimal" value="165" />
+                  <span class="input-suffix">cm</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- BMI calculado -->
+            <div class="bmi-card" id="bmiCard">
+              <div class="bmi-icon"><i class="ti ti-activity-heartbeat"></i></div>
+              <div class="bmi-info">
+                <div class="bmi-label">Tu índice de masa corporal</div>
+                <div class="bmi-value"><strong id="bmiValue">--</strong><span id="bmiCategory">Calculando...</span></div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ============ PASO 2 · INFORMACIÓN CLÍNICA ============ -->
+          <section class="step-section" id="section-2">
+
+            <div class="step-intro">
+              <h2>Tu diagnóstico de SII</h2>
+              <p>Si no estás seguro del subtipo, puedes elegir la última opción.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="ds-label">Subtipo de Síndrome del Intestino Irritable</label>
+              <div class="option-cards">
+                <label class="option-card selected">
+                  <input type="radio" name="ibsSubtype" value="IBS_D" checked />
+                  <div class="option-icon"><i class="ti ti-droplet"></i></div>
+                  <div class="option-text">
+                    <div class="option-title">IBS-D · Predominio de diarrea</div>
+                    <div class="option-desc">Más del 25 % de las deposiciones son blandas o acuosas.</div>
+                  </div>
+                  <i class="ti ti-circle-check-filled option-check"></i>
+                </label>
+
+                <label class="option-card">
+                  <input type="radio" name="ibsSubtype" value="IBS_C" />
+                  <div class="option-icon"><i class="ti ti-hourglass-low"></i></div>
+                  <div class="option-text">
+                    <div class="option-title">IBS-C · Predominio de estreñimiento</div>
+                    <div class="option-desc">Más del 25 % de las deposiciones son duras o grumosas.</div>
+                  </div>
+                  <i class="ti ti-circle-check-filled option-check"></i>
+                </label>
+
+                <label class="option-card">
+                  <input type="radio" name="ibsSubtype" value="IBS_M" />
+                  <div class="option-icon"><i class="ti ti-arrows-shuffle"></i></div>
+                  <div class="option-text">
+                    <div class="option-title">IBS-M · Mixto</div>
+                    <div class="option-desc">Alternancia entre episodios de diarrea y estreñimiento.</div>
+                  </div>
+                  <i class="ti ti-circle-check-filled option-check"></i>
+                </label>
+
+                <label class="option-card">
+                  <input type="radio" name="ibsSubtype" value="IBS_U" />
+                  <div class="option-icon"><i class="ti ti-help"></i></div>
+                  <div class="option-text">
+                    <div class="option-title">IBS-U · No clasificable</div>
+                    <div class="option-desc">Mi médico aún no determinó un subtipo específico.</div>
+                  </div>
+                  <i class="ti ti-circle-check-filled option-check"></i>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="ds-label">Fecha aproximada del diagnóstico</label>
+              <div class="month-year-row">
+                <select class="ds-input" id="diagMonth">
+                  <option value="">Mes</option>
+                  <option value="1">Enero</option><option value="2">Febrero</option><option value="3" selected>Marzo</option>
+                  <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                  <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                  <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                </select>
+                <select class="ds-input" id="diagYear">
+                  <option value="">Año</option>
+                  <option>2026</option><option>2025</option><option>2024</option><option selected>2023</option>
+                  <option>2022</option><option>2021</option><option>2020</option><option>2019</option>
+                  <option>2018</option><option>2017</option><option>2016</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="ds-label" for="medications">
+                Medicación actual
+                <span class="optional">· Opcional</span>
+              </label>
+              <textarea class="ds-textarea" id="medications" placeholder="Ej. Trimebutina 200 mg, dos veces al día">Trimebutina 200 mg, dos veces al día. Probiótico (Lactobacillus rhamnosus GG) 1 cápsula por la mañana.</textarea>
+            </div>
+
+          </section>
+
+          <!-- ============ PASO 3 · ALERGIAS ============ -->
+          <section class="step-section" id="section-3">
+
+            <div class="step-intro">
+              <h2>Alergias e intolerancias</h2>
+              <p>Indica las que tu médico te haya diagnosticado o aquellas que has identificado claramente.</p>
+            </div>
+
+            <label class="no-allergies-toggle" id="noAllergiesToggle">
+              <input type="checkbox" id="noAllergies" />
+              <div class="toggle-icon"><i class="ti ti-check"></i></div>
+              <div class="toggle-text">
+                <div class="toggle-title">No tengo alergias declaradas</div>
+                <div class="toggle-desc">Podrás agregar alergias más adelante desde tu perfil.</div>
+              </div>
+            </label>
+
+            <div class="allergies-list" id="allergiesList">
+
+              <div class="allergy-item selected" data-id="lactose">
+                <label class="allergy-row">
+                  <input type="checkbox" checked />
+                  <div class="allergy-icon"><i class="ti ti-milk"></i></div>
+                  <span class="allergy-name">Lactosa</span>
+                  <div class="ds-checkbox-mini"></div>
+                </label>
+                <div class="severity-row">
+                  <label class="ds-label">Severidad</label>
+                  <div class="severity-pills">
+                    <label class="severity-pill mild"><input type="radio" name="sev-lactose" value="mild" />Leve</label>
+                    <label class="severity-pill moderate selected"><input type="radio" name="sev-lactose" value="moderate" checked />Moderada</label>
+                    <label class="severity-pill severe"><input type="radio" name="sev-lactose" value="severe" />Severa</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="allergy-item selected" data-id="gluten">
+                <label class="allergy-row">
+                  <input type="checkbox" checked />
+                  <div class="allergy-icon"><i class="ti ti-wheat"></i></div>
+                  <span class="allergy-name">Gluten</span>
+                  <div class="ds-checkbox-mini"></div>
+                </label>
+                <div class="severity-row">
+                  <label class="ds-label">Severidad</label>
+                  <div class="severity-pills">
+                    <label class="severity-pill mild selected"><input type="radio" name="sev-gluten" value="mild" checked />Leve</label>
+                    <label class="severity-pill moderate"><input type="radio" name="sev-gluten" value="moderate" />Moderada</label>
+                    <label class="severity-pill severe"><input type="radio" name="sev-gluten" value="severe" />Severa</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="allergy-item" data-id="nuts">
+                <label class="allergy-row">
+                  <input type="checkbox" />
+                  <div class="allergy-icon"><i class="ti ti-seeding"></i></div>
+                  <span class="allergy-name">Frutos secos</span>
+                  <div class="ds-checkbox-mini"></div>
+                </label>
+                <div class="severity-row">
+                  <label class="ds-label">Severidad</label>
+                  <div class="severity-pills">
+                    <label class="severity-pill mild"><input type="radio" name="sev-nuts" value="mild" />Leve</label>
+                    <label class="severity-pill moderate"><input type="radio" name="sev-nuts" value="moderate" />Moderada</label>
+                    <label class="severity-pill severe"><input type="radio" name="sev-nuts" value="severe" />Severa</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="allergy-item" data-id="seafood">
+                <label class="allergy-row">
+                  <input type="checkbox" />
+                  <div class="allergy-icon"><i class="ti ti-fish"></i></div>
+                  <span class="allergy-name">Mariscos</span>
+                  <div class="ds-checkbox-mini"></div>
+                </label>
+                <div class="severity-row">
+                  <label class="ds-label">Severidad</label>
+                  <div class="severity-pills">
+                    <label class="severity-pill mild"><input type="radio" name="sev-seafood" value="mild" />Leve</label>
+                    <label class="severity-pill moderate"><input type="radio" name="sev-seafood" value="moderate" />Moderada</label>
+                    <label class="severity-pill severe"><input type="radio" name="sev-seafood" value="severe" />Severa</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="allergy-item" data-id="egg">
+                <label class="allergy-row">
+                  <input type="checkbox" />
+                  <div class="allergy-icon"><i class="ti ti-egg"></i></div>
+                  <span class="allergy-name">Huevo</span>
+                  <div class="ds-checkbox-mini"></div>
+                </label>
+                <div class="severity-row">
+                  <label class="ds-label">Severidad</label>
+                  <div class="severity-pills">
+                    <label class="severity-pill mild"><input type="radio" name="sev-egg" value="mild" />Leve</label>
+                    <label class="severity-pill moderate"><input type="radio" name="sev-egg" value="moderate" />Moderada</label>
+                    <label class="severity-pill severe"><input type="radio" name="sev-egg" value="severe" />Severa</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="allergy-item" data-id="other">
+                <label class="allergy-row">
+                  <input type="checkbox" />
+                  <div class="allergy-icon"><i class="ti ti-dots"></i></div>
+                  <span class="allergy-name">Otra alergia o intolerancia</span>
+                  <div class="ds-checkbox-mini"></div>
+                </label>
+                <div class="severity-row">
+                  <label class="ds-label">Especifica y elige severidad</label>
+                  <input type="text" class="ds-input" placeholder="Nombre de la alergia" style="margin-bottom:8px;font-size:14px;" />
+                  <div class="severity-pills">
+                    <label class="severity-pill mild"><input type="radio" name="sev-other" value="mild" />Leve</label>
+                    <label class="severity-pill moderate"><input type="radio" name="sev-other" value="moderate" />Moderada</label>
+                    <label class="severity-pill severe"><input type="radio" name="sev-other" value="severe" />Severa</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <!-- NAVEGACIÓN WIZARD -->
+        <div class="wizard-nav">
+          <button class="nav-btn-back" id="btnBack" disabled>
+            <i class="ti ti-arrow-left"></i>Anterior
+          </button>
+          <button class="nav-btn-next" id="btnNext">
+            <span id="btnNextLabel">Siguiente</span>
+            <i class="ti ti-arrow-right" id="btnNextIcon"></i>
+          </button>
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica · Paso 3</h2>
+    <dl class="spec-grid">
+
+      <dt>Estado</dt>
+      <dd>Wizard mostrando el tercer y último paso. El stepper refleja: <em>Paso 1 done</em>, <em>Paso 2 done</em>, <em>Paso 3 current</em>. El botón principal cambia de "Siguiente" a <strong>"Finalizar onboarding"</strong> con icono de check, señalando al paciente que está cerrando el flujo.</dd>
+
+      <dt>Datos precargados</dt>
+      <dd>
+        <strong>Paso 1.</strong> Fecha de nacimiento 15/08/1995, sexo biológico Femenino, peso 62 kg, talla 165 cm. BMI 22.8 (peso normal).<br />
+        <strong>Paso 2.</strong> Subtipo IBS-D, diagnóstico de Marzo 2023, medicación con dos prescripciones activas.<br />
+        <strong>Paso 3.</strong> Dos alergias declaradas: <em>Lactosa con severidad moderada</em> y <em>Gluten con severidad leve</em>. La severidad usa la paleta semántica FODMAP del DS (verde leve · ámbar moderada · rojo severa).
+      </dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US03 · Paso 3 de 3</span>
+      </dd>
+
+      <dt>Campos del paso</dt>
+      <dd>
+        <strong>Toggle "No tengo alergias declaradas".</strong> Atajo para pacientes sin alergias. Al activarse desmarca cualquier selección previa y desactiva visualmente la lista. Cumple el principio de minimización: no obligar a declarar lo que no aplica.<br />
+        <strong>Catálogo de alergias comunes.</strong> Seis alergias frecuentes del catálogo del ERD (Lactosa, Gluten, Frutos secos, Mariscos, Huevo, Otra). Al marcar una, se expande inline con tres pills de severidad. Esto reduce el viaje hacia un picker secundario.<br />
+        <strong>Opción "Otra".</strong> Incluye campo de texto libre para alergias fuera del catálogo. La nutricionista las revisará al cargar el paciente.
+      </dd>
+
+      <dt>Validación</dt>
+      <dd>El botón "Finalizar onboarding" se habilita cuando: (a) el toggle "No tengo alergias declaradas" está activo, <em>o bien</em> (b) hay al menos una alergia seleccionada. Si el paciente selecciona una alergia después de marcar "No tengo", el toggle se desmarca automáticamente para mantener la coherencia lógica.</dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Pacientes</span>
+        <span class="spec-tag neutral">PostgreSQL · dominio clínico</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">Allergy · catálogo</span>
+        <span class="spec-tag neutral">PatientAllergy · severidad</span>
+        <span class="spec-tag neutral">PatientProfile.onboardingCompleted</span>
+      </dd>
+
+      <dt>Método invocado al finalizar</dt>
+      <dd>
+        <code>PatientProfile.completeOnboarding()</code> marca el flag <code>onboardingCompleted = true</code> en la base de datos.<br />
+        Se inserta un registro en <code>PatientAllergy</code> por cada alergia seleccionada, vinculando <code>patient_id</code>, <code>allergy_id</code> y <code>severity</code>.<br />
+        Al cerrar, el paciente avanza a P5 (IBS-SSS línea base · US04).
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>Expansión inline.</strong> En lugar de abrir un modal para configurar severidad, la card de alergia se expande hacia abajo. Reduce navegación intermedia y mantiene contexto visual.<br />
+        <strong>Pills semánticas con color.</strong> Leve · ámbar suave, Moderada · ámbar, Severa · rojo. Triple canal de información (texto + posición + color) para cumplir WCAG 2.1 AA sin depender solo del color.<br />
+        <strong>Conflict resolution.</strong> Si seleccionas alergia después de marcar "Sin alergias", el toggle se desmarca solo. Evita estados inconsistentes en la BD.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">fodmap-low (leve)</span>
+        <span class="spec-tag">fodmap-mod (moderada)</span>
+        <span class="spec-tag">fodmap-high (severa)</span>
+        <span class="spec-tag">brand-base</span>
+        <span class="spec-tag">radius-md</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 4 · Paso 3 de 3 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+<script>
+  /* ============================================
+     WIZARD · LÓGICA DE NAVEGACIÓN ENTRE PASOS
+     ============================================ */
+  (function () {
+    var currentStep = 3;
+    var totalSteps = 3;
+
+    var btnBack = document.getElementById('btnBack');
+    var btnNext = document.getElementById('btnNext');
+    var btnNextLabel = document.getElementById('btnNextLabel');
+    var btnNextIcon = document.getElementById('btnNextIcon');
+
+    function showStep(n) {
+      // Ocultar todas las secciones
+      for (var i = 1; i <= totalSteps; i++) {
+        document.getElementById('section-' + i).classList.remove('active');
+      }
+      // Mostrar la actual
+      document.getElementById('section-' + n).classList.add('active');
+
+      // Actualizar stepper visual
+      for (var s = 1; s <= totalSteps; s++) {
+        var num = document.getElementById('step-num-' + s);
+        var label = document.getElementById('step-label-' + s);
+        num.classList.remove('done', 'current');
+        label.classList.remove('done', 'current');
+        if (s < n) { num.classList.add('done'); label.classList.add('done'); }
+        else if (s === n) { num.classList.add('current'); label.classList.add('current'); }
+      }
+      for (var l = 1; l < totalSteps; l++) {
+        var line = document.getElementById('step-line-' + l);
+        line.classList.toggle('done', l < n);
+      }
+
+      // Botones
+      btnBack.disabled = (n === 1);
+      if (n === totalSteps) {
+        btnNextLabel.textContent = 'Finalizar onboarding';
+        btnNextIcon.className = 'ti ti-check';
+      } else {
+        btnNextLabel.textContent = 'Siguiente';
+        btnNextIcon.className = 'ti ti-arrow-right';
+      }
+
+      validateCurrent();
+      // Scroll arriba del contenido
+      document.querySelector('.step-content').scrollTop = 0;
+    }
+
+    function validateCurrent() {
+      var ok = false;
+      if (currentStep === 1) {
+        var birth = document.getElementById('birthdate').value;
+        var sex   = document.querySelector('input[name="bioSex"]:checked');
+        var w     = document.getElementById('weight').value;
+        var h     = document.getElementById('height').value;
+        ok = birth && sex && w && h;
+      } else if (currentStep === 2) {
+        var subtype = document.querySelector('input[name="ibsSubtype"]:checked');
+        ok = !!subtype;
+      } else if (currentStep === 3) {
+        var noAllergies = document.getElementById('noAllergies').checked;
+        var anySelected = document.querySelectorAll('.allergy-item.selected').length > 0;
+        ok = noAllergies || anySelected;
+      }
+      btnNext.disabled = !ok;
+    }
+
+    btnNext.addEventListener('click', function () {
+      if (btnNext.disabled) return;
+      if (currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
+      } else {
+        // Finalizar — en producción aquí se enviaría al backend
+        alert('¡Listo! Tu perfil clínico ha quedado guardado. Continuarás con la evaluación IBS-SSS inicial.');
+      }
+    });
+
+    btnBack.addEventListener('click', function () {
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    });
+
+    // Escuchar cambios en todos los inputs para revalidar
+    document.querySelectorAll('input, select, textarea').forEach(function (el) {
+      el.addEventListener('change', validateCurrent);
+      el.addEventListener('input', validateCurrent);
+    });
+
+    /* ============================================
+       PASO 1 · BMI CALCULADO EN TIEMPO REAL
+       ============================================ */
+    var weightInput = document.getElementById('weight');
+    var heightInput = document.getElementById('height');
+    var bmiCard = document.getElementById('bmiCard');
+    var bmiValue = document.getElementById('bmiValue');
+    var bmiCategory = document.getElementById('bmiCategory');
+
+    function classifyBMI(bmi) {
+      if (bmi < 18.5) return { text: 'Bajo peso', color: '#854F0B' };
+      if (bmi < 25)   return { text: 'Peso normal', color: '#27500A' };
+      if (bmi < 30)   return { text: 'Sobrepeso', color: '#854F0B' };
+      return { text: 'Obesidad', color: '#A32D2D' };
+    }
+
+    function updateBMI() {
+      var w = parseFloat(weightInput.value);
+      var h = parseFloat(heightInput.value);
+      if (w > 0 && h > 0) {
+        var hM = h / 100;
+        var bmi = w / (hM * hM);
+        var bmiRounded = bmi.toFixed(1);
+        var category = classifyBMI(bmi);
+        bmiValue.textContent = bmiRounded;
+        bmiCategory.textContent = '· ' + category.text;
+        bmiCategory.style.color = category.color;
+        bmiCard.classList.add('visible');
+      } else {
+        bmiCard.classList.remove('visible');
+      }
+    }
+    weightInput.addEventListener('input', updateBMI);
+    heightInput.addEventListener('input', updateBMI);
+
+    /* ============================================
+       PASO 3 · LÓGICA DE ALERGIAS
+       ============================================ */
+    var noAllergiesToggle = document.getElementById('noAllergiesToggle');
+    var noAllergiesCheck = document.getElementById('noAllergies');
+    var allergiesList = document.getElementById('allergiesList');
+
+    noAllergiesCheck.addEventListener('change', function () {
+      var on = noAllergiesCheck.checked;
+      noAllergiesToggle.classList.toggle('active', on);
+      allergiesList.classList.toggle('disabled', on);
+      if (on) {
+        // Desmarcar todas las alergias
+        document.querySelectorAll('.allergy-item').forEach(function (item) {
+          item.classList.remove('selected');
+          item.querySelectorAll('input').forEach(function (i) { i.checked = false; });
+        });
+      }
+      validateCurrent();
+    });
+
+    // Toggle de cada alergia
+    document.querySelectorAll('.allergy-item').forEach(function (item) {
+      var row = item.querySelector('.allergy-row');
+      var check = row.querySelector('input[type="checkbox"]');
+      row.addEventListener('click', function (e) {
+        if (e.target.tagName === 'INPUT') return;
+        e.preventDefault();
+        check.checked = !check.checked;
+        item.classList.toggle('selected', check.checked);
+        if (check.checked && noAllergiesCheck.checked) {
+          // Si selecciona una alergia, desmarcar "no tengo"
+          noAllergiesCheck.checked = false;
+          noAllergiesToggle.classList.remove('active');
+          allergiesList.classList.remove('disabled');
+        }
+        validateCurrent();
+      });
+    });
+
+    // Pills de severidad
+    document.querySelectorAll('.severity-pills').forEach(function (group) {
+      group.querySelectorAll('.severity-pill').forEach(function (pill) {
+        pill.addEventListener('click', function () {
+          group.querySelectorAll('.severity-pill').forEach(function (p) { p.classList.remove('selected'); });
+          pill.classList.add('selected');
+        });
+      });
+    });
+
+    /* ============================================
+       PASO 2 · CARDS SELECCIONABLES SUBTIPO SII
+       ============================================ */
+    document.querySelectorAll('.option-card').forEach(function (card) {
+      var radio = card.querySelector('input[type="radio"]');
+      card.addEventListener('click', function (e) {
+        if (e.target.tagName === 'INPUT') return;
+        radio.checked = true;
+        document.querySelectorAll('.option-card').forEach(function (c) { c.classList.remove('selected'); });
+        card.classList.add('selected');
+        validateCurrent();
+      });
+    });
+
+    // Init · arranca directamente en el Paso 3 con datos del Paso 1 y Paso 2 precargados
+    updateBMI(); // Renderiza la card de BMI por si el usuario navega al Paso 1
+    showStep(3);
+  })();
+</script>
+
+</body>
+</html>

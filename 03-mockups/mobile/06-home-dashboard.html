@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Home / Dashboard · Pantalla 6</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* App bar específico del Home · sin back, con notif + avatar */
+  .app-bar {
+    padding: 6px 20px 8px;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .app-bar-title {
+    font-size: 22px; font-weight: 600;
+    color: var(--text-primary); flex: 1;
+    letter-spacing: -0.3px;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .icon-btn .notif-dot {
+    position: absolute; top: 8px; right: 8px;
+    width: 8px; height: 8px;
+    background: var(--brand-base);
+    border-radius: 50%;
+    border: 2px solid var(--bg-page);
+  }
+  .avatar-btn {
+    width: 36px; height: 36px;
+    background: var(--brand-soft);
+    color: var(--brand-base);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    font-family: var(--font-sans);
+    transition: transform 0.15s;
+  }
+  .avatar-btn:hover { transform: scale(1.05); }
+
+  /* Contenido principal · scrollable */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 4px 20px 16px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* Saludo */
+  .greeting {
+    margin-bottom: 18px;
+  }
+  .greeting-text {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .greeting-text strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* ====== TARJETA HERO · ESTADO CLÍNICO ====== */
+  .status-hero {
+    background: linear-gradient(135deg, #FAECE7 0%, #F5DCD3 100%);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .status-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(153,60,29,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero-label {
+    font-size: 11px; color: var(--brand-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .hero-score-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .hero-score {
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--brand-darkest);
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+  .hero-score-max {
+    font-size: 16px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--fodmap-mod-bg);
+    color: var(--fodmap-mod-text);
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .hero-delta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(153,60,29,0.12);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .hero-delta .delta-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--fodmap-low-text);
+    font-weight: 600;
+  }
+  .hero-delta .delta-value i { font-size: 16px; }
+  .hero-delta .delta-label {
+    color: var(--text-tertiary);
+  }
+
+  /* Sparkline de evolución dentro de la hero card */
+  .hero-sparkline {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(153,60,29,0.12);
+    position: relative;
+    z-index: 1;
+  }
+  .sparkline-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .sparkline-label > span:first-child {
+    font-size: 11px;
+    color: var(--brand-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .sparkline-meta-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: var(--fodmap-low-text);
+    font-family: var(--font-mono);
+    letter-spacing: 0.2px;
+  }
+  .sparkline-meta-dot {
+    width: 14px;
+    height: 0;
+    border-top: 1.5px dashed var(--fodmap-low-text);
+    opacity: 0.6;
+    display: inline-block;
+  }
+  .sparkline-svg {
+    width: 100%;
+    height: 70px;
+    display: block;
+  }
+
+  /* ====== TARJETA DE PRÓXIMA EVALUACIÓN ====== */
+  .next-eval {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .next-eval .eval-icon {
+    width: 44px; height: 44px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-base);
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .next-eval .eval-info { flex: 1; min-width: 0; }
+  .next-eval .eval-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+  }
+  .next-eval .eval-main {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .next-eval .eval-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .next-eval .eval-arrow {
+    color: var(--text-tertiary);
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ====== SECCIONES ====== */
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+  .section-title {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+  .section-link {
+    font-size: 13px;
+    color: var(--brand-base);
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  /* ====== ACCIONES RÁPIDAS · grid 2 cols ====== */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .quick-action-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .quick-action-card:hover {
+    border-color: var(--brand-base);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(153,60,29,0.08);
+  }
+  .qa-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .qa-icon.meal {
+    background: var(--fodmap-low-bg);
+    color: var(--fodmap-low-text);
+  }
+  .qa-icon.symptom {
+    background: var(--fodmap-mod-bg);
+    color: var(--fodmap-mod-text);
+  }
+  .qa-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .qa-subtitle {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+  }
+
+  /* ====== RECOMENDACIONES DEL DÍA ====== */
+  .recommendations {
+    display: flex; flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .rec-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .rec-card:hover {
+    border-color: var(--brand-base);
+  }
+  .rec-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--brand-soft);
+    color: var(--brand-base);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .rec-icon.informative {
+    background: var(--info-bg);
+    color: var(--info-text);
+  }
+  .rec-content { flex: 1; min-width: 0; }
+  .rec-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .rec-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .rec-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+  }
+  .rec-status.approved {
+    background: var(--fodmap-low-bg);
+    color: var(--fodmap-low-text);
+  }
+  .rec-status.pending {
+    background: var(--fodmap-mod-bg);
+    color: var(--fodmap-mod-text);
+  }
+  .rec-status.informative {
+    background: var(--info-bg);
+    color: var(--info-text);
+  }
+  .rec-status i { font-size: 13px; }
+  .rec-chevron {
+    color: var(--text-tertiary);
+    font-size: 18px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* ====== BOTTOM NAV con FAB central ====== */
+  .bottom-nav {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 8px 0 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 80px 1fr 1fr;
+    align-items: end;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .nav-item {
+    background: transparent;
+    border: none;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    transition: color 0.15s;
+  }
+  .nav-item i { font-size: 22px; }
+  .nav-item span {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .nav-item.active {
+    color: var(--brand-base);
+  }
+  .nav-item.active span {
+    font-weight: 600;
+  }
+
+  /* FAB central elevado */
+  .fab-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .fab-central {
+    width: 60px; height: 60px;
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 6px 16px rgba(153,60,29,0.35), 0 0 0 4px var(--bg-card);
+    position: absolute;
+    bottom: 8px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .fab-central:hover {
+    background: var(--brand-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(153,60,29,0.4), 0 0 0 4px var(--bg-card);
+  }
+
+  /* Home indicator */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* Spec panel */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral {
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+  }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 6 · Home / Dashboard</h1>
+    <p>Centro de control diario del paciente. La pantalla más vista del producto · concentra estado clínico, próxima evaluación, accesos rápidos y recomendaciones del día.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-home"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US14 (parcial)</span>
+      <span class="meta-tag"><i class="ti ti-bolt"></i>Centro de control diario</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <span class="app-bar-title">Inicio</span>
+          <button class="icon-btn" aria-label="Notificaciones">
+            <i class="ti ti-bell"></i>
+            <span class="notif-dot"></span>
+          </button>
+          <button class="avatar-btn" aria-label="Mi perfil">MC</button>
+        </div>
+
+        <div class="screen-content">
+
+          <div class="greeting">
+            <p class="greeting-text">Hola, <strong>María</strong>. Estás en el <strong>día 30</strong> de tu seguimiento.</p>
+          </div>
+
+          <!-- Tarjeta hero: estado clínico actual -->
+          <div class="status-hero">
+            <div class="hero-label">Tu puntaje IBS-SSS</div>
+            <div class="hero-score-row">
+              <span class="hero-score">240</span>
+              <span class="hero-score-max">/ 500</span>
+            </div>
+            <span class="hero-pill">
+              <i class="ti ti-alert-triangle" style="font-size:13px;"></i>
+              Severidad moderada
+            </span>
+
+            <!-- Sparkline · evolución desde línea base -->
+            <div class="hero-sparkline">
+              <div class="sparkline-label">
+                <span>Tu evolución</span>
+                <span class="sparkline-meta-label">
+                  <span class="sparkline-meta-dot"></span>Meta clínica · −50 pts
+                </span>
+              </div>
+              <svg viewBox="0 0 280 70" xmlns="http://www.w3.org/2000/svg" class="sparkline-svg" preserveAspectRatio="xMidYMid meet">
+                <!-- Línea horizontal de meta clínica (umbral -50 pts vs línea base) -->
+                <line x1="10" y1="46" x2="270" y2="46"
+                      stroke="#27500A" stroke-dasharray="4,3" stroke-width="1" opacity="0.45"/>
+
+                <!-- Path de evolución -->
+                <path d="M 18,20 L 140,34 L 262,40"
+                      stroke="#993C1D" stroke-width="2.5" fill="none"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+
+                <!-- Punto 1 · línea base -->
+                <circle cx="18" cy="20" r="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="2"/>
+                <!-- Punto 2 · evaluación quincenal 1 -->
+                <circle cx="140" cy="34" r="4" fill="#FFFFFF" stroke="#993C1D" stroke-width="2"/>
+                <!-- Punto 3 · evaluación quincenal 2 (actual, destacado) -->
+                <circle cx="262" cy="40" r="5.5" fill="#993C1D" stroke="#FFFFFF" stroke-width="2.5"/>
+
+                <!-- Labels eje X -->
+                <text x="18" y="64" text-anchor="middle" font-size="9" fill="#6E635A" font-family="JetBrains Mono">Base</text>
+                <text x="140" y="64" text-anchor="middle" font-size="9" fill="#6E635A" font-family="JetBrains Mono">Día 14</text>
+                <text x="262" y="64" text-anchor="middle" font-size="9" fill="#1F1A15" font-weight="600" font-family="JetBrains Mono">Día 28</text>
+              </svg>
+            </div>
+
+            <div class="hero-delta">
+              <span class="delta-value">
+                <i class="ti ti-arrow-down-right"></i>40 puntos
+              </span>
+              <span class="delta-label">desde tu línea base</span>
+            </div>
+          </div>
+
+          <!-- Tarjeta de próxima evaluación -->
+          <div class="next-eval">
+            <div class="eval-icon"><i class="ti ti-calendar-event"></i></div>
+            <div class="eval-info">
+              <div class="eval-label">Próxima evaluación</div>
+              <div class="eval-main">En 12 días</div>
+              <div class="eval-date">Programada para el 26 de junio</div>
+            </div>
+            <i class="ti ti-chevron-right eval-arrow"></i>
+          </div>
+
+          <!-- Acciones rápidas -->
+          <div class="section-head">
+            <span class="section-title">Acciones rápidas</span>
+          </div>
+          <div class="quick-actions">
+            <button class="quick-action-card" type="button">
+              <div class="qa-icon meal"><i class="ti ti-tools-kitchen-2"></i></div>
+              <div class="qa-title">Registrar comida</div>
+              <div class="qa-subtitle">Última hace 2 horas</div>
+            </button>
+            <button class="quick-action-card" type="button">
+              <div class="qa-icon symptom"><i class="ti ti-mood-confused"></i></div>
+              <div class="qa-title">Registrar síntoma</div>
+              <div class="qa-subtitle">Última hace 1 día</div>
+            </button>
+          </div>
+
+          <!-- Recomendaciones del día -->
+          <div class="section-head">
+            <span class="section-title">Para hoy</span>
+            <span class="section-link">Ver todas <i class="ti ti-chevron-right" style="font-size:14px;"></i></span>
+          </div>
+          <div class="recommendations">
+
+            <article class="rec-card">
+              <div class="rec-icon"><i class="ti ti-salad"></i></div>
+              <div class="rec-content">
+                <div class="rec-title">Reemplaza el brócoli del almuerzo por zapallo italiano</div>
+                <div class="rec-desc">El brócoli puede estar elevando tu distensión esta semana.</div>
+                <span class="rec-status approved">
+                  <i class="ti ti-circle-check-filled"></i>
+                  Aprobada por Dra. Solano
+                </span>
+              </div>
+              <i class="ti ti-chevron-right rec-chevron"></i>
+            </article>
+
+            <article class="rec-card">
+              <div class="rec-icon"><i class="ti ti-glass-full"></i></div>
+              <div class="rec-content">
+                <div class="rec-title">Aumenta tu hidratación a 2 L diarios</div>
+                <div class="rec-desc">Tus registros de hábitos intestinales sugieren posible deshidratación leve.</div>
+                <span class="rec-status approved">
+                  <i class="ti ti-circle-check-filled"></i>
+                  Aprobada por Dra. Solano
+                </span>
+              </div>
+              <i class="ti ti-chevron-right rec-chevron"></i>
+            </article>
+
+          </div>
+
+        </div>
+
+        <!-- Bottom nav con FAB central -->
+        <nav class="bottom-nav">
+          <button class="nav-item active" type="button">
+            <i class="ti ti-home-filled"></i>
+            <span>Inicio</span>
+          </button>
+          <button class="nav-item" type="button">
+            <i class="ti ti-book-2"></i>
+            <span>Diario</span>
+          </button>
+          <div class="fab-wrapper">
+            <button class="fab-central" type="button" aria-label="Registrar"><i class="ti ti-plus"></i></button>
+          </div>
+          <button class="nav-item" type="button">
+            <i class="ti ti-clipboard-list"></i>
+            <span>Plan</span>
+          </button>
+          <button class="nav-item" type="button">
+            <i class="ti ti-user-circle"></i>
+            <span>Perfil</span>
+          </button>
+        </nav>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Home / Dashboard del paciente. La pantalla más vista del producto. Concentra el estado clínico actual del paciente (puntaje IBS-SSS y categoría), la próxima evaluación quincenal programada, las acciones rápidas más frecuentes (registro de comida y síntoma), y las recomendaciones del día con su estado HITL visible.</dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US14 · Visualización de recomendaciones (parcial)</span>
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Paciente María Fernanda Castillo, día 30 del seguimiento clínico. Línea base de 280 puntos (Severo) registrada el día 0, primera evaluación quincenal de 252 puntos el día 14, segunda evaluación quincenal de 240 puntos el día 28. Reducción total de 40 puntos desde la línea base, aún por debajo del umbral de respuesta clínica significativa (≥ 50 puntos). Próxima evaluación quincenal programada para el día 42 (en 12 días). Dos recomendaciones activas del día, ambas aprobadas por la nutricionista.
+      </dd>
+
+      <dt>Componentes principales</dt>
+      <dd>
+        <strong>App bar de raíz.</strong> Título "Inicio" sin botón de back (es pantalla raíz), notificaciones con dot indicator, avatar del paciente con sus iniciales.<br />
+        <strong>Saludo personalizado.</strong> Nombre del paciente + día del seguimiento. Crea conexión emocional y orienta temporalmente al paciente sobre su progreso en el piloto.<br />
+        <strong>Tarjeta hero del estado clínico.</strong> Puntaje IBS-SSS actual en grande, categoría como pill semántico, sparkline SVG con evolución desde línea base y línea horizontal de meta clínica, delta vs línea base con dirección visual. Fondo con gradiente coral suave para destacar como elemento principal.<br />
+        <strong>Sparkline de evolución.</strong> SVG inline con tres puntos de evaluación conectados, línea horizontal punteada en verde indicando umbral de respuesta clínica significativa (−50 puntos vs línea base). Punto actual destacado con relleno coral. Labels mínimos en eje X (Base / Día 14 / Día 28). Solo se renderiza cuando hay ≥ 3 puntos de evaluación.<br />
+        <strong>Tarjeta de próxima evaluación.</strong> Countdown en días hasta la próxima evaluación quincenal. Refuerza expectativa y compromiso del paciente con el seguimiento.<br />
+        <strong>Quick actions en grid 2 columnas.</strong> Registro de comida (US09) y registro de síntoma (US11) como cards táctiles grandes. Indica "última vez que registraste" como nudge sutil.<br />
+        <strong>Recomendaciones del día · solo aprobadas.</strong> Cards stack vertical con icono, título, descripción corta, pill verde con nombre del nutricionista que aprobó. Las pendientes HITL no se exponen al paciente (DEC-006).<br />
+        <strong>Bottom nav con FAB central elevado.</strong> Cinco items: Inicio (active), Diario, FAB(+) elevado, Plan, Perfil. El FAB abre un menú rápido de acciones de creación.
+      </dd>
+
+      <dt>Aplicación de decisiones</dt>
+      <dd>
+        <strong>DEC-003 respetada.</strong> El dashboard no muestra cálculos parciales · solo evaluaciones completas registradas en la BD.<br />
+        <strong>DEC-004 respetada.</strong> El puntaje IBS-SSS mostrado (240) corresponde a la evaluación quincenal más reciente <em>ya completada</em>. NO se muestra puntaje de evaluación pendiente. Cuando llegue el momento de responder la próxima evaluación (P9), el paciente verá el cuestionario en blanco, no su histórico.<br />
+        <strong>DEC-006 respetada (crítica).</strong> El dashboard filtra estrictamente por <code>hitl_status = APPROVED</code> o <code>MODIFIED_APPROVED</code>. Las recomendaciones con <code>hitl_status = PENDING</code> existen en BD pero no se exponen al paciente. Esto elimina el riesgo de que el paciente actúe sobre una recomendación no validada profesionalmente.<br />
+        <strong>DEC-007 respetada.</strong> No hay cards "informativas" ni observaciones de patrón temporal expuestas al paciente. Las correlaciones temporales alimento-síntoma se procesan a nivel del motor XGBoost para generar recomendaciones que pasan por HITL, no como información independiente.<br />
+        <strong>DEC-008 aplicada.</strong> Sparkline funcional en tarjeta hero del dashboard con tres reglas: visible solo con ≥ 3 puntos de evaluación; línea horizontal punteada en verde marcando umbral de respuesta clínica significativa (−50 puntos); celebración visual al cruzar el umbral. Gráfico completo con anotaciones queda en pantalla dedicada (futura, parte de evolución del paciente).
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Pacientes</span>
+        <span class="spec-tag neutral">Módulo de Registro Clínico</span>
+        <span class="spec-tag neutral">Servicio HITL · estados</span>
+        <span class="spec-tag neutral">PostgreSQL · queries de dashboard</span>
+        <span class="spec-tag neutral">KeyDB · cache de queries frecuentes</span>
+      </dd>
+
+      <dt>Entidades ERD consultadas</dt>
+      <dd>
+        <span class="spec-tag neutral">PatientProfile</span>
+        <span class="spec-tag neutral">ibs_sss_assessments</span>
+        <span class="spec-tag neutral">Recommendation</span>
+        <span class="spec-tag neutral">Meal · última</span>
+        <span class="spec-tag neutral">Symptom · último</span>
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>Hero con gradiente coral.</strong> El estado clínico es la información más importante del dashboard; el gradiente lo destaca jerárquicamente sin recurrir a tamaño excesivo.<br />
+        <strong>Cards táctiles con feedback hover.</strong> Cada elemento accionable responde visualmente al hover/tap (border coral, leve traslación). Cumple heurística Nielsen "visibility of system status".<br />
+        <strong>Triple canal de información en status pills.</strong> Color + icono + texto. Cumple WCAG 2.1 AA sin depender solo del color.<br />
+        <strong>Bottom nav con FAB elevado.</strong> Patrón estándar mHealth (Material You, Apple Health). El FAB central concentra las acciones de creación más frecuentes y se mantiene accesible desde cualquier pantalla principal.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base</span>
+        <span class="spec-tag">brand-soft</span>
+        <span class="spec-tag">fodmap-low/mod/high</span>
+        <span class="spec-tag">info-bg/text</span>
+        <span class="spec-tag">radius-md/lg</span>
+        <span class="spec-tag">bottom-nav + FAB</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 6 de 18 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

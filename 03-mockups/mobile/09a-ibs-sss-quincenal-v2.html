@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Cuestionario quincenal · Pantalla 9a · v2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  /* PAGE WRAPPER */
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 620px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+  .version-tag {
+    background: var(--fodmap-low-bg) !important;
+    color: var(--fodmap-low-text) !important;
+  }
+  .version-tag i { color: var(--fodmap-low-text) !important; }
+
+  /* DEVICE FRAME */
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* APP BAR */
+  .app-bar {
+    padding: 6px 16px 8px;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    font-size: 17px; font-weight: 500; color: var(--text-primary); flex: 1;
+  }
+
+  /* SCREEN CONTENT */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* QUIZ INTRO */
+  .quiz-intro {
+    padding: 0 24px 12px;
+  }
+  .cycle-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cycle-pill i { font-size: 12px; }
+  .quiz-intro h2 {
+    font-size: 22px; font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2; letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .quiz-intro p {
+    font-size: 13.5px; color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .quiz-intro .scientific-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    margin-top: 8px;
+  }
+
+  /* PROGRESS CARD · consistente con P5 */
+  .progress-card {
+    margin: 0 24px 16px;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-card .progress-icon {
+    width: 36px; height: 36px;
+    background: var(--brand-soft);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-base);
+    font-size: 18px; flex-shrink: 0;
+  }
+  .progress-card .progress-info { flex: 1; min-width: 0; }
+  .progress-card .progress-label {
+    font-size: 11px; color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+  }
+  .progress-card .progress-bar {
+    height: 6px; background: var(--bg-subtle);
+    border-radius: 3px; overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .progress-card .progress-fill {
+    height: 100%;
+    background: var(--brand-base);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 100%;
+  }
+  .progress-card .progress-count {
+    font-size: 12px; color: var(--text-primary);
+    font-weight: 500;
+  }
+  .progress-card .progress-count strong {
+    color: var(--brand-strong);
+    font-weight: 600;
+  }
+
+  /* QUESTION CARDS · consistente con P5 */
+  .questions-wrapper {
+    padding: 0 24px 16px;
+    display: flex; flex-direction: column;
+    gap: 14px;
+  }
+  .question-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--brand-base);
+    border-radius: var(--radius-md);
+    padding: 16px;
+  }
+  .question-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .question-num {
+    width: 28px; height: 28px;
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+  .question-title {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    flex: 1;
+  }
+  .question-status-icon {
+    color: var(--brand-base);
+    font-size: 20px;
+  }
+  .question-text {
+    font-size: 15px; color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 18px;
+  }
+
+  /* DESCRIPTOR DISPLAY · consistente con P5 */
+  .descriptor-display {
+    text-align: center;
+    margin-bottom: 14px;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .descriptor-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--brand-strong);
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+  .descriptor-num {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.4px;
+  }
+
+  /* SLIDER · consistente con P5 */
+  .slider-wrapper { margin-bottom: 8px; position: relative; }
+  .slider-track-wrapper {
+    position: relative;
+    padding: 0 14px;
+    margin-bottom: 4px;
+  }
+  .slider-tick-marks {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    right: 14px;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .tick-mark {
+    width: 2px;
+    height: 8px;
+    background: rgba(153, 60, 29, 0.2);
+    border-radius: 1px;
+  }
+  .ibs-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, #EAF3DE 0%, #FAEEDA 50%, #FCEBEB 100%);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  .ibs-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    background: var(--brand-base);
+    border: 4px solid #FFFFFF;
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 8px rgba(153,60,29,0.25);
+    transition: transform 0.1s;
+  }
+  .ibs-slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.1); }
+  .ibs-slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    background: var(--brand-base);
+    border: 4px solid #FFFFFF;
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 8px rgba(153,60,29,0.25);
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .slider-labels span { max-width: 45%; line-height: 1.3; }
+  .slider-labels span.right { text-align: right; }
+
+  /* DEC-003/004 NOTICE · explicación discreta para el paciente */
+  .blind-submit-notice {
+    margin: 0 24px 16px;
+    background: var(--info-bg);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .blind-submit-notice i {
+    color: var(--info-text);
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .blind-submit-notice p {
+    font-size: 11.5px;
+    color: var(--info-text);
+    line-height: 1.4;
+  }
+
+  /* SUBMIT AREA · consistente con P5 */
+  .submit-area {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 16px 14px;
+    flex-shrink: 0;
+  }
+  .ds-btn-primary {
+    background: var(--brand-base);
+    color: #FFFFFF; border: none;
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .ds-btn-primary:hover { background: var(--brand-strong); }
+  .ds-btn-primary:disabled {
+    background: var(--bg-divider);
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+  }
+  .submit-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 8px;
+  }
+
+  /* HOME INDICATOR */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* SPEC PANEL */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+  .spec-tag.change { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 9a · Cuestionario quincenal <span style="color:var(--fodmap-low-text);font-size:16px;font-weight:500;">v2</span></h1>
+    <p>Aplicación periódica del cuestionario IBS-SSS cada 14 días para medir la evolución sintomática del paciente. Visualmente alineada con P5 (misma question-card, mismo slider NRS-11, mismo descriptor cualitativo dominante). Estricta en DEC-003 y DEC-004: no expone puntaje calculado antes del envío para eliminar sesgo de objetivo umbral.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-clipboard-heart"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US12</span>
+      <span class="meta-tag version-tag"><i class="ti ti-refresh"></i>v2 · sin result-card inline</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver"><i class="ti ti-arrow-left"></i></button>
+          <span class="app-bar-title">Evaluación quincenal</span>
+        </div>
+
+        <div class="screen-content">
+
+          <div class="quiz-intro">
+            <span class="cycle-pill">
+              <i class="ti ti-calendar-stats"></i>
+              Día 28 · Evaluación #2
+            </span>
+            <h2>Cuestionario IBS-SSS</h2>
+            <p>Estas cinco preguntas miden cómo te sentiste en las <strong>últimas 2 semanas</strong>. Responde según cómo te sentiste, no busques un número exacto.</p>
+            <span class="scientific-tag">
+              <i class="ti ti-microscope" style="font-size:13px;"></i>
+              Francis et al. (1997) · NRS-11 validado
+            </span>
+          </div>
+
+          <div class="progress-card">
+            <div class="progress-icon"><i class="ti ti-progress-check"></i></div>
+            <div class="progress-info">
+              <div class="progress-label">Tu progreso</div>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <div class="progress-count"><strong>5</strong> de 5 preguntas respondidas</div>
+            </div>
+          </div>
+
+          <div class="questions-wrapper">
+
+            <article class="question-card" data-question="1" data-field="pain_severity">
+              <div class="question-header">
+                <div class="question-num">01</div>
+                <div class="question-title">Severidad del dolor</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Qué tan severo fue tu dolor abdominal en estas 2 semanas?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-text">Leve</span>
+                  <span class="descriptor-num">4 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="4" step="1" aria-label="Severidad del dolor abdominal" />
+                </div>
+                <div class="slider-labels">
+                  <span>Sin dolor</span>
+                  <span class="right">Insoportable</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="2" data-field="pain_frequency">
+              <div class="question-header">
+                <div class="question-num">02</div>
+                <div class="question-title">Frecuencia del dolor</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Con qué frecuencia tuviste dolor abdominal en estas 2 semanas?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-text">La mitad del tiempo</span>
+                  <span class="descriptor-num">5 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="5" step="1" aria-label="Frecuencia del dolor abdominal" />
+                </div>
+                <div class="slider-labels">
+                  <span>Ningún día</span>
+                  <span class="right">Todos los días</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="3" data-field="bloating_severity">
+              <div class="question-header">
+                <div class="question-num">03</div>
+                <div class="question-title">Distensión abdominal</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Qué tan severa fue tu sensación de hinchazón o distensión abdominal?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-text">Moderada</span>
+                  <span class="descriptor-num">6 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="6" step="1" aria-label="Severidad de la distensión abdominal" />
+                </div>
+                <div class="slider-labels">
+                  <span>Sin distensión</span>
+                  <span class="right">Extrema</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="4" data-field="bowel_habits_dissatisfaction">
+              <div class="question-header">
+                <div class="question-num">04</div>
+                <div class="question-title">Hábitos intestinales</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Qué tan insatisfecho estuviste con tus hábitos intestinales (frecuencia, consistencia, urgencia)?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-text">Algo insatisfecho</span>
+                  <span class="descriptor-num">5 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="5" step="1" aria-label="Insatisfacción con hábitos intestinales" />
+                </div>
+                <div class="slider-labels">
+                  <span>Muy satisfecho</span>
+                  <span class="right">Completamente insatisfecho</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="5" data-field="life_interference">
+              <div class="question-header">
+                <div class="question-num">05</div>
+                <div class="question-title">Interferencia con tu vida</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Cuánto interfirieron tus síntomas digestivos con tus actividades diarias (trabajo, estudios, vida social)?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-text">Levemente</span>
+                  <span class="descriptor-num">3 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="3" step="1" aria-label="Interferencia del SII con la vida diaria" />
+                </div>
+                <div class="slider-labels">
+                  <span>No interfirieron</span>
+                  <span class="right">Completamente</span>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Aviso discreto sobre por qué no se muestra el puntaje inline -->
+          <div class="blind-submit-notice">
+            <i class="ti ti-shield-check"></i>
+            <p>Tu puntaje aparecerá después de enviar la evaluación.</p>
+          </div>
+
+        </div>
+
+        <div class="submit-area">
+          <button type="button" class="ds-btn-primary">
+            <i class="ti ti-send"></i>
+            <span>Enviar evaluación</span>
+          </button>
+          <div class="submit-hint">Listo para enviar tu evaluación</div>
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC PANEL -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica · v2</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Aplicación periódica del cuestionario IBS-SSS cada 14 días al paciente con SII durante el seguimiento clínico. Captura las cinco dimensiones del instrumento (severidad del dolor, frecuencia del dolor, severidad de distensión, insatisfacción con hábitos intestinales, interferencia con la vida diaria) mediante la escala NRS-11 con descriptores cualitativos dominantes. Persiste con <code>assessment_type = 'periodic'</code> y <code>cycle_number &gt; 0</code> en la tabla <code>ibs_sss_assessments</code>. El cálculo del puntaje total y la comparación contra línea base se ejecutan al enviar y se muestran en P9b (pantalla post-envío independiente).</dd>
+
+      <dt>Decomposición v2</dt>
+      <dd>
+        <span class="spec-tag change">v2 · P9 decompuesta en P9a + P9b</span>
+        <br/>
+        La iteración v1 de P9 era una sola pantalla con el cuestionario apilado. La v2 mantiene ese cuestionario en P9a y mueve el cálculo+visualización del resultado a P9b. Esta separación física resuelve el riesgo de sesgo de objetivo umbral que afectaría al indicador primario de OE3 si el paciente viera su puntaje antes de enviar.
+      </dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US12 · Evaluación quincenal del IBS-SSS</span>
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Paciente en el día 28 del seguimiento clínico completando su segunda evaluación quincenal. Las cinco preguntas están respondidas con valores que reflejan un perfil de SII moderado: dolor leve (4/10), frecuencia "la mitad del tiempo" (5/10), distensión moderada (6/10), insatisfacción intermedia con hábitos intestinales (5/10), interferencia leve con la vida diaria (3/10). El indicador de progreso muestra "5 de 5 respondidas" con barra completa. El botón "Enviar evaluación" está habilitado. <strong>Internamente la suma es 230 sobre un máximo de 500, pero ese cálculo no se expone en esta pantalla.</strong>
+      </dd>
+
+      <dt>Componentes principales</dt>
+      <dd>
+        <strong>App bar de stack.</strong> Botón de retorno + título "Evaluación quincenal". Patrón consistente con P5.<br />
+        <strong>Quiz intro con pill de ciclo.</strong> Pill superior "Día 28 · Evaluación #2" en uppercase coral suave. Título "Cuestionario IBS-SSS" igual que P5. Descripción adaptada al periodo quincenal ("últimas 2 semanas" en lugar de "últimos diez días"). Scientific-tag con cita a Francis et al. 1997 mantenida.<br />
+        <strong>Progress card.</strong> Estructura idéntica a P5: ícono coral en card cuadrado, etiqueta uppercase, barra de progreso con fill brand-base, conteo cardinal. La barra está al 100 % y el conteo muestra "5 de 5 preguntas respondidas".<br />
+        <strong>Cinco question cards apiladas.</strong> Estructura idéntica a P5 en su estado <code>answered</code>: número 01-05 en círculo brand-base con texto blanco, título uppercase, ícono check coral, texto de pregunta, descriptor cualitativo dominante a 20 px peso 600 color brand-strong, número subordinado discreto en mono ("4 de 10"), slider NRS-11 con gradient FODMAP, thumb visible, tick marks coral semi-transparentes, endpoints semánticos por dimensión.<br />
+        <strong>Blind-submit notice.</strong> Banner azul informativo de baja prominencia que explica al paciente por qué su puntaje aparecerá después de enviar. Texto: "Tu puntaje aparecerá después de enviar la evaluación. Esto asegura que tus respuestas reflejen cómo te sentiste, no un número que quieras alcanzar." Refuerza la intención clínica sin sonar técnico.<br />
+        <strong>Submit area con botón "Enviar evaluación".</strong> Ícono <code>ti-send</code> + texto. El verbo "Enviar" comunica el carácter clínico formal de la acción (procesamiento, cálculo, clasificación, comparación). Hint debajo: "Listo para enviar tu evaluación".
+      </dd>
+
+      <dt>Diferencias con P5</dt>
+      <dd>
+        <strong>SIN result-card inline.</strong> La diferencia visual clave. P5 muestra el result-card debajo del cuestionario apenas se completan las 5 preguntas. P9a NO muestra ningún cálculo ni puntaje antes del envío. Esta omisión es deliberada y se justifica abajo.<br />
+        <strong>Pill de ciclo arriba del título.</strong> P5 no necesita contexto temporal porque es la primera evaluación. P9a muestra "Día 28 · Evaluación #2" para anclar la temporalidad sin exponer score previo (DEC-004).<br />
+        <strong>Descripción adaptada al periodo de 14 días.</strong> "Últimas 2 semanas" reemplaza "últimos diez días" de P5. El instrumento IBS-SSS clásico de Francis es sobre 10 días; las versiones digitales adaptadas a seguimiento quincenal usan 14 días por consistencia operativa.<br />
+        <strong>Endpoint de "Frecuencia del dolor" usa "Todos los días" en lugar de "Los 10 días".</strong> Independiza el endpoint del número absoluto de días para mayor robustez ante adaptaciones de periodo.<br />
+        <strong>Blind-submit notice.</strong> Banner informativo que P5 no necesita porque su resultado inline no genera sesgo. P9a lo agrega para transparentar al paciente la lógica metodológica.<br />
+        <strong>Persistencia con tipo periódico.</strong> P5 persiste con <code>assessment_type = 'baseline'</code> y <code>cycle_number = 0</code>. P9a lo hace con <code>'periodic'</code> y <code>cycle_number = 2</code>.<br />
+        <strong>Resto idéntico.</strong> Mismas 5 dimensiones, mismos rangos 0-10, misma escala NRS-11 con × 10 internamente, mismos descriptores cualitativos por dimensión, misma jerarquía visual descriptor &gt; número, mismo CSS de question-card, slider, progress card.
+      </dd>
+
+      <dt>Justificación clínica de DEC-003/004 estrictos</dt>
+      <dd>
+        <strong>Sesgo de objetivo umbral.</strong> En una evaluación longitudinal con línea base conocida, mostrar el puntaje calculado <em>antes</em> del envío permite al paciente ajustar respuestas retroactivamente para acercarse al umbral de respuesta clínica significativa (50 puntos de reducción según Spiegel et al. 2009, MCID validado para IBS-SSS).<br />
+        <strong>Mecanismo del sesgo.</strong> El paciente termina las 5 preguntas, ve "230 puntos · reducción de 50 desde tu base", interpreta "estoy justo en el umbral", regresa a una pregunta, baja una respuesta de 6 a 4 para garantizar la clasificación favorable, y reenvía. El puntaje resultante no refleja el estado clínico real sino la intención del paciente.<br />
+        <strong>Impacto sobre OE3.</strong> El indicador primario del piloto clínico (reducción IBS-SSS ≥ 50 puntos en una proporción significativa de n=20-50) depende de la integridad de cada medición individual. Permitir ajuste post-cálculo invalida la métrica estadísticamente.<br />
+        <strong>Por qué P5 puede mostrar resultado inline.</strong> En la línea base no existe puntaje anterior con cual comparar ni umbral que alcanzar, por lo tanto no hay incentivo (consciente o inconsciente) para ajustar respuestas. El paciente reporta su estado actual sin objetivo numérico previo. El sesgo de objetivo umbral no aplica.<br />
+        <strong>Por qué la pantalla post-envío sí puede mostrarlo.</strong> Una vez pulsado "Enviar evaluación", las respuestas se persisten con timestamp inmutable. P9b muestra el resultado calculado sobre datos ya cerrados. No hay vía para ajustar.<br />
+        <strong>Sustento bibliográfico.</strong> Spiegel et al. (2009) recomienda explícitamente para estudios longitudinales con IBS-SSS aplicar el cuestionario en "estado ciego" respecto al puntaje previo y al objetivo de cambio cuando sea operativamente posible. Esta pantalla implementa esa recomendación al máximo nivel de estrictez compatible con UX de paciente.
+      </dd>
+
+      <dt>Aplicación de decisiones</dt>
+      <dd>
+        <strong>DEC-003 respetada estrictamente.</strong> No hay totalizador parcial visible durante la respuesta. El indicador de progreso cuenta respuestas completadas (cardinalidad), no severidad acumulada.<br />
+        <strong>DEC-004 respetada estrictamente.</strong> La pill superior "Día 28 · Evaluación #2" NO expone el puntaje de la evaluación anterior. Solo informa la posición temporal en el seguimiento. El nutricionista sí ve el histórico completo en su portal P18.<br />
+        <strong>DEC-005 aplicada literalmente.</strong> Escala NRS-11 con descriptor cualitativo dinámico dominante visualmente sobre el número discreto. Almacenamiento interno × 10 (rango 0-100 por dimensión, total 0-500). Respeta el límite de discriminación humana de Miller (1956) y la equivalencia psicométrica VAS↔NRS-11 de Spiegel et al. (2009).<br />
+        <strong>DEC-003 extendida a "puntaje completo antes de envío".</strong> Esta es la interpretación estricta para evaluaciones longitudinales con umbral conocido. P5 aplica DEC-003 al "cálculo parcial mientras se responde". P9a la aplica también al "cálculo total antes de enviar", por las razones del bloque anterior.
+      </dd>
+
+      <dt>Variantes de estado</dt>
+      <dd>
+        <strong>Estado inicial vacío.</strong> Las cinco preguntas muestran descriptor "—" en gris (siguiendo el patrón de P5 con thumb oculto y descriptor "Desliza para responder"), el indicador de progreso muestra "0 de 5 respondidas" con barra al 0 %, y el botón "Enviar evaluación" está deshabilitado con hint "Responde las cinco preguntas para continuar".<br />
+        <strong>Progreso parcial.</strong> Algunas preguntas respondidas, otras no. Progress bar al porcentaje correspondiente. El botón permanece deshabilitado hasta completar las 5.<br />
+        <strong>Cuestionario adelantado o atrasado.</strong> Si el paciente intenta responder antes de los 14 días o después del límite tolerado, se muestra warning blando "Aún no han pasado 2 semanas desde tu última evaluación" o "Han pasado más de 16 días, ¿deseas continuar?". No bloquea pero alerta.
+      </dd>
+
+      <dt>Validaciones críticas</dt>
+      <dd>
+        <strong>Respuesta obligatoria en las 5 dimensiones.</strong> CHECK SQL en cada columna de <code>ibs_sss_assessments</code>: NOT NULL entre 0 y 100. Botón "Enviar evaluación" deshabilitado hasta completar.<br />
+        <strong>Cycle number coherente.</strong> Se valida que <code>cycle_number</code> sea igual al esperado según <code>next_assessment_date</code>. Si no, warning no bloqueante.<br />
+        <strong>Inmutabilidad post-envío.</strong> Una vez enviada, la evaluación no es editable por el paciente. Solo el nutricionista puede agregar notas clínicas asociadas sin modificar las respuestas originales.<br />
+        <strong>Sincronización con <code>client_guid</code>.</strong> Igual que comidas y síntomas, soporta modo offline con idempotencia. <code>completed_at</code> capturado en el dispositivo al pulsar enviar.<br />
+        <strong>Cálculo del score en backend exclusivamente.</strong> El cliente envía las 5 respuestas en NRS-11 × 10. El backend calcula la suma y persiste tanto las respuestas individuales como el total. No se confía en cálculo cliente para evitar manipulación.
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Evaluación Clínica</span>
+        <span class="spec-tag neutral">SQLite local · offline-first</span>
+        <span class="spec-tag neutral">Worker de Sincronización</span>
+        <span class="spec-tag neutral">API REST de Evaluaciones IBS-SSS</span>
+        <span class="spec-tag neutral">Servicio de Cálculo de Puntaje · backend</span>
+        <span class="spec-tag neutral">PostgreSQL · ibs_sss_assessments</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">ibs_sss_assessments · escritura</span>
+        <span class="spec-tag neutral">PatientProfile · lectura para contexto</span>
+        <span class="spec-tag neutral">AssessmentType · enum</span>
+        <span class="spec-tag neutral">SeverityCategory · enum (cálculo post-envío)</span>
+        <span class="spec-tag neutral">SyncStatus · enum</span>
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>Replicación visual de P5 como base.</strong> Mismo lenguaje de question-card, mismo slider, mismo descriptor cualitativo dominante. La consistencia visual entre línea base y quincenal reduce carga cognitiva del paciente: reconoce el cuestionario de inmediato.<br />
+        <strong>Pill de ciclo como anclaje temporal.</strong> Patrón aplicable a cualquier evaluación clínica longitudinal: mostrar la posición temporal sin filtrar valores previos. Cumple DEC-004 y elimina recall bias.<br />
+        <strong>Blind-submit notice como transparencia metodológica.</strong> En vez de simplemente "no mostrar el puntaje", el paciente recibe una explicación corta de por qué. Construye adherencia al método y reduce frustración por la diferencia con la línea base.<br />
+        <strong>Indicador de cardinalidad, no de severidad.</strong> El progreso cuenta respuestas, no acumulación. Cumple DEC-003 sin sacrificar feedback de avance.<br />
+        <strong>Descriptor cualitativo dominante con número discreto.</strong> Aplicación de DEC-005 en contexto multi-pregunta.<br />
+        <strong>Endpoints semánticos por dimensión.</strong> Cada slider tiene endpoints específicos para su pregunta, reforzando especificidad.<br />
+        <strong>Verbo "Enviar" sobre "Guardar".</strong> Comunica el carácter clínico formal de la acción.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base / brand-soft / brand-strong</span>
+        <span class="spec-tag">fodmap-low/mod/high (gradient slider)</span>
+        <span class="spec-tag">info-bg / info-text (blind notice)</span>
+        <span class="spec-tag">radius-md/full</span>
+        <span class="spec-tag">font-mono (número subordinado)</span>
+        <span class="spec-tag">progress card consistente con P5</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 9a v2 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

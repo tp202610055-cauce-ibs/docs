@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Consentimiento informado · Pantalla 3</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #F5EFE6;
+    --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15;
+    --text-secondary: #524A42;
+    --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7;
+    --brand-base: #993C1D;
+    --brand-strong: #712B13;
+    --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE;
+    --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA;
+    --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB;
+    --fodmap-high-text: #A32D2D;
+    --success-bg: #EAF3DE;
+    --success-text: #27500A;
+    --warning-bg: #FAEEDA;
+    --warning-text: #854F0B;
+    --info-bg: #E6F1FB;
+    --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7;
+    --border-default: 1px solid #EDE5D7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 24px;
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 {
+    font-size: 24px; font-weight: 500;
+    color: var(--text-primary); margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 14px; color: var(--text-secondary);
+    max-width: 600px; margin: 0 auto;
+  }
+  .meta-tags {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin-top: 16px;
+  }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* App bar */
+  .app-bar {
+    padding: 6px 16px 8px;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    font-size: 17px; font-weight: 500;
+    color: var(--text-primary); flex: 1;
+  }
+  .app-bar .download-btn {
+    background: var(--bg-subtle);
+    color: var(--brand-base);
+    border: var(--border-subtle);
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    transition: background 0.15s;
+  }
+  .app-bar .download-btn:hover { background: var(--brand-soft); }
+
+  /* Bloque de metadata */
+  .doc-meta-card {
+    margin: 0 16px 12px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex; gap: 14px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .doc-meta-card .meta-icon {
+    width: 36px; height: 36px;
+    background: var(--brand-soft);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-base);
+    font-size: 20px; flex-shrink: 0;
+  }
+  .doc-meta-card .meta-info {
+    flex: 1; min-width: 0;
+  }
+  .doc-meta-card .meta-title {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-primary); margin-bottom: 2px;
+  }
+  .doc-meta-card .meta-detail {
+    font-size: 11px; color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    line-height: 1.4;
+  }
+
+  /* Cuerpo del consentimiento · scrollable */
+  .consent-body {
+    flex: 1; overflow-y: auto;
+    padding: 4px 24px 16px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .consent-body::-webkit-scrollbar { display: none; }
+
+  .consent-section { margin-bottom: 20px; }
+  .consent-section:last-child { margin-bottom: 4px; }
+  .consent-section h3 {
+    font-size: 14px; font-weight: 600;
+    color: var(--brand-strong);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .consent-section h3 i { font-size: 16px; color: var(--brand-base); }
+  .consent-section p {
+    font-size: 13.5px; color: var(--text-primary);
+    line-height: 1.65;
+    margin-bottom: 8px;
+  }
+  .consent-section p:last-child { margin-bottom: 0; }
+  .consent-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 6px 0 8px;
+  }
+  .consent-section ul li {
+    font-size: 13px; color: var(--text-primary);
+    line-height: 1.6;
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+  .consent-section ul li::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 9px;
+    width: 6px; height: 6px;
+    background: var(--brand-base);
+    border-radius: 50%;
+  }
+
+  .arco-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 8px 0 4px;
+  }
+  .arco-grid .arco-item {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+  }
+  .arco-grid .arco-item strong {
+    display: block;
+    font-size: 12px;
+    color: var(--brand-base);
+    font-weight: 600;
+    margin-bottom: 2px;
+    letter-spacing: 0.4px;
+  }
+  .arco-grid .arco-item span {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .legal-list {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-top: 6px;
+  }
+  .legal-list li {
+    font-size: 12.5px;
+    padding-left: 22px !important;
+  }
+  .legal-list li::before {
+    content: '\\f1aa' !important;
+    font-family: 'tabler-icons' !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    color: var(--fodmap-low-text) !important;
+    font-size: 14px !important;
+    top: 4px !important;
+    left: 0 !important;
+  }
+
+  /* Scroll progress · indicador sutil para mostrar avance */
+  .scroll-progress {
+    position: absolute;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--brand-base);
+    transition: width 0.1s;
+    z-index: 5;
+  }
+
+  /* Aviso de scroll · aparece cuando aún falta */
+  .scroll-hint {
+    margin: 0 16px;
+    padding: 10px 14px;
+    background: var(--warning-bg);
+    color: var(--warning-text);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  .scroll-hint.hidden { display: none; }
+  .scroll-hint i { font-size: 16px; }
+
+  /* Acciones bottom · sticky */
+  .consent-actions {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 16px 14px;
+    flex-shrink: 0;
+  }
+
+  .consent-check-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .consent-check-row.checked {
+    background: var(--brand-soft);
+  }
+  .consent-check-row.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .ds-checkbox {
+    appearance: none;
+    width: 22px; height: 22px;
+    border: 2px solid var(--bg-divider);
+    border-radius: 6px;
+    background: var(--bg-card);
+    cursor: pointer; flex-shrink: 0;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .ds-checkbox:checked {
+    background: var(--brand-base);
+    border-color: var(--brand-base);
+  }
+  .ds-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 700;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .ds-checkbox:disabled {
+    cursor: not-allowed;
+    background: var(--bg-divider);
+  }
+  .consent-check-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    flex: 1;
+  }
+  .consent-check-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 10px;
+  }
+
+  .ds-btn-primary {
+    background: var(--brand-base);
+    color: #FFFFFF; border: none;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 15px; font-weight: 500;
+    min-height: 48px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ds-btn-primary:hover { background: var(--brand-strong); }
+  .ds-btn-primary:active { background: var(--brand-darkest); }
+  .ds-btn-primary:disabled {
+    background: var(--bg-divider);
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+  }
+
+  .ds-btn-tertiary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 15px; font-weight: 500;
+    min-height: 48px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ds-btn-tertiary:hover {
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+  }
+
+  /* Home indicator */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* Spec panel */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral {
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+  }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 3 · Consentimiento informado</h1>
+    <p>Vista de aceptación del tratamiento de datos personales y de salud bajo Ley N° 29733, RM 688-2020/MINSA, Ley 26842 y Declaración de Helsinki.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-user-check"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-scale"></i>Ley N° 29733</span>
+      <span class="meta-tag"><i class="ti ti-shield-check"></i>EP01 · Identidad</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver"><i class="ti ti-arrow-left"></i></button>
+          <span class="app-bar-title">Consentimiento informado</span>
+          <button class="download-btn" aria-label="Descargar documento en PDF"><i class="ti ti-download"></i></button>
+        </div>
+
+        <div class="doc-meta-card">
+          <div class="meta-icon"><i class="ti ti-file-text"></i></div>
+          <div class="meta-info">
+            <div class="meta-title">Documento versión 1.0 · 2026</div>
+            <div class="meta-detail">SHA-256 · a7f3...d29c · 2 min de lectura</div>
+          </div>
+        </div>
+
+        <div class="consent-body" id="consentBody">
+          <div class="scroll-progress" id="scrollProgress" style="width:0%;"></div>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-target"></i>Finalidad del estudio</h3>
+            <p>Te invitamos a participar en el piloto clínico de IBS Dieta, una aplicación móvil diseñada para apoyar el manejo dietético del Síndrome del Intestino Irritable (SII). El propósito del estudio es evaluar si las recomendaciones personalizadas generadas por el sistema contribuyen a reducir la severidad de tus síntomas, medida con la escala IBS-SSS.</p>
+            <p>El piloto se realiza en el Complejo Hospitalario Guillermo Kaelín de la Fuente, en alianza con la Universidad Peruana de Ciencias Aplicadas (UPC).</p>
+          </section>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-database"></i>Datos que recolectamos</h3>
+            <p>Para personalizar tus recomendaciones necesitamos registrar:</p>
+            <ul>
+              <li>Datos demográficos y antropométricos: edad, sexo biológico, peso y talla.</li>
+              <li>Diagnóstico de SII y medicación actual declarada por ti.</li>
+              <li>Tus comidas, síntomas gastrointestinales y puntajes IBS-SSS quincenales.</li>
+              <li>Alergias e intolerancias alimentarias que registres voluntariamente.</li>
+            </ul>
+          </section>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-lock"></i>Cómo protegemos tu información</h3>
+            <p>Tus datos clínicos viajan cifrados (TLS 1.3) y se almacenan en servidores ubicados <strong>exclusivamente en territorio peruano</strong>. No se transfieren al extranjero ni se comparten con APIs comerciales externas, en estricto cumplimiento de la Ley N° 29733.</p>
+            <p>Los identificadores se separan de los datos clínicos en bases independientes (principio de minimización) y todo acceso queda registrado en un log de auditoría inmutable.</p>
+          </section>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-user-shield"></i>Tus derechos · ARCO</h3>
+            <p>En cualquier momento puedes ejercer estos derechos desde tu perfil:</p>
+            <div class="arco-grid">
+              <div class="arco-item">
+                <strong>A · Acceso</strong>
+                <span>Consultar qué datos tuyos guardamos.</span>
+              </div>
+              <div class="arco-item">
+                <strong>R · Rectificación</strong>
+                <span>Corregir datos incorrectos o desactualizados.</span>
+              </div>
+              <div class="arco-item">
+                <strong>C · Cancelación</strong>
+                <span>Solicitar la eliminación de tu cuenta y datos.</span>
+              </div>
+              <div class="arco-item">
+                <strong>O · Oposición</strong>
+                <span>Oponerte a usos específicos de tu información.</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-user-x"></i>Participación voluntaria</h3>
+            <p>Tu participación es completamente voluntaria. Puedes retirarte del estudio en cualquier momento sin que esto afecte la atención médica que recibes en el hospital. La aceptación o el rechazo no implican ninguna obligación contractual.</p>
+          </section>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-stethoscope"></i>Riesgos y beneficios</h3>
+            <p>La aplicación entrega recomendaciones dietéticas educativas y no reemplaza el juicio clínico de tu nutricionista o gastroenterólogo. Toda recomendación con baja confianza del modelo es revisada por un profesional antes de mostrársela.</p>
+            <p>El beneficio esperado es una mejor comprensión de los desencadenantes alimentarios de tus síntomas y una reducción medible en tu puntaje IBS-SSS al cabo de 2 a 4 semanas.</p>
+          </section>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-scale-outline"></i>Marco legal y ético aplicable</h3>
+            <ul class="legal-list">
+              <li>Ley N° 29733 · Ley de Protección de Datos Personales</li>
+              <li>RM N° 688-2020/MINSA · Datos personales en salud</li>
+              <li>Ley N° 26842 · Ley General de Salud</li>
+              <li>Declaración de Helsinki · Principios éticos para investigación médica</li>
+            </ul>
+          </section>
+
+          <section class="consent-section">
+            <h3><i class="ti ti-mail"></i>Contacto del responsable</h3>
+            <p>Responsable del tratamiento: Universidad Peruana de Ciencias Aplicadas. Para ejercer tus derechos o resolver dudas, escríbenos a <strong>privacidad@ibsdieta.pe</strong> o acude al área de informática médica del hospital.</p>
+          </section>
+        </div>
+
+        <div class="scroll-hint" id="scrollHint">
+          <i class="ti ti-info-circle"></i>
+          <span>Lee el documento completo para poder aceptarlo.</span>
+        </div>
+
+        <div class="consent-actions">
+          <label class="consent-check-row disabled" id="consentRow" for="consentCheck">
+            <input type="checkbox" class="ds-checkbox" id="consentCheck" disabled />
+            <span class="consent-check-text">
+              He leído y comprendo este documento. <strong>Acepto voluntariamente</strong> el tratamiento de mis datos personales y de salud bajo los términos descritos.
+            </span>
+          </label>
+
+          <div class="actions-row">
+            <button type="button" class="ds-btn-tertiary">Rechazar</button>
+            <button type="button" class="ds-btn-primary" id="acceptBtn" disabled>Aceptar y continuar</button>
+          </div>
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Aceptación del consentimiento informado. La aceptación queda registrada con timestamp, versión del documento y hash criptográfico para trazabilidad de auditoría.</dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US01-CA01 · Aceptación con timestamp y versión</span>
+        <span class="spec-tag">US01-CA03 · Bloqueo sin aceptación</span>
+      </dd>
+
+      <dt>Patrón UX</dt>
+      <dd>
+        <strong>Scroll-to-enable.</strong> El checkbox y el botón "Aceptar" permanecen deshabilitados hasta que el paciente ha desplazado el documento hasta el final. Esto previene aceptaciones automáticas no informadas y refuerza el principio de consentimiento <em>informado</em> exigido por la Ley 29733 y la RM 688-2020/MINSA.
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Identidad</span>
+        <span class="spec-tag neutral">consent_records · PostgreSQL</span>
+        <span class="spec-tag neutral">Audit Middleware</span>
+      </dd>
+
+      <dt>Trazabilidad</dt>
+      <dd>
+        Cada aceptación se persiste en la entidad <code>ConsentRecord</code> con: identificador del paciente, versión del documento, hash SHA-256 del texto aceptado, timestamp y dirección IP de origen. Los triggers de PostgreSQL impiden modificación o eliminación posterior (inmutabilidad por defensa en profundidad).
+      </dd>
+
+      <dt>Marco normativo</dt>
+      <dd>
+        Ley N° 29733 · Ley de Protección de Datos Personales.<br />
+        D.S. N° 016-2024-JUS · Reglamento vigente desde noviembre 2024.<br />
+        RM N° 688-2020/MINSA · Datos personales en salud (autorización expresa, voluntaria, informada e indudable).<br />
+        Ley N° 26842 · Ley General de Salud · confidencialidad de la historia clínica.<br />
+        Declaración de Helsinki · Principios éticos en investigación médica.
+      </dd>
+
+      <dt>Cumplimiento</dt>
+      <dd>
+        Derechos ARCO presentados como bloque visual destacado y accionable desde el perfil del paciente.<br />
+        Versión visible del documento (1.0 · 2026) y hash criptográfico para identificar al ojo experto que el documento es inmutable.<br />
+        Botón de descarga PDF persistente para que el paciente conserve el documento aceptado.<br />
+        WCAG 2.1 AA · todos los textos legales con contraste verificado.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base</span>
+        <span class="spec-tag">brand-soft</span>
+        <span class="spec-tag">warning-bg</span>
+        <span class="spec-tag">warning-text</span>
+        <span class="spec-tag">bg-subtle</span>
+        <span class="spec-tag">radius-md</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 3 de 18 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+<script>
+  /* Scroll-to-enable · habilita el checkbox cuando el usuario llega al final */
+  (function () {
+    var body = document.getElementById('consentBody');
+    var progress = document.getElementById('scrollProgress');
+    var hint = document.getElementById('scrollHint');
+    var check = document.getElementById('consentCheck');
+    var row = document.getElementById('consentRow');
+    var btn = document.getElementById('acceptBtn');
+
+    function onScroll() {
+      var maxScroll = body.scrollHeight - body.clientHeight;
+      var current = body.scrollTop;
+      var pct = maxScroll <= 0 ? 100 : Math.min(100, Math.round((current / maxScroll) * 100));
+      progress.style.width = pct + '%';
+
+      if (pct >= 95) {
+        check.disabled = false;
+        row.classList.remove('disabled');
+        hint.classList.add('hidden');
+      }
+    }
+
+    body.addEventListener('scroll', onScroll);
+    onScroll();
+
+    check.addEventListener('change', function () {
+      row.classList.toggle('checked', check.checked);
+      btn.disabled = !check.checked;
+    });
+  })();
+</script>
+
+</body>
+</html>

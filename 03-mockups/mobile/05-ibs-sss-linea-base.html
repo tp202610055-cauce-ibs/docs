@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · IBS-SSS línea base · Pantalla 5</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  .app-bar {
+    padding: 6px 16px 8px;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    font-size: 17px; font-weight: 500; color: var(--text-primary); flex: 1;
+  }
+
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  .quiz-intro {
+    padding: 0 24px 12px;
+  }
+  .quiz-intro h2 {
+    font-size: 22px; font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2; letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .quiz-intro p {
+    font-size: 13.5px; color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .quiz-intro .scientific-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    margin-top: 8px;
+  }
+
+  .progress-card {
+    margin: 0 24px 16px;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-card .progress-icon {
+    width: 36px; height: 36px;
+    background: var(--brand-soft);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-base);
+    font-size: 18px; flex-shrink: 0;
+  }
+  .progress-card .progress-info { flex: 1; min-width: 0; }
+  .progress-card .progress-label {
+    font-size: 11px; color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+  }
+  .progress-card .progress-bar {
+    height: 6px; background: var(--bg-subtle);
+    border-radius: 3px; overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .progress-card .progress-fill {
+    height: 100%;
+    background: var(--brand-base);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+  .progress-card .progress-count {
+    font-size: 12px; color: var(--text-primary);
+    font-weight: 500;
+  }
+  .progress-card .progress-count strong {
+    color: var(--brand-strong);
+    font-weight: 600;
+  }
+
+  .questions-wrapper {
+    padding: 0 24px 16px;
+    display: flex; flex-direction: column;
+    gap: 14px;
+  }
+  .question-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .question-card.answered {
+    border-color: var(--brand-base);
+  }
+  .question-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .question-num {
+    width: 28px; height: 28px;
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .question-card.answered .question-num {
+    background: var(--brand-base);
+    color: #FFFFFF;
+  }
+  .question-title {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    flex: 1;
+  }
+  .question-status-icon {
+    color: var(--brand-base);
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .question-card.answered .question-status-icon {
+    opacity: 1;
+  }
+  .question-text {
+    font-size: 15px; color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 18px;
+  }
+
+  /* Slider NRS-11 con descriptor cualitativo */
+  .slider-wrapper {
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .descriptor-display {
+    text-align: center;
+    margin-bottom: 14px;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .descriptor-prompt {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+  .descriptor-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--brand-strong);
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+    display: none;
+  }
+  .descriptor-num {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.4px;
+    display: none;
+  }
+  .question-card.answered .descriptor-prompt { display: none; }
+  .question-card.answered .descriptor-text,
+  .question-card.answered .descriptor-num {
+    display: block;
+  }
+
+  .slider-track-wrapper {
+    position: relative;
+    padding: 0 14px;
+    margin-bottom: 4px;
+  }
+  .slider-tick-marks {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    right: 14px;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .tick-mark {
+    width: 2px;
+    height: 8px;
+    background: var(--bg-divider);
+    border-radius: 1px;
+  }
+  .question-card.answered .tick-mark {
+    background: rgba(153, 60, 29, 0.2);
+  }
+
+  .ibs-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--bg-subtle);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: background 0.15s;
+  }
+  .question-card.answered .ibs-slider {
+    background: linear-gradient(to right, #EAF3DE 0%, #FAEEDA 50%, #FCEBEB 100%);
+  }
+
+  .ibs-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    background: var(--brand-base);
+    border: 4px solid #FFFFFF;
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 8px rgba(153,60,29,0.25);
+    transition: transform 0.1s;
+    opacity: 0;
+  }
+  .ibs-slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+  }
+  .question-card.answered .ibs-slider::-webkit-slider-thumb {
+    opacity: 1;
+  }
+
+  .ibs-slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    background: var(--brand-base);
+    border: 4px solid #FFFFFF;
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 8px rgba(153,60,29,0.25);
+    transition: transform 0.1s;
+    opacity: 0;
+  }
+  .ibs-slider::-moz-range-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+  }
+  .question-card.answered .ibs-slider::-moz-range-thumb {
+    opacity: 1;
+  }
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .slider-labels span {
+    max-width: 45%;
+    line-height: 1.3;
+  }
+  .slider-labels span.right {
+    text-align: right;
+  }
+
+  .result-card {
+    margin: 16px 24px 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    display: none;
+  }
+  .result-card.visible { display: block; }
+  .result-header {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .result-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+  }
+  .result-score {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--brand-strong);
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -1px;
+  }
+  .result-score .max {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+  .result-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .result-category.remission { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+  .result-category.mild      { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+  .result-category.moderate  { background: var(--fodmap-mod-bg); color: var(--fodmap-mod-text); }
+  .result-category.severe    { background: var(--fodmap-high-bg); color: var(--fodmap-high-text); }
+  .result-note {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: var(--border-subtle);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .submit-area {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 16px 14px;
+    flex-shrink: 0;
+  }
+  .ds-btn-primary {
+    background: var(--brand-base);
+    color: #FFFFFF; border: none;
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .ds-btn-primary:hover { background: var(--brand-strong); }
+  .ds-btn-primary:active { background: var(--brand-darkest); }
+  .ds-btn-primary:disabled {
+    background: var(--bg-divider);
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+  }
+  .submit-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 8px;
+  }
+
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral {
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+  }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 5 · IBS-SSS línea base</h1>
+    <p>Cuestionario clínico con escala NRS-11 (0-10) y descriptor cualitativo dinámico. El paciente responde por descripción, no por número.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-clipboard-heart"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US04</span>
+      <span class="meta-tag"><i class="ti ti-chart-arrows"></i>Línea base · ciclo 0</span>
+      <span class="meta-tag"><i class="ti ti-microscope"></i>NRS-11 validado</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver"><i class="ti ti-arrow-left"></i></button>
+          <span class="app-bar-title">Evaluación inicial</span>
+        </div>
+
+        <div class="screen-content" id="screenContent">
+
+          <div class="quiz-intro">
+            <h2>Cuestionario IBS-SSS</h2>
+            <p>Estas cinco preguntas miden la severidad de tus síntomas en los <strong>últimos diez días</strong>. Responde según cómo te sentiste, no busques un número exacto.</p>
+            <span class="scientific-tag">
+              <i class="ti ti-microscope" style="font-size:13px;"></i>
+              Francis et al. (1997) · NRS-11 validado
+            </span>
+          </div>
+
+          <div class="progress-card">
+            <div class="progress-icon"><i class="ti ti-progress"></i></div>
+            <div class="progress-info">
+              <div class="progress-label">Tu progreso</div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <div class="progress-count"><strong id="answeredCount">0</strong> de 5 preguntas respondidas</div>
+            </div>
+          </div>
+
+          <div class="questions-wrapper">
+
+            <article class="question-card" data-question="1" data-field="pain_severity">
+              <div class="question-header">
+                <div class="question-num">01</div>
+                <div class="question-title">Severidad del dolor</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Qué tan severo fue tu dolor abdominal en los últimos diez días?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-prompt">Desliza para responder</span>
+                  <span class="descriptor-text">—</span>
+                  <span class="descriptor-num">0 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="5" step="1" />
+                </div>
+                <div class="slider-labels">
+                  <span>Sin dolor</span>
+                  <span class="right">Insoportable</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="2" data-field="pain_frequency">
+              <div class="question-header">
+                <div class="question-num">02</div>
+                <div class="question-title">Frecuencia del dolor</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿En cuántos de los últimos diez días tuviste dolor abdominal?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-prompt">Desliza para responder</span>
+                  <span class="descriptor-text">—</span>
+                  <span class="descriptor-num">0 días</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="5" step="1" />
+                </div>
+                <div class="slider-labels">
+                  <span>Ningún día</span>
+                  <span class="right">Los 10 días</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="3" data-field="bloating_severity">
+              <div class="question-header">
+                <div class="question-num">03</div>
+                <div class="question-title">Distensión abdominal</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Qué tan severa fue tu sensación de hinchazón o distensión abdominal?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-prompt">Desliza para responder</span>
+                  <span class="descriptor-text">—</span>
+                  <span class="descriptor-num">0 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="5" step="1" />
+                </div>
+                <div class="slider-labels">
+                  <span>Sin distensión</span>
+                  <span class="right">Extrema</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="4" data-field="bowel_habits_dissatisfaction">
+              <div class="question-header">
+                <div class="question-num">04</div>
+                <div class="question-title">Hábitos intestinales</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Qué tan insatisfecho estuviste con tus hábitos intestinales (frecuencia, consistencia, urgencia)?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-prompt">Desliza para responder</span>
+                  <span class="descriptor-text">—</span>
+                  <span class="descriptor-num">0 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="5" step="1" />
+                </div>
+                <div class="slider-labels">
+                  <span>Muy satisfecho</span>
+                  <span class="right">Completamente insatisfecho</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="5" data-field="life_interference">
+              <div class="question-header">
+                <div class="question-num">05</div>
+                <div class="question-title">Interferencia con tu vida</div>
+                <i class="ti ti-circle-check-filled question-status-icon"></i>
+              </div>
+              <div class="question-text">
+                ¿Cuánto interfirieron tus síntomas digestivos con tus actividades diarias (trabajo, estudios, vida social)?
+              </div>
+              <div class="slider-wrapper">
+                <div class="descriptor-display">
+                  <span class="descriptor-prompt">Desliza para responder</span>
+                  <span class="descriptor-text">—</span>
+                  <span class="descriptor-num">0 de 10</span>
+                </div>
+                <div class="slider-track-wrapper">
+                  <div class="slider-tick-marks">
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span><span class="tick-mark"></span>
+                    <span class="tick-mark"></span><span class="tick-mark"></span>
+                  </div>
+                  <input type="range" class="ibs-slider" min="0" max="10" value="5" step="1" />
+                </div>
+                <div class="slider-labels">
+                  <span>No interfirieron</span>
+                  <span class="right">Completamente</span>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <div class="result-card" id="resultCard">
+            <div class="result-header">
+              <div class="result-label">Tu puntaje total</div>
+              <div class="result-score"><span id="resultScore">0</span><span class="max">/ 500</span></div>
+              <div class="result-category" id="resultCategory">
+                <i class="ti ti-activity"></i><span id="resultCategoryText">Calculando…</span>
+              </div>
+            </div>
+            <div class="result-note" id="resultNote">
+              Este puntaje es tu línea base · ciclo 0 del piloto clínico. Será comparado con las evaluaciones quincenales siguientes para medir tu evolución.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="submit-area">
+          <button type="button" class="ds-btn-primary" id="submitBtn" disabled>
+            <i class="ti ti-clipboard-check"></i>
+            <span id="submitLabel">Enviar evaluación</span>
+          </button>
+          <div class="submit-hint" id="submitHint">Responde las cinco preguntas para continuar</div>
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Aplicación inicial del cuestionario IBS-SSS con escala NRS-11 (Numeric Rating Scale 0-10) y descriptor cualitativo dinámico. El paciente responde por descripción cualitativa, no por valor numérico, lo cual reduce sesgo de discriminación, recall y anchoring.</dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US04 · Evaluación de línea base IBS-SSS</span>
+      </dd>
+
+      <dt>CA cubiertos</dt>
+      <dd>
+        US04-CA01 · Línea base registrada exitosamente.<br />
+        US04-CA02 · Bloqueo por cuestionario incompleto · thumb del slider oculto inicialmente, estado <code>answered</code> activado solo tras interacción.
+      </dd>
+
+      <dt>Fundamento clínico</dt>
+      <dd>
+        El instrumento original de Francis, Morris y Whorwell (1997) usaba Visual Analog Scales (VAS) de 100 mm sin marcas numéricas visibles. Las versiones digitales modernas validadas por Spiegel, Bolus, Agarwal et al. (2009) usan NRS-11 (0-10) con equivalencia psicométrica al VAS original. El límite de discriminación humana de Miller (1956) establece que el ser humano puede discriminar de forma confiable entre 5 y 11 niveles de sensación interna; escalas más finas introducen ruido sin información adicional.
+      </dd>
+
+      <dt>Escala de respuesta</dt>
+      <dd>
+        UI: 0 a 10 enteros (NRS-11).<br />
+        Persistencia: multiplicación interna × 10 antes de almacenar, manteniendo el rango 0-100 del ERD sin cambio estructural.<br />
+        Total: suma de las cinco dimensiones almacenadas, rango 0-500.
+      </dd>
+
+      <dt>Descriptores</dt>
+      <dd>
+        Siete niveles cualitativos sobre la escala 0-10 por cada dimensión. Ejemplo · pain_severity: <em>Sin dolor</em> (0), <em>Muy leve</em> (1-2), <em>Leve</em> (3-4), <em>Moderado</em> (5-6), <em>Severo</em> (7-8), <em>Muy severo</em> (9), <em>Insoportable</em> (10). El descriptor se actualiza en tiempo real mientras el paciente arrastra el thumb, dominando visualmente sobre el número.
+      </dd>
+
+      <dt>Decisiones</dt>
+      <dd>
+        <strong>DEC-004.</strong> El sistema no muestra al paciente su puntaje IBS-SSS previo antes de responder una nueva evaluación. Elimina recall bias. El nutricionista sí ve el histórico completo en su portal.<br />
+        <strong>DEC-005.</strong> Cuestionarios IBS-SSS usan NRS-11 con descriptor cualitativo dinámico, almacenamiento interno × 10. El descriptor es la fuente primaria de respuesta; el número es información secundaria mostrada de forma discreta.
+      </dd>
+
+      <dt>Clasificación clínica</dt>
+      <dd>
+        <strong>0-74:</strong> Remisión · paleta fodmap-low.<br />
+        <strong>75-174:</strong> Leve · paleta fodmap-low.<br />
+        <strong>175-299:</strong> Moderado · paleta fodmap-mod.<br />
+        <strong>300-500:</strong> Severo · paleta fodmap-high.<br />
+        Reducción ≥ 50 puntos respecto a la línea base se considera respuesta clínica significativa.
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Registro Clínico</span>
+        <span class="spec-tag neutral">PostgreSQL · dominio clínico</span>
+        <span class="spec-tag neutral">Worker de Notificaciones</span>
+      </dd>
+
+      <dt>Entidad ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">ibs_sss_assessments</span><br />
+        <code>assessment_type = "baseline"</code>, <code>cycle_number = 0</code>, las cinco dimensiones en rango 0-100, <code>total_score</code> calculado como suma.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base</span>
+        <span class="spec-tag">brand-soft</span>
+        <span class="spec-tag">fodmap-low/mod/high</span>
+        <span class="spec-tag">font-mono · número discreto</span>
+        <span class="spec-tag">radius-md</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 5 de 18 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+
+    var DESCRIPTORS = {
+      'pain_severity': {
+        0: 'Sin dolor',
+        1: 'Muy leve',  2: 'Muy leve',
+        3: 'Leve',      4: 'Leve',
+        5: 'Moderado',  6: 'Moderado',
+        7: 'Severo',    8: 'Severo',
+        9: 'Muy severo',
+        10: 'Insoportable'
+      },
+      'pain_frequency': {
+        0: 'Ningún día',
+        1: 'Casi nunca', 2: 'Casi nunca',
+        3: 'Algunos días', 4: 'Algunos días',
+        5: 'La mitad del tiempo', 6: 'La mitad del tiempo',
+        7: 'La mayoría de los días', 8: 'La mayoría de los días',
+        9: 'Casi todos los días',
+        10: 'Todos los días'
+      },
+      'bloating_severity': {
+        0: 'Sin distensión',
+        1: 'Muy leve',  2: 'Muy leve',
+        3: 'Leve',      4: 'Leve',
+        5: 'Moderada',  6: 'Moderada',
+        7: 'Severa',    8: 'Severa',
+        9: 'Muy severa',
+        10: 'Extrema'
+      },
+      'bowel_habits_dissatisfaction': {
+        0: 'Muy satisfecho',
+        1: 'Satisfecho', 2: 'Satisfecho',
+        3: 'Algo insatisfecho', 4: 'Algo insatisfecho',
+        5: 'Insatisfecho', 6: 'Insatisfecho',
+        7: 'Muy insatisfecho', 8: 'Muy insatisfecho',
+        9: 'Extremadamente insatisfecho',
+        10: 'Completamente insatisfecho'
+      },
+      'life_interference': {
+        0: 'No interfirieron',
+        1: 'Casi nada', 2: 'Casi nada',
+        3: 'Levemente', 4: 'Levemente',
+        5: 'Moderadamente', 6: 'Moderadamente',
+        7: 'Mucho', 8: 'Mucho',
+        9: 'Muchísimo',
+        10: 'Completamente'
+      }
+    };
+
+    function formatNumLabel(field, value) {
+      if (field === 'pain_frequency') {
+        return value === 1 ? '1 día' : value + ' días';
+      }
+      return value + ' de 10';
+    }
+
+    var cards = document.querySelectorAll('.question-card');
+    var progressFill = document.getElementById('progressFill');
+    var answeredCount = document.getElementById('answeredCount');
+    var resultCard = document.getElementById('resultCard');
+    var resultScore = document.getElementById('resultScore');
+    var resultCategory = document.getElementById('resultCategory');
+    var resultCategoryText = document.getElementById('resultCategoryText');
+    var submitBtn = document.getElementById('submitBtn');
+    var submitHint = document.getElementById('submitHint');
+    var totalQuestions = cards.length;
+    var answered = {};
+
+    function classifyScore(total) {
+      if (total < 75)   return { key: 'remission', text: 'Remisión',   icon: 'ti-mood-smile' };
+      if (total < 175)  return { key: 'mild',      text: 'Leve',       icon: 'ti-mood-neutral' };
+      if (total < 300)  return { key: 'moderate',  text: 'Moderado',   icon: 'ti-alert-triangle' };
+      return                   { key: 'severe',    text: 'Severo',     icon: 'ti-alert-circle-filled' };
+    }
+
+    function updateAll() {
+      var ansCount = Object.keys(answered).length;
+      answeredCount.textContent = ansCount;
+      var pct = (ansCount / totalQuestions) * 100;
+      progressFill.style.width = pct + '%';
+
+      if (ansCount === totalQuestions) {
+        var total = 0;
+        cards.forEach(function (card) {
+          var slider = card.querySelector('.ibs-slider');
+          total += parseInt(slider.value, 10) * 10;
+        });
+
+        var cls = classifyScore(total);
+        resultScore.textContent = total;
+        resultCategoryText.textContent = cls.text;
+        resultCategory.className = 'result-category ' + cls.key;
+        resultCategory.querySelector('i').className = 'ti ' + cls.icon;
+        resultCard.classList.add('visible');
+
+        submitBtn.disabled = false;
+        submitHint.textContent = 'Listo para enviar tu evaluación';
+      } else {
+        resultCard.classList.remove('visible');
+        submitBtn.disabled = true;
+        var faltan = totalQuestions - ansCount;
+        submitHint.textContent = faltan === 1
+          ? 'Te falta una pregunta por responder'
+          : 'Te faltan ' + faltan + ' preguntas por responder';
+      }
+    }
+
+    cards.forEach(function (card) {
+      var slider = card.querySelector('.ibs-slider');
+      var descriptorText = card.querySelector('.descriptor-text');
+      var descriptorNum = card.querySelector('.descriptor-num');
+      var field = card.dataset.field;
+      var qIndex = card.dataset.question;
+
+      function updateDescriptor() {
+        var value = parseInt(slider.value, 10);
+        descriptorText.textContent = DESCRIPTORS[field][value];
+        descriptorNum.textContent = formatNumLabel(field, value);
+      }
+
+      function markAnswered() {
+        card.classList.add('answered');
+        answered[qIndex] = true;
+        updateDescriptor();
+        updateAll();
+      }
+
+      slider.addEventListener('input', markAnswered);
+      slider.addEventListener('change', markAnswered);
+      slider.addEventListener('mousedown', function () { setTimeout(markAnswered, 0); });
+      slider.addEventListener('touchstart', function () { setTimeout(markAnswered, 0); });
+    });
+
+    submitBtn.addEventListener('click', function () {
+      if (submitBtn.disabled) return;
+      alert('Tu evaluación de línea base ha sido registrada. Te llevaremos al inicio.');
+    });
+
+    updateAll();
+  })();
+</script>
+
+</body>
+</html>

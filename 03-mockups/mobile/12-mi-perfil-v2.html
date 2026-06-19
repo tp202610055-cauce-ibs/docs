@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Mi perfil · Pantalla 12 · v2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 620px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+  .version-tag {
+    background: var(--fodmap-low-bg) !important;
+    color: var(--fodmap-low-text) !important;
+  }
+  .version-tag i { color: var(--fodmap-low-text) !important; }
+
+  /* DEVICE FRAME */
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* APP BAR ROOT con engranaje (acceso a P12-B) */
+  .app-bar-root {
+    padding: 12px 20px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .app-bar-title-large {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+  }
+  .app-bar-actions {
+    display: flex;
+    gap: 4px;
+  }
+  .icon-btn {
+    background: transparent;
+    border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-size: 22px;
+    transition: background 0.15s;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+
+  /* SCREEN CONTENT */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 4px 0 16px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* PROFILE HERO */
+  .profile-hero {
+    background: linear-gradient(135deg, var(--brand-soft) 0%, #F8E0D5 100%);
+    border-radius: var(--radius-lg);
+    padding: 22px 20px 20px;
+    margin: 4px 20px 16px;
+    text-align: center;
+  }
+  .avatar-large {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--brand-base);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0 auto 12px;
+    box-shadow: 0 6px 16px rgba(153, 60, 29, 0.25);
+    letter-spacing: -0.5px;
+  }
+  .patient-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .patient-code {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.3px;
+  }
+
+  /* SECTION HEAD */
+  .section-head {
+    margin: 14px 22px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-head i {
+    font-size: 14px;
+    color: var(--brand-base);
+  }
+  .section-title {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+
+  /* INFO CARD */
+  .info-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin: 0 20px;
+    padding: 2px 14px;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    min-height: 44px;
+    gap: 12px;
+  }
+  .info-row + .info-row {
+    border-top: var(--border-subtle);
+  }
+  .info-row-full {
+    padding: 11px 0 12px;
+    border-top: var(--border-subtle);
+    display: flex;
+    justify-content: center;
+  }
+  .info-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .info-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+    text-align: right;
+  }
+  .info-value-mono {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    text-align: right;
+  }
+  .info-value-mono.delta-positive {
+    color: var(--fodmap-low-text);
+  }
+
+  /* IBS SUBTYPE PILL */
+  .ibs-subtype-pill {
+    display: inline-flex;
+    align-items: center;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  /* ACHIEVEMENT PILL */
+  .achievement-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: var(--radius-full);
+    background: var(--fodmap-low-bg);
+    color: var(--fodmap-low-text);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .achievement-pill i { font-size: 13px; }
+
+  /* ACTION AREA */
+  .action-area {
+    padding: 14px 20px 8px;
+  }
+  .btn-secondary {
+    width: 100%;
+    background: var(--bg-card);
+    color: var(--brand-base);
+    border: 1.5px solid var(--brand-base);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover {
+    background: var(--brand-soft);
+    transform: translateY(-1px);
+  }
+  .btn-secondary i { font-size: 17px; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 8px 12px 4px;
+    position: relative;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .bn-tab {
+    background: transparent;
+    border: none;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: color 0.15s;
+  }
+  .bn-tab i { font-size: 22px; }
+  .bn-tab-label {
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .bn-tab.active {
+    color: var(--brand-base);
+  }
+  .bn-tab.active .bn-tab-label {
+    font-weight: 600;
+  }
+  .bn-fab-wrapper {
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+  .bn-fab {
+    width: 52px;
+    height: 52px;
+    background: var(--brand-base);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(153, 60, 29, 0.30);
+    transition: all 0.15s;
+    position: relative;
+    top: -12px;
+  }
+  .bn-fab:hover {
+    background: var(--brand-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(153, 60, 29, 0.35);
+  }
+
+  /* HOME INDICATOR */
+  .home-indicator {
+    height: 30px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* SPEC PANEL */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+  .spec-tag.change { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+  .spec-tag.decision { background: var(--info-bg); color: var(--info-text); }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 12 · Mi perfil <span style="color:var(--fodmap-low-text);font-size:16px;font-weight:500;">v2</span></h1>
+    <p>Pantalla raíz de identidad del paciente accedida desde el bottom nav. Muestra información personal, estado del seguimiento clínico, perfil de SII y evolución del IBS-SSS. El acceso a configuración, derechos ARCO, banderas rojas educativas y cerrar sesión se separa en P12-B mediante el ícono de engranaje en el app bar, siguiendo el patrón estándar mobile de separar identidad de acciones.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-user-heart"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US25</span>
+      <span class="meta-tag version-tag"><i class="ti ti-refresh"></i>v2 · separada de P12-B</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <!-- App bar root con engranaje -->
+        <div class="app-bar-root">
+          <h1 class="app-bar-title-large">Mi perfil</h1>
+          <div class="app-bar-actions">
+            <button class="icon-btn" aria-label="Ajustes y privacidad">
+              <i class="ti ti-settings"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- Profile hero -->
+          <div class="profile-hero">
+            <div class="avatar-large" aria-label="Avatar de Carlos Mendoza">CM</div>
+            <div class="patient-name">Carlos Mendoza Vargas</div>
+            <span class="patient-code">P-2026-0042</span>
+          </div>
+
+          <!-- Mi seguimiento -->
+          <div class="section-head">
+            <i class="ti ti-calendar-stats"></i>
+            <span class="section-title">Mi seguimiento</span>
+          </div>
+          <div class="info-card">
+            <div class="info-row">
+              <span class="info-label">Inicio del piloto</span>
+              <span class="info-value">23 de mayo, 2026</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Tiempo transcurrido</span>
+              <span class="info-value">6 semanas</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Mi nutricionista</span>
+              <span class="info-value">Dra. María Solano</span>
+            </div>
+          </div>
+
+          <!-- Mi perfil clínico -->
+          <div class="section-head">
+            <i class="ti ti-stethoscope"></i>
+            <span class="section-title">Mi perfil clínico</span>
+          </div>
+          <div class="info-card">
+            <div class="info-row">
+              <span class="info-label">Subtipo de SII</span>
+              <span class="ibs-subtype-pill">SII-Mixto</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Alergias declaradas</span>
+              <span class="info-value">Lactosa (intolerancia leve)</span>
+            </div>
+          </div>
+
+          <!-- Mi evolución IBS-SSS -->
+          <div class="section-head">
+            <i class="ti ti-chart-line"></i>
+            <span class="section-title">Mi evolución IBS-SSS</span>
+          </div>
+          <div class="info-card">
+            <div class="info-row">
+              <span class="info-label">Línea base</span>
+              <span class="info-value-mono">280 / 500</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Último puntaje</span>
+              <span class="info-value-mono">230 / 500</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Cambio acumulado</span>
+              <span class="info-value-mono delta-positive">↓ 50 puntos</span>
+            </div>
+            <div class="info-row-full">
+              <span class="achievement-pill">
+                <i class="ti ti-circle-check"></i>
+                Respuesta clínica significativa
+              </span>
+            </div>
+          </div>
+
+          <!-- Botón Editar -->
+          <div class="action-area">
+            <button class="btn-secondary" type="button" aria-label="Editar mi información personal">
+              <i class="ti ti-edit"></i>
+              Editar mi información
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Bottom nav · Perfil activo -->
+        <nav class="bottom-nav" aria-label="Navegación principal">
+          <button class="bn-tab" type="button" aria-label="Ir al inicio">
+            <i class="ti ti-home"></i>
+            <span class="bn-tab-label">Inicio</span>
+          </button>
+          <div class="bn-fab-wrapper">
+            <button class="bn-fab" type="button" aria-label="Registrar comida o síntoma">
+              <i class="ti ti-plus"></i>
+            </button>
+          </div>
+          <button class="bn-tab" type="button" aria-label="Mis recomendaciones">
+            <i class="ti ti-bulb"></i>
+            <span class="bn-tab-label">Recomendaciones</span>
+          </button>
+          <button class="bn-tab active" type="button" aria-label="Mi perfil" aria-current="page">
+            <i class="ti ti-user-filled"></i>
+            <span class="bn-tab-label">Perfil</span>
+          </button>
+        </nav>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC PANEL -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica · v2</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Pantalla raíz de identidad del paciente. Accedida desde el bottom nav (tab "Perfil"). Muestra información personal, estado del seguimiento clínico actual, perfil de SII declarado y evolución del IBS-SSS desde la línea base. No contiene acciones de configuración, ejercicio de derechos ARCO ni cierre de sesión: estas funciones se separaron en P12-B (sub-pantalla auxiliar) accesible mediante el ícono de engranaje en el app bar. La separación sigue el patrón mobile estándar de distinguir "identidad" de "acciones".</dd>
+
+      <dt>Decomposición v2</dt>
+      <dd>
+        <span class="spec-tag change">v2 · P12 descompuesta en P12 + P12-B</span>
+        <br/>
+        En iteraciones previas se planificó P12 como una sola pantalla larga con perfil + derechos ARCO + banderas rojas + ajustes + cerrar sesión. La v2 separa esto en dos pantallas con responsabilidades distintas:<br />
+        — <strong>P12</strong> · "quién soy yo en este piloto" (identidad y estado clínico).<br />
+        — <strong>P12-B</strong> · "qué puedo hacer con la app" (configuración, privacidad, acciones).<br />
+        Esta separación reduce carga cognitiva (pantallas de 3-4 secciones en lugar de 7), permite jerarquía visual diferenciada por tipo de contenido y sigue heurísticas de usabilidad reconocidas en apps móviles modernas (Apple Settings, Spotify, Instagram, WhatsApp).
+      </dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US25 · Mi perfil (identidad y estado clínico)</span>
+        <br/>
+        US26 (Derechos ARCO) se mueve a P12-B junto con configuración de notificaciones y banderas rojas educativas (DEC-012).
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Paciente <strong>Carlos Mendoza Vargas</strong> con código <strong>P-2026-0042</strong>, en la semana 6 del piloto clínico iniciado el 23 de mayo de 2026. Su nutricionista asignada es la Dra. María Solano (misma identidad usada en P10 y P11 para consistencia narrativa). Subtipo clínico: SII-Mixto (alternancia de diarrea y estreñimiento). Alergia declarada: lactosa con intolerancia leve. Evolución IBS-SSS: línea base de 280 puntos, último puntaje de 230 puntos, reducción acumulada de 50 puntos que alcanza el umbral de respuesta clínica significativa (Spiegel et al. 2009, MCID).
+      </dd>
+
+      <dt>Componentes principales</dt>
+      <dd>
+        <strong>App bar root con título grande y engranaje.</strong> Título "Mi perfil" a 28 px peso 700 alineado a la izquierda. Ícono <code>ti-settings</code> de 22 px en la esquina derecha que navega a P12-B. Patrón consistente con dashboard (P6) y lista de recomendaciones (P10) en cuanto al uso de app bar root con título prominente.<br /><br />
+
+        <strong>Profile hero.</strong> Card centrada con gradient brand-soft (mismo gradient que P9b y P11 para coherencia visual de "hero cards" de identidad clínica). Avatar circular de 72 px con iniciales "CM" sobre fondo brand-base con sombra elevada coral. Nombre completo del paciente a 18 px peso 600 letter-spacing -0.3. Código de paciente debajo en mono 12 px tertiary. Cuando el paciente sube foto, las iniciales se reemplazan por la imagen (variante pendiente).<br /><br />
+
+        <strong>Tres info cards apiladas con misma estructura.</strong> Cada card consiste en section-head con ícono coral pequeño + sección de filas info-row. Las filas tienen label uppercase a la izquierda y value alineado a la derecha. Borde sutil entre filas. Padding interno consistente. Esta uniformidad estructural reduce carga cognitiva: el paciente reconoce el patrón al primer card y aplica el mismo modelo mental a los demás.<br /><br />
+
+        <strong>Card "Mi seguimiento".</strong> Tres filas con datos del piloto: fecha de inicio, tiempo transcurrido, nutricionista asignada. Texto plano sin pills. Ícono <code>ti-calendar-stats</code>.<br /><br />
+
+        <strong>Card "Mi perfil clínico".</strong> Dos filas: subtipo SII con pill brand-soft (datos categóricos validados durante onboarding clínico P4), alergias declaradas como texto plano con severidad entre paréntesis. Ícono <code>ti-stethoscope</code>.<br /><br />
+
+        <strong>Card "Mi evolución IBS-SSS".</strong> Tres filas con valores en mono coral: línea base, último puntaje, cambio acumulado. La fila de cambio acumulado usa color fodmap-low-text (verde) para señalar mejora visualmente. Fila final centrada con achievement pill verde "Respuesta clínica significativa" cuando aplica. Ícono <code>ti-chart-line</code>. Sin sparkline aquí (esa visualización vive en P6 dashboard).<br /><br />
+
+        <strong>Botón "Editar mi información".</strong> Botón secundario outline brand-base full-width. Acceso al flujo de rectificación de datos personales (variante pendiente). Equivalente al derecho de Rectificación de ARCO en su forma directa, sin necesidad de pasar por la sección de derechos en P12-B.<br /><br />
+
+        <strong>Bottom nav con tab "Perfil" activo.</strong> Cuatro elementos con FAB central. El tab activo muestra ícono <code>ti-user-filled</code> en color brand-base con etiqueta en peso 600. Los inactivos en color tertiary peso 500.
+      </dd>
+
+      <dt>Aplicación de decisiones</dt>
+      <dd>
+        <strong>DEC-018 (nueva, en este turno) · Separación P12 / P12-B siguiendo patrón mobile estándar.</strong> P12 muestra identidad y estado clínico, P12-B muestra configuración y acciones. El vínculo entre ambas es el ícono de engranaje en el app bar root de P12. Patrón documentado en Apple iOS, Spotify, Instagram, WhatsApp.<br /><br />
+
+        <strong>DEC-019 (nueva, en este turno) · Privacidad por defecto en datos clínicos visibles.</strong> El hero del perfil muestra solo nombre + código + foto/iniciales. Datos clínicos sensibles más profundos (peso, condiciones, medicaciones) NO se muestran en el hero ni en cards generales: se acceden por vista detallada vía botón "Editar mi información". Si el paciente comparte temporalmente su dispositivo, la información sensible no queda expuesta a primera vista.<br /><br />
+
+        <strong>DEC-006 conectada.</strong> El paciente nunca ve recomendaciones <code>PENDING</code> ni <code>REJECTED</code>. Esta pantalla muestra estado pero no expone recomendaciones; cuando el paciente quiere ver sus recomendaciones, navega al tab de Recomendaciones (P10).<br /><br />
+
+        <strong>DEC-008 conectada.</strong> El sparkline IBS-SSS vive en el hero del dashboard (P6). Esta pantalla muestra los tres números clave (línea base, último, cambio) en mono coral pero NO repite el sparkline para evitar redundancia visual entre P6 y P12.<br /><br />
+
+        <strong>Ley 29733 cumplida.</strong> La identidad del paciente no se mezcla con datos de salud sensibles en la vista principal. La información clínica accesible aquí es la que el paciente declaró durante onboarding y los puntajes IBS-SSS que él mismo respondió, no diagnósticos médicos formales.
+      </dd>
+
+      <dt>Variantes de estado</dt>
+      <dd>
+        <strong>Sin foto subida (default actual).</strong> Avatar muestra iniciales sobre fondo brand-base. Las iniciales se generan a partir del nombre (primera letra del primer nombre + primera letra del primer apellido).<br /><br />
+
+        <strong>Con foto subida.</strong> El círculo del avatar muestra la imagen recortada. Las iniciales quedan ocultas. La foto se sube desde el flujo "Editar mi información".<br /><br />
+
+        <strong>Cambio negativo en IBS-SSS.</strong> Si el último puntaje es mayor que la línea base (empeoramiento), el row "Cambio acumulado" muestra "↑ X puntos" en color text-primary neutral (no rojo, para no asociar a "fracaso", consistente con la variante de P9b). La achievement pill se reemplaza por mensaje neutro "Sigues en tu proceso de seguimiento".<br /><br />
+
+        <strong>Sin línea base disponible.</strong> Caso excepcional si el paciente no completó P5. La card "Mi evolución" se reemplaza por mensaje "Completa tu primera evaluación para ver tu evolución aquí" con CTA hacia P5.<br /><br />
+
+        <strong>Sin nutricionista asignada.</strong> Caso edge: paciente recién registrado sin asignación. La fila muestra "Pendiente de asignación" en text-tertiary. No es bloqueante para el resto de la pantalla.<br /><br />
+
+        <strong>Múltiples alergias.</strong> Cuando el paciente tiene más de una alergia declarada, la fila se transforma a layout vertical: label arriba, chips de alergias debajo (uno por alergia). Aplicable a partir de 2 alergias.
+      </dd>
+
+      <dt>Validaciones críticas</dt>
+      <dd>
+        <strong>Autorización por paciente.</strong> Backend valida que <code>patient_id = current_user.id</code>. Un paciente nunca puede ver el perfil de otro.<br /><br />
+
+        <strong>Lectura de datos clínicos.</strong> Los valores mostrados (subtipo SII, alergias, línea base IBS-SSS) provienen de tablas distintas:
+        <code>patients.ibs_subtype</code>, <code>patient_allergies</code>, <code>ibs_sss_assessments WHERE assessment_type = 'baseline'</code>. La pantalla ejecuta una query consolidada en backend, no múltiples requests desde cliente.<br /><br />
+
+        <strong>Cálculo de cambio acumulado.</strong> Se calcula como <code>baseline_score - latest_score</code> donde latest es el último <code>ibs_sss_assessments</code> con <code>assessment_type IN ('baseline', 'periodic')</code>. Si <code>baseline_score &gt;= latest_score</code>: cambio positivo (mejora). Si <code>baseline_score &lt; latest_score</code>: cambio negativo.<br /><br />
+
+        <strong>Umbral de respuesta clínica significativa.</strong> Constante en <code>clinical_parameters.mcid_threshold = 50</code>. Si <code>(baseline_score - latest_score) &gt;= 50</code>: se muestra la achievement pill verde.
+      </dd>
+
+      <dt>Acceso a P12-B</dt>
+      <dd>
+        <strong>Patrón estándar mobile.</strong> Ícono <code>ti-settings</code> de 22 px en la esquina derecha del app bar root. Tap → navega a P12-B mediante push de stack. Back en P12-B regresa a P12 sin perder estado de scroll. P12-B no aparece en bottom nav (no es destino raíz, es sub-pantalla).<br /><br />
+
+        <strong>Coherencia con otras sub-pantallas.</strong> Este patrón es consistente con cómo se accede a P7-B desde P7 (CTA de "alimento personalizado") y a P11 desde P10 (tap en card de recomendación). En todos los casos, una pantalla raíz tiene un punto de acceso específico hacia su sub-pantalla auxiliar.
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Perfil</span>
+        <span class="spec-tag neutral">SQLite local · cache de datos del paciente</span>
+        <span class="spec-tag neutral">API REST de Perfil</span>
+        <span class="spec-tag neutral">PostgreSQL · patients, patient_allergies, ibs_sss_assessments, nutritionists</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">patients · lectura</span>
+        <span class="spec-tag neutral">patient_allergies · lectura</span>
+        <span class="spec-tag neutral">ibs_sss_assessments · lectura (baseline + last)</span>
+        <span class="spec-tag neutral">nutritionists · lectura join</span>
+        <span class="spec-tag neutral">clinical_parameters · lectura MCID</span>
+        <span class="spec-tag neutral">IbsSubtype · enum (D, C, M, U)</span>
+        <span class="spec-tag neutral">AllergySeverity · enum</span>
+      </dd>
+
+      <dt>Decisiones registradas</dt>
+      <dd>
+        <span class="spec-tag decision">DEC-006 · No exposición de PENDING al paciente</span>
+        <span class="spec-tag decision">DEC-008 · Sparkline IBS-SSS solo en hero del dashboard P6</span>
+        <span class="spec-tag decision">DEC-018 · Separación P12 / P12-B</span>
+        <span class="spec-tag decision">DEC-019 · Privacidad por defecto en datos clínicos visibles</span>
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>Hero card prominente con avatar grande.</strong> El avatar a 72 px sobre gradient brand-soft comunica identidad de forma inmediata. Las iniciales como fallback evitan placeholders genéricos.<br /><br />
+
+        <strong>Tres info cards estructuralmente uniformes.</strong> Misma estructura visual (section-head + info-rows) en las tres cards reduce carga cognitiva. El paciente aprende el patrón en la primera card.<br /><br />
+
+        <strong>Pills semánticos por tipo de dato.</strong> Subtipo SII como pill brand-soft (información categórica de identidad clínica). Achievement como pill verde (logro). Sin pills para datos cuantitativos numéricos (mono coral es suficiente).<br /><br />
+
+        <strong>Mono coral para números clínicos.</strong> Línea base, último puntaje, cambio acumulado en JetBrains Mono peso 600 brand-base. Esto distingue visualmente los números cuantitativos verificables de la información cualitativa (Inter) y mantiene el patrón establecido en P7, P8, P9b, P11.<br /><br />
+
+        <strong>Botón secundario outline para acciones de edición.</strong> "Editar mi información" en outline brand-base mantiene jerarquía: no compite visualmente con elementos primarios pero es claramente clicable. Patrón Material Design "outlined button" adaptado al DS coral.<br /><br />
+
+        <strong>Bottom nav siempre visible.</strong> Mantiene contexto de navegación. El tab "Perfil" activo refuerza dónde está el paciente.<br /><br />
+
+        <strong>Sin acciones destructivas en P12.</strong> "Cerrar sesión" no aparece aquí, está en P12-B. Esto evita riesgo de tap accidental en una pantalla de consulta de identidad.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base / brand-soft / brand-strong</span>
+        <span class="spec-tag">fodmap-low (delta verde + achievement)</span>
+        <span class="spec-tag">hero gradient brand-soft → custom</span>
+        <span class="spec-tag">avatar-large 72px brand-base</span>
+        <span class="spec-tag">info-card pattern (section-head + rows)</span>
+        <span class="spec-tag">mono coral para datos cuantitativos</span>
+        <span class="spec-tag">btn-secondary outline brand-base</span>
+        <span class="spec-tag">bottom-nav con FAB central</span>
+        <span class="spec-tag">radius-lg (hero) / radius-md (cards)</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 12 v2 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

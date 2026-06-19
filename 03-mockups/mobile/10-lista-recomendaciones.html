@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Lista de recomendaciones · Pantalla 10</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  /* ============ PAGE WRAPPER + HEADER ============ */
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 620px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+
+  /* ============ DEVICE FRAME ============ */
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* ============ APP BAR (root, sin back) ============ */
+  .app-bar {
+    padding: 6px 20px 4px;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .app-bar-title {
+    font-size: 22px; font-weight: 600;
+    color: var(--text-primary); flex: 1;
+    letter-spacing: -0.3px;
+  }
+
+  /* ============ FILTER TABS (underline) ============ */
+  .filter-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px 20px 0;
+    border-bottom: var(--border-subtle);
+    flex-shrink: 0;
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    padding: 12px 4px 14px;
+    margin-right: 12px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    transition: color 0.15s;
+  }
+  .tab .tab-count {
+    color: var(--text-tertiary);
+    font-weight: 400;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .tab:hover { color: var(--text-primary); }
+  .tab.active {
+    color: var(--brand-base);
+    font-weight: 600;
+  }
+  .tab.active .tab-count {
+    color: var(--brand-base);
+    opacity: 0.65;
+  }
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--brand-base);
+    border-radius: 1px 1px 0 0;
+  }
+
+  /* ============ SCREEN CONTENT ============ */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 14px 20px 12px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* ============ SECTION HEAD ============ */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 10px; padding: 0 2px;
+  }
+  .section-title {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+  .section-helper {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  /* ============ RECOMMENDATION CARD ============ */
+  .rec-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rec-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .rec-card:hover {
+    border-color: var(--brand-base);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(153,60,29,0.06);
+  }
+  .rec-icon {
+    width: 42px; height: 42px;
+    border-radius: var(--radius-md);
+    background: var(--brand-soft);
+    color: var(--brand-base);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .rec-icon.hydration {
+    background: var(--info-bg);
+    color: var(--info-text);
+  }
+  .rec-icon.routine {
+    background: var(--bg-subtle);
+    color: var(--brand-strong);
+  }
+  .rec-content { flex: 1; min-width: 0; }
+  .rec-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .rec-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .rec-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .rec-hitl {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+  }
+  .rec-hitl.approved {
+    background: var(--fodmap-low-bg);
+    color: var(--fodmap-low-text);
+  }
+  .rec-hitl.modified {
+    background: var(--fodmap-mod-bg);
+    color: var(--fodmap-mod-text);
+  }
+  .rec-hitl i { font-size: 12px; }
+  .rec-divider {
+    color: var(--text-tertiary);
+    font-size: 10px;
+  }
+  .rec-date {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+  .rec-chevron {
+    color: var(--text-tertiary);
+    font-size: 18px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* ============ BOTTOM NAV con FAB (igual que P6) ============ */
+  .bottom-nav {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 8px 0 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 80px 1fr 1fr;
+    align-items: end;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .nav-item {
+    background: transparent;
+    border: none;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    transition: color 0.15s;
+  }
+  .nav-item i { font-size: 22px; }
+  .nav-item span {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .nav-item.active { color: var(--brand-base); }
+  .nav-item.active span { font-weight: 600; }
+  .fab-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .fab-central {
+    width: 60px; height: 60px;
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 6px 16px rgba(153,60,29,0.35), 0 0 0 4px var(--bg-card);
+    position: absolute;
+    bottom: 8px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .fab-central:hover {
+    background: var(--brand-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(153,60,29,0.4), 0 0 0 4px var(--bg-card);
+  }
+
+  /* Home indicator */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* ============ SPEC PANEL ============ */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 10 · Lista de recomendaciones</h1>
+    <p>Vista completa de recomendaciones dietéticas aprobadas o modificadas-aprobadas por el nutricionista, accesibles desde el tab "Plan" del bottom nav. Aplica filtro estricto por estado HITL (DEC-006) y permite navegación a detalle individual con explicación XAI (P11).</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-clipboard-list"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US14</span>
+      <span class="meta-tag"><i class="ti ti-shield-check"></i>HITL filtrado</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <span class="app-bar-title">Recomendaciones</span>
+        </div>
+
+        <!-- Tabs temporales -->
+        <div class="filter-tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="false">
+            Hoy <span class="tab-count">(2)</span>
+          </button>
+          <button class="tab" role="tab" aria-selected="false">
+            Esta semana <span class="tab-count">(5)</span>
+          </button>
+          <button class="tab active" role="tab" aria-selected="true">
+            Todas <span class="tab-count">(12)</span>
+          </button>
+        </div>
+
+        <div class="screen-content">
+
+          <div class="section-head">
+            <span class="section-title">Tus recomendaciones</span>
+            <span class="section-helper">tap para ver detalle</span>
+          </div>
+
+          <div class="rec-list">
+
+            <!-- Rec 1 · Sustitución alimentaria · APPROVED · Hoy -->
+            <article class="rec-card">
+              <div class="rec-icon"><i class="ti ti-tools-kitchen-2"></i></div>
+              <div class="rec-content">
+                <div class="rec-title">Reemplaza el brócoli del almuerzo por zapallo italiano</div>
+                <div class="rec-desc">El brócoli puede estar elevando tu distensión esta semana. El zapallo italiano es bajo FODMAP.</div>
+                <div class="rec-meta">
+                  <span class="rec-hitl approved">
+                    <i class="ti ti-circle-check-filled"></i>
+                    Aprobada por Dra. Solano
+                  </span>
+                  <span class="rec-divider">·</span>
+                  <span class="rec-date">Hoy</span>
+                </div>
+              </div>
+              <i class="ti ti-chevron-right rec-chevron"></i>
+            </article>
+
+            <!-- Rec 2 · Hidratación · APPROVED · Hoy -->
+            <article class="rec-card">
+              <div class="rec-icon hydration"><i class="ti ti-glass-full"></i></div>
+              <div class="rec-content">
+                <div class="rec-title">Aumenta tu hidratación a 2 L diarios</div>
+                <div class="rec-desc">Tus registros de hábitos intestinales sugieren posible deshidratación leve.</div>
+                <div class="rec-meta">
+                  <span class="rec-hitl approved">
+                    <i class="ti ti-circle-check-filled"></i>
+                    Aprobada por Dra. Solano
+                  </span>
+                  <span class="rec-divider">·</span>
+                  <span class="rec-date">Hoy</span>
+                </div>
+              </div>
+              <i class="ti ti-chevron-right rec-chevron"></i>
+            </article>
+
+            <!-- Rec 3 · Reducción de cantidad · MODIFIED_APPROVED · Hace 2 días -->
+            <article class="rec-card">
+              <div class="rec-icon"><i class="ti ti-leaf"></i></div>
+              <div class="rec-content">
+                <div class="rec-title">Reduce el consumo de cebolla en almuerzos</div>
+                <div class="rec-desc">La nutricionista ajustó la cantidad sugerida considerando tu tolerancia individual.</div>
+                <div class="rec-meta">
+                  <span class="rec-hitl modified">
+                    <i class="ti ti-pencil"></i>
+                    Modificada por Dra. Solano
+                  </span>
+                  <span class="rec-divider">·</span>
+                  <span class="rec-date">Hace 2 días</span>
+                </div>
+              </div>
+              <i class="ti ti-chevron-right rec-chevron"></i>
+            </article>
+
+            <!-- Rec 4 · Distribución de proteína · APPROVED · Hace 5 días -->
+            <article class="rec-card">
+              <div class="rec-icon"><i class="ti ti-meat"></i></div>
+              <div class="rec-content">
+                <div class="rec-title">Distribuye tu proteína en tres comidas del día</div>
+                <div class="rec-desc">En lugar de concentrarla en el almuerzo, repártela en desayuno, almuerzo y cena.</div>
+                <div class="rec-meta">
+                  <span class="rec-hitl approved">
+                    <i class="ti ti-circle-check-filled"></i>
+                    Aprobada por Dra. Solano
+                  </span>
+                  <span class="rec-divider">·</span>
+                  <span class="rec-date">Hace 5 días</span>
+                </div>
+              </div>
+              <i class="ti ti-chevron-right rec-chevron"></i>
+            </article>
+
+            <!-- Rec 5 · Rutina · APPROVED · Esta semana -->
+            <article class="rec-card">
+              <div class="rec-icon routine"><i class="ti ti-clock-hour-4"></i></div>
+              <div class="rec-content">
+                <div class="rec-title">Considera almorzar a la misma hora cada día</div>
+                <div class="rec-desc">Establecer rutina puede ayudar a regular tu tránsito intestinal y reducir distensión postprandial.</div>
+                <div class="rec-meta">
+                  <span class="rec-hitl approved">
+                    <i class="ti ti-circle-check-filled"></i>
+                    Aprobada por Dra. Solano
+                  </span>
+                  <span class="rec-divider">·</span>
+                  <span class="rec-date">Esta semana</span>
+                </div>
+              </div>
+              <i class="ti ti-chevron-right rec-chevron"></i>
+            </article>
+
+          </div>
+
+        </div>
+
+        <!-- Bottom nav · Plan activo -->
+        <nav class="bottom-nav">
+          <button class="nav-item" type="button">
+            <i class="ti ti-home"></i>
+            <span>Inicio</span>
+          </button>
+          <button class="nav-item" type="button">
+            <i class="ti ti-book-2"></i>
+            <span>Diario</span>
+          </button>
+          <div class="fab-wrapper">
+            <button class="fab-central" type="button" aria-label="Registrar"><i class="ti ti-plus"></i></button>
+          </div>
+          <button class="nav-item active" type="button">
+            <i class="ti ti-clipboard-list"></i>
+            <span>Plan</span>
+          </button>
+          <button class="nav-item" type="button">
+            <i class="ti ti-user-circle"></i>
+            <span>Perfil</span>
+          </button>
+        </nav>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SPEC PANEL ============ -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Lista completa de recomendaciones dietéticas generadas para el paciente y validadas clínicamente por el nutricionista. Es la pantalla raíz del tab "Plan" del bottom nav, accesible desde cualquier punto de la app y desde el link "Ver todas" del dashboard P6. Aplica filtro estricto por estado HITL (solo APPROVED y MODIFIED_APPROVED) y ordenamiento temporal con tabs (Hoy, Esta semana, Todas). Cada card es punto de entrada al detalle individual con explicación XAI y acciones de seguimiento (P11).</dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US14 · Visualización de recomendaciones (vista completa)</span>
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Paciente accediendo a su lista completa de recomendaciones. Tab "Todas" activa con contador "(12)" indicando el total acumulado en el histórico. Se muestran cinco recomendaciones representativas en orden de relevancia temporal: dos aprobadas hoy (sustitución alimentaria, hidratación), una modificada hace dos días (reducción de cebolla, ajustada por la nutricionista), una aprobada hace cinco días (distribución de proteína), y una aprobada esta semana (rutina de horarios). La mezcla refleja un caso realista: mayoría APPROVED, una MODIFIED_APPROVED como excepción. Cero recomendaciones con estado PENDING expuestas, por aplicación estricta de DEC-006.
+      </dd>
+
+      <dt>Componentes principales</dt>
+      <dd>
+        <strong>App bar de raíz.</strong> Sin botón de retorno (pantalla root accesible desde bottom nav). Título "Recomendaciones" alineado a la izquierda en 22 px peso 600, mismo lenguaje que P6.<br />
+        <strong>Tabs temporales con underline.</strong> Tres opciones mutuamente exclusivas (Hoy / Esta semana / Todas) con contador entre paréntesis en color tertiary. El tab activo usa color marca, peso 600 y underline coral de 2 px. Patrón estándar Material/iOS para filtros mutuamente exclusivos.<br />
+        <strong>Section header.</strong> Etiqueta "Tus recomendaciones" + helper "tap para ver detalle" como microcopy explicativo de la affordance.<br />
+        <strong>Cards de recomendación con tres metadatos.</strong> Cada card combina ícono temático contextual (alimento, hidratación, rutina, sustitución, leaf para vegetales), título 14 px peso 500 con line-height 1.35, descripción 12 px secondary clamped a 2 líneas con ellipsis, y meta-row al final con pill HITL semántico + separador middle dot + fecha relativa en mono. Chevron coral a la derecha como indicador de navegación.<br />
+        <strong>Pills HITL diferenciados.</strong> Verde (fodmap-low) con ícono check para APPROVED, amarillo (fodmap-mod) con ícono pencil para MODIFIED_APPROVED. Mismo lenguaje visual que P6 para mantener consistencia entre superficies.<br />
+        <strong>Bottom nav con FAB central elevado.</strong> Cinco items idénticos a P6 con "Plan" activo (ícono ti-clipboard-list). El FAB se conserva siempre visible para registro rápido de comida/síntoma desde cualquier pantalla principal.
+      </dd>
+
+      <dt>Aplicación de decisiones</dt>
+      <dd>
+        <strong>DEC-006 respetada estrictamente.</strong> El query del backend filtra por <code>hitl_status IN ('APPROVED', 'MODIFIED_APPROVED')</code>. Las recomendaciones con estado PENDING existen en la base de datos pero no se exponen en ninguna superficie de esta pantalla. El paciente no tiene forma de actuar sobre recomendaciones no validadas profesionalmente.<br />
+        <strong>DEC-007 respetada con matiz.</strong> La descripción corta de cada recomendación es informativa de la acción sugerida, no interpretativa del estado clínico del paciente. Frases como "El brócoli puede estar elevando tu distensión" se admiten porque ya fueron validadas por HITL: el nutricionista aprobó esa interpretación específica para este paciente. No es scope creep porque la interpretación causal está contenida dentro del paquete aprobado.<br />
+        <strong>No exposición de severity o prioridad como etiqueta visible.</strong> Las recomendaciones se presentan en orden de relevancia (calculado por backend), pero no se etiquetan visualmente como "Crítica" o "Alta prioridad". Esto evita comunicar inferencias clínicas adicionales fuera del paquete HITL.<br />
+        <strong>No indicador de "seguida/no seguida" en la lista.</strong> La acción de marcar como seguida (US16) ocurre dentro del detalle P11, donde el paciente leyó la justificación XAI. Mantener la lista como pura navegación reduce el riesgo de microacciones sin contexto.
+      </dd>
+
+      <dt>Observación sobre el filtro "Aprobadas"</dt>
+      <dd>
+        La bitácora original menciona cuatro filtros para P10 (del día, de la semana, todas, aprobadas). <strong>El cuarto filtro es redundante por DEC-006</strong>: como el sistema solo expone recomendaciones con <code>hitl_status = APPROVED</code> o <code>MODIFIED_APPROVED</code>, un filtro "aprobadas" siempre devolvería el conjunto completo. Esta entrega usa tres tabs y deja como decisión abierta si reinterpretar el cuarto filtro como "Sin modificar" vs "Modificadas" (diferenciación entre APPROVED puro y MODIFIED_APPROVED), o si omitirlo definitivamente.
+      </dd>
+
+      <dt>Variantes de estado</dt>
+      <dd>
+        <strong>Sin recomendaciones aún (estado vacío).</strong> Para pacientes recién registrados que aún no completaron suficiente historial de comidas/síntomas para generar recomendaciones. Ilustración SVG neutra + mensaje "Aún no hay recomendaciones. Estamos analizando tus primeros registros" + botón secundario "Registrar comida" para impulsar captura. No muestra recomendaciones falsas ni placeholders.<br />
+        <strong>Tab "Hoy" sin recomendaciones del día.</strong> Cuando el tab Hoy se selecciona y no hay recomendaciones de la fecha actual, se muestra un mensaje inline "Sin recomendaciones nuevas hoy. Tu nutricionista revisará tus registros pronto." Las recomendaciones de Esta semana / Todas siguen accesibles cambiando de tab.<br />
+        <strong>Sin conexión (variante).</strong> Banner discreto debajo del app bar "Mostrando última versión sincronizada". Las recomendaciones cacheadas localmente siguen visibles, pero el contador puede estar desactualizado.
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Recomendaciones</span>
+        <span class="spec-tag neutral">Servicio HITL · estados</span>
+        <span class="spec-tag neutral">API REST de Recomendaciones</span>
+        <span class="spec-tag neutral">PostgreSQL · recommendations</span>
+        <span class="spec-tag neutral">KeyDB · cache de listas frecuentes</span>
+      </dd>
+
+      <dt>Entidades ERD consultadas</dt>
+      <dd>
+        <span class="spec-tag neutral">recommendations · lectura</span>
+        <span class="spec-tag neutral">User (nutricionista) · lectura para nombre</span>
+        <span class="spec-tag neutral">RecommendationType · enum</span>
+        <span class="spec-tag neutral">HitlStatus · enum (filtrado)</span>
+        <span class="spec-tag neutral">PatientProfile · contexto</span>
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>Tabs con underline para filtros mutuamente exclusivos.</strong> Patrón Material/iOS estándar. Comunica que solo uno está activo a la vez y que el cambio es inmediato. Los contadores entre paréntesis dan visibilidad de cardinalidad sin requerir tap.<br />
+        <strong>Cards de lista con jerarquía vertical clara.</strong> Ícono visual + título + descripción + meta. La línea inferior con pill HITL + fecha establece el contexto sin competir con el contenido principal. La affordance de tap se comunica con hover lift + chevron explícito.<br />
+        <strong>Ícono temático contextual.</strong> Cada recomendación usa un ícono semánticamente relacionado con su contenido (cocina, hidratación, vegetal, proteína, reloj). Reduce carga cognitiva de escaneo y permite reconocimiento de tipo a glance.<br />
+        <strong>Fecha relativa en lugar de timestamp absoluto.</strong> "Hoy" / "Hace 2 días" / "Esta semana" comunican proximidad temporal sin requerir cálculo mental por parte del paciente. La fecha exacta queda disponible en el detalle P11.<br />
+        <strong>Bottom nav persistente con FAB central.</strong> Patrón mHealth estándar. Mantiene acceso constante a las acciones de captura más frecuentes (comida, síntoma) sin importar la pantalla actual.<br />
+        <strong>Sin indicadores de severity o prioridad visual.</strong> El ordenamiento por relevancia se delega al backend; la presentación se mantiene neutra para evitar transmitir inferencias clínicas fuera del paquete HITL.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base / brand-soft / brand-strong</span>
+        <span class="spec-tag">fodmap-low/mod (pills HITL)</span>
+        <span class="spec-tag">info-bg/text (hidratación)</span>
+        <span class="spec-tag">radius-md/full</span>
+        <span class="spec-tag">tabs underline</span>
+        <span class="spec-tag">bottom-nav + FAB</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 10 de 18 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Registro de síntoma · Pantalla 8 · v2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  /* PAGE WRAPPER */
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 620px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+  .version-tag {
+    background: var(--fodmap-low-bg) !important;
+    color: var(--fodmap-low-text) !important;
+  }
+  .version-tag i { color: var(--fodmap-low-text) !important; }
+
+  /* DEVICE FRAME */
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* APP BAR */
+  .app-bar {
+    padding: 4px 12px 8px;
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    flex: 1;
+    font-size: 18px; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+  .app-bar-spacer { width: 40px; flex-shrink: 0; }
+
+  /* SCREEN CONTENT */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 4px 20px 16px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* SECTIONS */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 8px; padding: 0 2px;
+    margin-top: 10px;
+  }
+  .section-head:first-of-type { margin-top: 4px; }
+  .section-title {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+  .section-hint {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  /* GRID 3x3: 8 síntomas comunes + Otro */
+  .symptom-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .symptom-type-card {
+    background: var(--bg-card);
+    border: var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 10px 4px 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-sans);
+    transition: all 0.15s;
+    min-height: 70px;
+  }
+  .symptom-type-card i {
+    font-size: 20px;
+    color: var(--text-secondary);
+  }
+  .symptom-type-card span {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .symptom-type-card:hover {
+    border-color: var(--brand-base);
+  }
+  .symptom-type-card:hover i,
+  .symptom-type-card:hover span {
+    color: var(--text-primary);
+  }
+  .symptom-type-card.selected {
+    background: var(--brand-soft);
+    border-color: var(--brand-base);
+    box-shadow: 0 4px 10px rgba(153,60,29,0.12);
+  }
+  .symptom-type-card.selected i,
+  .symptom-type-card.selected span {
+    color: var(--brand-base);
+    font-weight: 600;
+  }
+  /* Variante "Otro": border dashed para señalar caso especial */
+  .symptom-type-card.dashed {
+    border-style: dashed;
+    border-color: var(--brand-base);
+    background: rgba(250, 236, 231, 0.3);
+  }
+  .symptom-type-card.dashed i,
+  .symptom-type-card.dashed span {
+    color: var(--brand-strong);
+  }
+  .symptom-type-card.dashed:hover {
+    background: var(--brand-soft);
+    border-style: dashed;
+  }
+  .symptom-type-card.dashed.selected {
+    background: var(--brand-soft);
+    border-style: solid;
+    border-color: var(--brand-base);
+    box-shadow: 0 4px 10px rgba(153,60,29,0.12);
+  }
+  .symptom-type-card.dashed.selected i,
+  .symptom-type-card.dashed.selected span {
+    color: var(--brand-base);
+    font-weight: 600;
+  }
+
+  /* INTENSITY NRS-11 */
+  .intensity-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px 12px;
+  }
+  .intensity-descriptor {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--brand-base);
+    text-align: center;
+    letter-spacing: -0.3px;
+    line-height: 1.1;
+  }
+  .intensity-number {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+    margin-bottom: 12px;
+  }
+  .intensity-slider-wrapper {
+    position: relative;
+    padding: 4px 0 0;
+  }
+  .intensity-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right,
+      var(--fodmap-low-bg) 0%,
+      var(--fodmap-mod-bg) 50%,
+      var(--fodmap-high-bg) 100%);
+    outline: none;
+    cursor: pointer;
+  }
+  .intensity-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 3px solid var(--brand-base);
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(153,60,29,0.25);
+    transition: transform 0.1s;
+  }
+  .intensity-slider::-webkit-slider-thumb:hover { transform: scale(1.08); }
+  .intensity-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 3px solid var(--brand-base);
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(153,60,29,0.25);
+  }
+  .tick-marks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    padding: 0 3px;
+    pointer-events: none;
+  }
+  .tick-marks span {
+    width: 2px;
+    height: 5px;
+    background: var(--text-tertiary);
+    opacity: 0.35;
+    border-radius: 1px;
+  }
+  .intensity-endpoints {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding: 0 2px;
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  /* TIME CHIP */
+  .time-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-card);
+    border: var(--border-default);
+    border-radius: var(--radius-full);
+    padding: 8px 14px 8px 12px;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    transition: border-color 0.15s;
+  }
+  .time-chip:hover { border-color: var(--brand-base); }
+  .time-chip .ti-clock { color: var(--brand-base); font-size: 15px; }
+  .time-chip .ti-chevron-down { color: var(--text-tertiary); font-size: 14px; }
+
+  /* MEAL ASSOCIATION (Opción B: info-only, sin toggle) */
+  .meal-association {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .ma-icon {
+    width: 44px; height: 44px;
+    border-radius: var(--radius-md);
+    background: var(--bg-subtle);
+    color: var(--brand-base);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .ma-info { flex: 1; min-width: 0; }
+  .ma-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .ma-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .ma-items {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .ma-link-indicator {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--fodmap-low-bg);
+    color: var(--fodmap-low-text);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .ma-note {
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+    margin-top: 8px;
+    padding: 0 4px;
+    font-style: italic;
+  }
+
+  /* SAVE FOOTER */
+  .save-footer {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 20px 14px;
+    flex-shrink: 0;
+  }
+  .save-button {
+    width: 100%;
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 14px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s, transform 0.1s;
+    box-shadow: 0 4px 12px rgba(153, 60, 29, 0.22);
+  }
+  .save-button:hover {
+    background: var(--brand-strong);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(153, 60, 29, 0.28);
+  }
+  .save-button i { font-size: 18px; }
+
+  /* HOME INDICATOR */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* SPEC PANEL */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+  .spec-tag.change { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 8 · Registro de síntoma <span style="color:var(--fodmap-low-text);font-size:16px;font-weight:500;">v2</span></h1>
+    <p>Iteración v2 de P8. Catálogo de síntomas expandido a grid 3×3 con 8 comunes (Rome IV + NICE) + "Otro" sin modal alarmista. Asociación temporal a comida en información visible no editable. Banderas rojas trasladadas a P12 como material educativo. Safety net operado por análisis backend de patrones.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-mood-confused"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US11</span>
+      <span class="meta-tag version-tag"><i class="ti ti-refresh"></i>v2 · DEC-012 reformulada</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver">
+            <i class="ti ti-chevron-left"></i>
+          </button>
+          <span class="app-bar-title">Registrar síntoma</span>
+          <div class="app-bar-spacer"></div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- Grid 3x3 expandido: 8 síntomas comunes + Otro -->
+          <div class="section-head">
+            <span class="section-title">Tipo de síntoma</span>
+            <span class="section-hint">selecciona uno</span>
+          </div>
+          <div class="symptom-type-grid" role="radiogroup" aria-label="Tipo de síntoma">
+
+            <button class="symptom-type-card" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-bolt"></i>
+              <span>Dolor<br/>abdominal</span>
+            </button>
+
+            <button class="symptom-type-card selected" type="button" role="radio" aria-checked="true">
+              <i class="ti ti-balloon"></i>
+              <span>Distensión</span>
+            </button>
+
+            <button class="symptom-type-card" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-wind"></i>
+              <span>Flatulencia</span>
+            </button>
+
+            <button class="symptom-type-card" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-droplets"></i>
+              <span>Diarrea</span>
+            </button>
+
+            <button class="symptom-type-card" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-ban"></i>
+              <span>Estreñimiento</span>
+            </button>
+
+            <button class="symptom-type-card" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-mood-empty"></i>
+              <span>Náuseas</span>
+            </button>
+
+            <button class="symptom-type-card" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-flame"></i>
+              <span>Reflujo /<br/>Acidez</span>
+            </button>
+
+            <button class="symptom-type-card" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-bell-ringing"></i>
+              <span>Urgencia</span>
+            </button>
+
+            <button class="symptom-type-card dashed" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-dots"></i>
+              <span>Otro</span>
+            </button>
+
+          </div>
+
+          <!-- Intensidad NRS-11 -->
+          <div class="section-head">
+            <span class="section-title">Intensidad</span>
+            <span class="section-hint">escala 0 a 10</span>
+          </div>
+          <div class="intensity-card">
+            <div class="intensity-descriptor">Moderada</div>
+            <div class="intensity-number">6 / 10</div>
+            <div class="intensity-slider-wrapper">
+              <input type="range" class="intensity-slider" min="0" max="10" step="1" value="6" aria-label="Intensidad del síntoma" />
+              <div class="tick-marks" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div class="intensity-endpoints">
+                <span>Sin síntoma</span>
+                <span>Severo</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hora del síntoma -->
+          <div class="section-head">
+            <span class="section-title">Hora del síntoma</span>
+          </div>
+          <button class="time-chip" type="button" aria-label="Cambiar hora del síntoma">
+            <i class="ti ti-clock"></i>
+            <span>Hace 15 minutos</span>
+            <i class="ti ti-chevron-down"></i>
+          </button>
+
+          <!-- Asociación a comida (Opción B: info-only, sin toggle) -->
+          <div class="section-head">
+            <span class="section-title">Comida en la ventana de 4 horas</span>
+          </div>
+          <div class="meal-association">
+            <div class="ma-icon"><i class="ti ti-tools-kitchen-2"></i></div>
+            <div class="ma-info">
+              <div class="ma-label">El sistema identificó</div>
+              <div class="ma-title">Almuerzo · Hoy, 1:00 p.m.</div>
+              <div class="ma-items">Pollo a la plancha · Quinua cocida</div>
+            </div>
+            <div class="ma-link-indicator" aria-label="Vinculación automática">
+              <i class="ti ti-link"></i>
+            </div>
+          </div>
+          <p class="ma-note">El sistema asocia este síntoma con la comida más reciente registrada dentro de las 4 horas previas. Tu nutricionista podrá revisar esta relación durante el seguimiento clínico.</p>
+
+        </div>
+
+        <!-- Save footer -->
+        <div class="save-footer">
+          <button class="save-button" type="button">
+            <i class="ti ti-check"></i>
+            Guardar síntoma
+          </button>
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC PANEL -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica · v2</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Iteración v2 de P8. Captura un episodio sintomático del paciente con catálogo cerrado expandido a ocho síntomas comunes en SII (según Rome IV y NICE Clinical Guideline 61) más una opción "Otro" para casos no listados. Aplica NRS-11 con descriptor cualitativo dominante (DEC-005), captura automática de asociación temporal a comida en ventana 4 h (no editable por el paciente), y desplaza la información sobre banderas rojas clínicas a P12 como material educativo accesible.</dd>
+
+      <dt>Cambios vs v1</dt>
+      <dd>
+        <span class="spec-tag change">v2 · Catálogo expandido a 8 comunes + Otro</span>
+        <span class="spec-tag change">v2 · Asociación no editable (Opción B)</span>
+        <span class="spec-tag change">v2 · DEC-012 reformulada</span>
+        <br/>
+        <strong>Cambio 1 · Grid 3×3 con 8 síntomas comunes + Otro.</strong> La v1 tenía 6 cards en 3×2. La v2 expande a 9 cards en 3×3 incorporando náuseas, reflujo/acidez y urgencia (síntomas frecuentes en SII según Rome IV) que estaban ausentes. "Otro" mantiene su lugar con tratamiento visual diferenciado (border dashed coral) para señalar que es un caso especial sin generar alarma.<br />
+        <strong>Cambio 2 · Asociación a comida visible no editable.</strong> Se eliminó el toggle switch que permitía al paciente desactivar la asociación. La card ahora muestra la asociación como información ("El sistema identificó: Almuerzo · Hoy, 1:00 p.m.") con un ícono de link verde que indica vinculación automática completada. El sistema decide; el paciente no opina. El nutricionista puede ajustar en P18 si lo considera necesario.<br />
+        <strong>Cambio 3 · DEC-012 reformulada sin disparador alarmista.</strong> El modal de banderas rojas que aparecía al tocar "Otro" se eliminó. Las banderas rojas se trasladan a P12 (perfil) como sección educativa "¿Cuándo consultar al médico?". El safety net automático opera por análisis backend de patrones objetivos (intensidad sostenida ≥ 8 en múltiples reportes, frecuencia anómala) y se manifiesta como notificación al nutricionista, no como alerta reactiva al paciente.
+      </dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US11 · Registro de síntomas e intensidad</span>
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Paciente registrando un episodio de <strong>distensión abdominal</strong> con intensidad <strong>moderada (6/10)</strong>, ocurrido hace 15 minutos. El sistema detecta automáticamente una comida registrada dentro de la ventana de 4 horas previas (almuerzo de 1:00 p.m. con pollo a la plancha y quinua cocida) y la asocia al síntoma sin requerir confirmación del paciente. El ícono de link verde indica que la vinculación ya se completó. La nota textual debajo aclara el carácter no causal de la asociación y reposiciona al nutricionista como responsable de revisarla.
+      </dd>
+
+      <dt>Catálogo expandido</dt>
+      <dd>
+        <strong>Ocho síntomas comunes en SII según evidencia clínica:</strong><br />
+        1. <strong>Dolor abdominal</strong> · definitorio Rome IV<br />
+        2. <strong>Distensión / hinchazón</strong> · 80-90 % de pacientes<br />
+        3. <strong>Flatulencia / gases</strong> · 70 %<br />
+        4. <strong>Diarrea</strong> · predominante en SII-D, 30-40 %<br />
+        5. <strong>Estreñimiento</strong> · predominante en SII-C, 30-40 %<br />
+        6. <strong>Náuseas</strong> · 30-40 %<br />
+        7. <strong>Reflujo / acidez</strong> · 35 %, comorbilidad con dispepsia<br />
+        8. <strong>Urgencia para evacuar</strong> · 50 % en SII-D<br />
+        <strong>Más "Otro"</strong> para captura de síntomas no listados con texto libre. Mismo enfoque que DEC-002 con alergias: feature binario al motor XGBoost, texto libre disponible para el nutricionista.
+      </dd>
+
+      <dt>Aplicación de decisiones</dt>
+      <dd>
+        <strong>DEC-005 aplicada literalmente</strong> (sin cambios vs v1). Escala NRS-11 (0-10) con descriptor cualitativo dinámico dominante. Almacenamiento interno × 10 (rango 1-100 en <code>symptoms.intensity</code>). Una sola escala consistente para todos los síntomas (Opción A confirmada). Bristol Stool Scale y conteos absolutos quedan como expansión futura post-piloto si los resultados sugieren que la captura unidimensional limita la calidad de las recomendaciones.<br />
+        <strong>DEC-007 respetada con matiz</strong> (sin cambios vs v1). La asociación temporal a una comida es captura estructurada de datos hacia <code>symptoms.associated_meal_id</code>, no es interpretación causal. El wording del UI evita inferencias del tipo "esta comida pudo causar el síntoma" y se limita a describir el dato. La nota textual debajo refuerza este límite.<br />
+        <strong>DEC-012 reformulada · clave de v2.</strong> El paciente registra síntomas no listados mediante "Otro" con texto libre, sin modal de banderas rojas que pueda inducir ansiedad. El SII presenta alta comorbilidad con trastornos de ansiedad por la salud (Lackner et al. 2013 reporta entre 40 % y 60 %), por lo que un disparador reactivo de tipo "¿Tienes sangre en heces? ¿Vómitos?" es clínicamente contraproducente. Las señales de alarma se ofrecen como material educativo accesible desde P12 (perfil), no como disparador reactivo. El safety net automático opera por análisis backend y se manifiesta como notificación al nutricionista, no al paciente. La responsabilidad de triage queda en el profesional, donde corresponde clínica y legalmente.<br />
+        <strong>Ventana de correlación 4 horas</strong> (sin cambios vs v1). Basada en Monash University (2019) y Ford et al. (2024) en <em>Gut</em>. Clínicamente conservadora y operativamente apropiada.
+      </dd>
+
+      <dt>Flujo de "Otro síntoma"</dt>
+      <dd>
+        <strong>Tap en card "Otro" (border dashed).</strong> No abre ningún modal. Carga directamente el formulario normal con un campo de texto libre adicional al inicio: "¿Qué estás sintiendo?". El paciente describe libremente, ajusta intensidad NRS-11 y hora, ve la asociación automática a comida si aplica, y guarda. Persiste con <code>symptom_type = OTHER</code> + <code>notes</code> con el texto libre. Al motor XGBoost llega como feature binario <code>has_other_symptom = true</code> sin interpretación NLP del texto.
+      </dd>
+
+      <dt>Safety net backend</dt>
+      <dd>
+        <strong>Detección por patrones objetivos, no por reportes individuales.</strong> El sistema analiza el histórico clínico del paciente para detectar señales que merezcan revisión profesional:<br />
+        — Tres o más reportes con intensidad ≥ 8 en 7 días consecutivos.<br />
+        — Frecuencia anormalmente alta de un mismo síntoma (más de un evento diario sostenido).<br />
+        — Uso reiterado de "Otro" con palabras clave de alarma en el texto libre (sangre, vómito, fiebre).<br />
+        Cuando se detecta un patrón, se genera una notificación discreta para el nutricionista asignado en su portal P14. El paciente <strong>NO</strong> recibe ninguna alerta automática. La responsabilidad clínica de decidir si contactar o derivar queda en el nutricionista.
+      </dd>
+
+      <dt>Variantes de estado</dt>
+      <dd>
+        <strong>"Otro" seleccionado.</strong> Card de "Otro" con borde solid coral y estilo selected. Aparece un nuevo section header "¿Qué estás sintiendo?" entre el grid y la intensidad, con un input de texto libre (maxlength 200 caracteres) y placeholder "Describe brevemente". El resto del flujo es idéntico.<br />
+        <strong>Sin asociación temporal.</strong> Cuando no hay comidas registradas dentro de las 4 horas previas, la card de asociación se reemplaza por un mensaje informativo de baja prominencia: "Sin comidas registradas en las últimas 4 horas. Este síntoma se guardará sin asociación." El campo <code>associated_meal_id</code> queda en NULL.<br />
+        <strong>Estado inicial vacío.</strong> Al abrir la pantalla, ninguna card de tipo está seleccionada, el descriptor de intensidad muestra "Selecciona la intensidad" en gris claro, la card de asociación a comida no se muestra, y el botón guardar está deshabilitado con microcopy "Selecciona tipo e intensidad para continuar".
+      </dd>
+
+      <dt>Validaciones críticas</dt>
+      <dd>
+        <strong>Tipo de síntoma obligatorio.</strong> Valor del enum cerrado <code>SymptomType</code>: abdominal_pain, bloating, flatulence, diarrhea, constipation, nausea, reflux, urgency, other.<br />
+        <strong>Intensidad entre 1 y 100.</strong> CHECK SQL en <code>symptoms.intensity</code>. Internamente NRS-11 × 10. La intensidad 0 no permite guardado.<br />
+        <strong>Si symptom_type = OTHER, notes obligatorio.</strong> Validación adicional al guardar: si el tipo es "Otro", el campo <code>notes</code> debe contener al menos 3 caracteres.<br />
+        <strong>Asociación a comida no editable.</strong> El campo <code>associated_meal_id</code> se establece automáticamente por backend al persistir el síntoma. El paciente no lo modifica desde esta pantalla. El nutricionista puede ajustarlo desde P18 si lo considera necesario.
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Registro Clínico</span>
+        <span class="spec-tag neutral">SQLite local · offline-first</span>
+        <span class="spec-tag neutral">Worker de Sincronización</span>
+        <span class="spec-tag neutral">API REST de Síntomas</span>
+        <span class="spec-tag neutral">Servicio de Correlación Temporal · ventana 4h</span>
+        <span class="spec-tag neutral">Servicio de Análisis de Patrones · safety net</span>
+        <span class="spec-tag neutral">PostgreSQL · symptoms, meals</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">symptoms · escritura</span>
+        <span class="spec-tag neutral">meals · lectura ventana 4h</span>
+        <span class="spec-tag neutral">meal_items · lectura para texto</span>
+        <span class="spec-tag neutral">SymptomType · enum expandido v2</span>
+        <span class="spec-tag neutral">SyncStatus · enum</span>
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>Grid 3×3 para enumeración cerrada de 9 ítems.</strong> Tres filas equilibradas, selección de un solo tap, sin abrir capas. La fila inferior agrupa los menos frecuentes (reflujo, urgencia, otro) y respeta jerarquía cognitiva.<br />
+        <strong>Border dashed para opción excepcional.</strong> La card "Otro" usa el mismo lenguaje visual que el CTA "Crear personalizado" de P7 y el bloque de código de invitación de P2. Consistencia del DS para señalar "caso especial / fuera del catálogo principal" sin connotación negativa.<br />
+        <strong>Asociación con ícono de link como información completada.</strong> El paciente ve que la vinculación ya ocurrió (ícono verde de cadena), no como acción pendiente que debe confirmar. Comunica "el sistema lo hizo, tú no necesitas hacer nada".<br />
+        <strong>Wording neutro en asociación temporal.</strong> "El sistema identificó" y "Tu nutricionista podrá revisar" en lugar de "Esta comida pudo causar". Captura sin inferencia causal, mantiene DEC-007.<br />
+        <strong>Descriptor cualitativo dominante sobre número</strong> (sin cambios vs v1). El paciente piensa en términos de leve / moderada / fuerte, no de números.<br />
+        <strong>Sticky footer para CTA principal</strong> (sin cambios vs v1). Botón "Guardar síntoma" siempre accesible.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base / brand-soft / brand-strong</span>
+        <span class="spec-tag">fodmap-low (link indicator)</span>
+        <span class="spec-tag">fodmap-low/mod/high (gradient slider)</span>
+        <span class="spec-tag">radius-md/full</span>
+        <span class="spec-tag">dashed border (otro v2)</span>
+        <span class="spec-tag">link-indicator pill (asociación v2)</span>
+        <span class="spec-tag">sticky save footer</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 8 v2 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

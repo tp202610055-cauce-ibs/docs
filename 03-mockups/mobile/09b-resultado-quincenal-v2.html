@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Resultado quincenal · Pantalla 9b · v2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  /* PAGE WRAPPER */
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 620px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+  .version-tag {
+    background: var(--fodmap-low-bg) !important;
+    color: var(--fodmap-low-text) !important;
+  }
+  .version-tag i { color: var(--fodmap-low-text) !important; }
+
+  /* DEVICE FRAME */
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* APP BAR */
+  .app-bar {
+    padding: 4px 12px 8px;
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    flex: 1;
+    font-size: 18px; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+  .app-bar-spacer { width: 40px; flex-shrink: 0; }
+
+  /* SCREEN CONTENT */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 8px 20px 16px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* SECTIONS */
+  .section-head {
+    margin-bottom: 8px; padding: 0 2px;
+    margin-top: 14px;
+  }
+  .section-head:first-of-type { margin-top: 4px; }
+  .section-title {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+
+  /* HERO SCORE CARD · Inter (no mono) consistente con .result-score de P5 */
+  .score-hero {
+    background: linear-gradient(135deg, var(--brand-soft) 0%, #F8E0D5 100%);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px 20px;
+    margin-top: 4px;
+    text-align: center;
+  }
+  .score-hero-label {
+    font-size: 11px;
+    color: var(--brand-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .score-hero-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .score-number-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  /* CAMBIO v2: Inter en lugar de mono, color brand-strong consistente con P5 */
+  .score-number {
+    font-size: 58px;
+    font-weight: 600;
+    color: var(--brand-strong);
+    line-height: 1;
+    letter-spacing: -2.5px;
+  }
+  .score-scale {
+    font-size: 20px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+  .severity-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .severity-pill.remission { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+  .severity-pill.mild { background: var(--brand-soft); color: var(--brand-strong); }
+  .severity-pill.moderate { background: var(--fodmap-mod-bg); color: var(--fodmap-mod-text); }
+  .severity-pill.severe { background: var(--fodmap-high-bg); color: var(--fodmap-high-text); }
+  .severity-pill i { font-size: 14px; }
+
+  /* DELTA CARD · Inter (no mono) en números principales */
+  .delta-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+  }
+  .delta-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .delta-number-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .delta-arrow {
+    font-size: 28px;
+    color: var(--fodmap-low-text);
+    line-height: 1;
+    font-weight: 700;
+  }
+  /* CAMBIO v2: Inter en lugar de mono */
+  .delta-number {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--fodmap-low-text);
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .delta-unit {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-left: 4px;
+    font-weight: 500;
+  }
+  .delta-reference {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .achievement-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background: var(--fodmap-low-bg);
+    color: var(--fodmap-low-text);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .achievement-pill i { font-size: 14px; }
+  .achievement-pill.neutral {
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+  }
+
+  /* SPARKLINE CARD */
+  .sparkline-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px 10px;
+  }
+  .sparkline-svg {
+    width: 100%;
+    height: 70px;
+    margin-top: 6px;
+  }
+  .sparkline-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px;
+    padding: 0 2px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+
+  /* INFO BANNER */
+  .info-banner {
+    background: var(--info-bg);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-top: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .info-banner i {
+    color: var(--info-text);
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .info-banner p {
+    font-size: 12.5px;
+    color: var(--info-text);
+    line-height: 1.45;
+  }
+
+  /* FOOTER ACTIONS */
+  .footer-actions {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 20px 14px;
+    flex-shrink: 0;
+  }
+  .primary-button {
+    width: 100%;
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 14px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s, transform 0.1s;
+    box-shadow: 0 4px 12px rgba(153, 60, 29, 0.22);
+  }
+  .primary-button:hover {
+    background: var(--brand-strong);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(153, 60, 29, 0.28);
+  }
+  .primary-button i { font-size: 18px; }
+
+  /* HOME INDICATOR */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* SPEC PANEL */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+  .spec-tag.change { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 9b · Resultado quincenal <span style="color:var(--fodmap-low-text);font-size:16px;font-weight:500;">v2</span></h1>
+    <p>Pantalla post-envío de la evaluación quincenal IBS-SSS. Recibe la navegación al pulsar "Enviar evaluación" en P9a. Muestra el puntaje calculado, la severidad clínica según Francis 1997, la comparación contra línea base con reconocimiento de respuesta clínica significativa (Spiegel et al. 2009, MCID 50 pts), y la evolución histórica como sparkline.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-chart-line"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US12 · post-envío</span>
+      <span class="meta-tag version-tag"><i class="ti ti-refresh"></i>v2 · tipografía corregida (Inter)</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver">
+            <i class="ti ti-chevron-left"></i>
+          </button>
+          <span class="app-bar-title">Resultado IBS-SSS</span>
+          <div class="app-bar-spacer"></div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- HERO · Tu puntaje (Inter, no mono) -->
+          <div class="score-hero">
+            <div class="score-hero-label">Tu puntaje IBS-SSS</div>
+            <div class="score-hero-sub">Semana 6 del seguimiento</div>
+            <div class="score-number-row">
+              <span class="score-number">230</span>
+              <span class="score-scale">/ 500</span>
+            </div>
+            <span class="severity-pill moderate">
+              <i class="ti ti-activity"></i>
+              Severidad moderada
+            </span>
+          </div>
+
+          <!-- Cambio desde línea base (Inter, no mono) -->
+          <div class="section-head">
+            <span class="section-title">Cambio desde la línea base</span>
+          </div>
+          <div class="delta-card">
+            <div class="delta-number-row">
+              <span class="delta-arrow">↓</span>
+              <span class="delta-number">50</span>
+              <span class="delta-unit">puntos</span>
+            </div>
+            <p class="delta-reference">Desde tu puntaje inicial de 280 en la semana 0</p>
+            <span class="achievement-pill">
+              <i class="ti ti-circle-check"></i>
+              Respuesta clínica significativa alcanzada
+            </span>
+          </div>
+
+          <!-- Mini sparkline · Tu evolución -->
+          <div class="section-head">
+            <span class="section-title">Tu evolución</span>
+          </div>
+          <div class="sparkline-card">
+            <svg class="sparkline-svg" viewBox="0 0 320 70" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+              <!-- Línea de tendencia -->
+              <polyline points="15,15 110,32 215,45 305,58"
+                        fill="none"
+                        stroke="#993C1D"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round" />
+              <!-- Puntos históricos -->
+              <circle cx="15" cy="15" r="4" fill="#993C1D" />
+              <circle cx="110" cy="32" r="4" fill="#993C1D" />
+              <circle cx="215" cy="45" r="4" fill="#993C1D" />
+              <!-- Punto actual con halo -->
+              <circle cx="305" cy="58" r="6" fill="#993C1D" stroke="#FFFFFF" stroke-width="3" />
+              <circle cx="305" cy="58" r="8.5" fill="none" stroke="#993C1D" stroke-width="1" opacity="0.3" />
+              <!-- Etiquetas de valores en cada punto · mono OK porque son metadatos pequeños -->
+              <text x="15" y="9" font-family="JetBrains Mono, monospace" font-size="9" fill="#6E635A" text-anchor="middle">280</text>
+              <text x="110" y="26" font-family="JetBrains Mono, monospace" font-size="9" fill="#6E635A" text-anchor="middle">260</text>
+              <text x="215" y="39" font-family="JetBrains Mono, monospace" font-size="9" fill="#6E635A" text-anchor="middle">245</text>
+              <text x="305" y="52" font-family="JetBrains Mono, monospace" font-size="9" fill="#993C1D" font-weight="600" text-anchor="middle">230</text>
+            </svg>
+            <div class="sparkline-axis">
+              <span>Semana 0</span>
+              <span>S2</span>
+              <span>S4</span>
+              <span>S6</span>
+            </div>
+          </div>
+
+          <!-- Banner informativo -->
+          <div class="info-banner">
+            <i class="ti ti-info-circle"></i>
+            <p>Comparte estos resultados con tu nutricionista en tu próxima consulta para ajustar tu plan según tu evolución.</p>
+          </div>
+
+        </div>
+
+        <!-- Footer actions -->
+        <div class="footer-actions">
+          <button class="primary-button" type="button">
+            <i class="ti ti-home"></i>
+            Volver al inicio
+          </button>
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC PANEL -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica · v2</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Pantalla post-envío de la evaluación quincenal IBS-SSS. Se accede al pulsar "Enviar evaluación" en P9a. Muestra el puntaje calculado de las 5 preguntas, la severidad clínica según los rangos validados por Francis (1997), el cambio absoluto desde la línea base del paciente con reconocimiento explícito de respuesta clínica significativa cuando la reducción alcanza el umbral mínimo de 50 puntos (Spiegel et al. 2009, MCID), y la evolución histórica como sparkline visual.</dd>
+
+      <dt>Cambios vs iteración previa</dt>
+      <dd>
+        <span class="spec-tag change">v2 · Tipografía corregida</span>
+        <span class="spec-tag change">v2 · Separada de P9a como pantalla post-envío</span>
+        <br/>
+        <strong>Cambio 1 · Tipografía corregida.</strong> El puntaje principal (230) y el delta (50) se renderizan ahora en Inter peso 600 con color brand-strong / fodmap-low-text respectivamente, en lugar de JetBrains Mono que estaba en la iteración previa. Este cambio restablece consistencia con <code>.result-score</code> de P5, que usa Inter peso 700 sin font-family explícita (hereda la familia global). Mono queda limitado a metadatos discretos subordinados: etiquetas pequeñas del sparkline (9 px) y eje X temporal (10 px), por su rol como anotaciones técnicas.<br />
+        <strong>Cambio 2 · Pantalla post-envío explícita.</strong> En la iteración previa, P9 era una sola pantalla que combinaba cuestionario + (intento de) resultado. La v2 separa el flujo en P9a (cuestionario sin result-card) + P9b (pantalla de resultado), eliminando el riesgo de sesgo de objetivo umbral. Esta pantalla recibe la navegación al pulsar "Enviar evaluación" en P9a.
+      </dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US12 · Evaluación quincenal del IBS-SSS · etapa post-envío</span>
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Paciente al completar y enviar el cuestionario IBS-SSS de la semana 6 del seguimiento. Puntaje total: <strong>230 / 500</strong>, severidad moderada según Francis (1997). Línea base del paciente registrada en la semana 0: 280 puntos. Reducción acumulada: 50 puntos (exactamente en el umbral MCID de respuesta clínica significativa). Sparkline muestra cuatro registros consecutivos del seguimiento (semanas 0, 2, 4 y 6) con tendencia descendente sostenida: 280 → 260 → 245 → 230.
+      </dd>
+
+      <dt>Tipografía aplicada</dt>
+      <dd>
+        <strong>Inter (sans) para datos primarios:</strong><br />
+        — Puntaje principal "230" · 58 px peso 600 color brand-strong.<br />
+        — "/ 500" · 20 px peso 500 color tertiary.<br />
+        — Delta "50" · 32 px peso 600 color fodmap-low-text.<br />
+        — "puntos" · 15 px peso 500 color secondary.<br />
+        — Flecha "↓" · 28 px peso 700 color fodmap-low-text (carácter unicode, no ícono Tabler).<br />
+        <strong>JetBrains Mono (mono) para metadatos técnicos discretos:</strong><br />
+        — Etiquetas numéricas dentro del sparkline (280, 260, 245, 230) · 9 px color tertiary.<br />
+        — Etiquetas del eje X temporal (Semana 0, S2, S4, S6) · 10 px color tertiary.<br />
+        Esta separación replica el patrón de aplicación establecido por P5 y por las pantallas de captura (P7, P8): sans para texto principal y números prominentes en la jerarquía visual, mono para datos numéricos pequeños subordinados con rol de anotación técnica.
+      </dd>
+
+      <dt>Rangos clínicos IBS-SSS</dt>
+      <dd>
+        Según Francis (1997):<br />
+        <strong>0 a 75 puntos · Remisión</strong> · pill verde (fodmap-low).<br />
+        <strong>75 a 175 puntos · Severidad leve</strong> · pill coral suave (brand-soft).<br />
+        <strong>175 a 300 puntos · Severidad moderada</strong> · pill ámbar (fodmap-mod). <em>Estado actual del paciente.</em><br />
+        <strong>300 a 500 puntos · Severidad severa</strong> · pill rojo (fodmap-high).<br />
+        El score se calcula en backend al recibir las respuestas mediante suma ponderada de las 5 preguntas (cada una en NRS-11 × 10 = rango 0-100, total 0-500).
+      </dd>
+
+      <dt>Respuesta clínica significativa</dt>
+      <dd>
+        <strong>Umbral mínimo: 50 puntos de reducción</strong> respecto a la línea base del paciente. Validado por Spiegel et al. (2009) como Minimal Clinically Important Difference (MCID) para IBS-SSS. Cuando la reducción acumulada del paciente alcanza o supera este umbral, se muestra la achievement pill verde "Respuesta clínica significativa alcanzada". Por debajo del umbral, la pill se reemplaza por un mensaje neutro tipo "Sigues en tu proceso de seguimiento" sin connotación negativa.<br />
+        Este umbral es además el objetivo primario del piloto clínico de la tesis (OE3): lograr reducción de IBS-SSS ≥ 50 puntos en una proporción significativa de los participantes (n = 20-50).
+      </dd>
+
+      <dt>Aplicación de decisiones</dt>
+      <dd>
+        <strong>DEC-003 y DEC-004 cumplidas vía separación física.</strong> El resultado se calcula y se muestra solo después de que las respuestas están persistidas e inmutables en backend. Esta pantalla recibe ya el dato cerrado. Ver justificación clínica completa en la especificación de P9a.<br />
+        <strong>DEC-008 conectada.</strong> El sparkline mini replica visualmente el del hero del dashboard del paciente para coherencia del DS y refuerza la lectura de tendencia. Cuando hay menos de 3 puntos históricos, el sparkline se reemplaza por un mensaje informativo "Tu evolución aparecerá aquí cuando tengas más registros".<br />
+        <strong>Carácter clínico de la información.</strong> El result-card es una visualización de datos del paciente, no es interpretación clínica ni recomendación terapéutica. El banner informativo al pie reposiciona la consulta con el nutricionista como ámbito donde la información se interpreta y se traduce en acción clínica.
+      </dd>
+
+      <dt>Cálculo del score</dt>
+      <dd>
+        Score total = <code>SUM(P1..P5)</code> donde cada P está en rango 0-100 (NRS-11 × 10):<br />
+        <code>P1</code> Severidad del dolor abdominal · 4 × 10 = 40<br />
+        <code>P2</code> Frecuencia del dolor · 5 × 10 = 50<br />
+        <code>P3</code> Severidad de la distensión · 6 × 10 = 60<br />
+        <code>P4</code> Insatisfacción con hábitos intestinales · 5 × 10 = 50<br />
+        <code>P5</code> Interferencia con la vida diaria · 3 × 10 = 30<br />
+        <code>TOTAL</code> = 230 / 500.<br />
+        Cálculo ejecutado en backend al recibir el envío, persistido en <code>ibs_sss_assessments.total_score</code>.
+      </dd>
+
+      <dt>Variantes de estado</dt>
+      <dd>
+        <strong>Resultado por debajo del umbral.</strong> Cuando la reducción es menor a 50 puntos, la achievement pill se reemplaza por un mensaje neutro "Sigues en tu proceso de seguimiento" con fondo bg-subtle, sin connotación de fracaso. El número del delta y la flecha mantienen el color brand-base sin variante semántica.<br />
+        <strong>Aumento del puntaje vs línea base.</strong> Achievement pill se reemplaza por mensaje "Conversa con tu nutricionista sobre tu evolución" con fondo bg-subtle. La flecha cambia a "↑" y los números mantienen color brand-base sin pill alarmista. No se usa color rojo para no asociar el aumento a "fracaso", lo cual sería contraproducente para pacientes con ansiedad por la salud.<br />
+        <strong>Primer cuestionario sin línea base.</strong> No aplica para P9b porque la línea base se captura en P5. Si por alguna razón excepcional la línea base no está disponible, el delta card se reemplaza por: "Este es tu primer registro de seguimiento. Te servirá como nueva referencia."<br />
+        <strong>Menos de 3 puntos históricos.</strong> El sparkline se reemplaza por mensaje informativo: "Tu evolución aparecerá aquí cuando tengas al menos 3 cuestionarios completados."
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Evaluación Clínica</span>
+        <span class="spec-tag neutral">Servicio de Cálculo IBS-SSS · backend</span>
+        <span class="spec-tag neutral">Servicio de Comparación Temporal</span>
+        <span class="spec-tag neutral">API REST de Cuestionarios</span>
+        <span class="spec-tag neutral">PostgreSQL · ibs_sss_assessments</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">ibs_sss_assessments · lectura</span>
+        <span class="spec-tag neutral">ibs_sss_responses · lectura individual</span>
+        <span class="spec-tag neutral">clinical_parameters · umbral MCID</span>
+        <span class="spec-tag neutral">Severity · enum</span>
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>Hero card con jerarquía tipográfica fuerte en sans.</strong> El número 230 a 58 px en Inter peso 600 brand-strong comunica el dato principal inmediatamente. Mantiene consistencia con el patrón de jerarquía visual de P5. La severidad como pill semántico debajo da contexto clínico sin requerir interpretación.<br />
+        <strong>Delta con dirección semántica.</strong> Flecha "↓" y color verde fodmap-low-text comunican "mejora" sin requerir lectura. Para aumento (variante), la flecha cambia a "↑" pero el color se mantiene neutro para no asociar a fracaso.<br />
+        <strong>Achievement pill como reconocimiento.</strong> El logro clínicamente significativo se reconoce explícitamente. Refuerza adherencia y motivación sin gamificación excesiva.<br />
+        <strong>Sparkline mini para tendencia.</strong> Cuatro puntos conectados muestran evolución de un vistazo. Cada punto etiquetado con su valor en mono (anotación técnica). El punto actual con halo y peso visual mayor.<br />
+        <strong>Banner informativo en lugar de CTA directo.</strong> "Comparte con tu nutricionista en tu próxima consulta" deja la acción en el paciente sin imponerla. No hay botón "Contactar nutricionista" para evitar que el paciente sienta que debe actuar inmediatamente sobre el resultado.<br />
+        <strong>Footer con una sola acción primaria.</strong> "Volver al inicio" como salida natural del flujo. Sin acciones secundarias que distraigan.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-soft / brand-strong (gradient hero + puntaje)</span>
+        <span class="spec-tag">fodmap-low (delta verde, achievement pill)</span>
+        <span class="spec-tag">fodmap-mod (severity moderada)</span>
+        <span class="spec-tag">info-bg / info-text (banner)</span>
+        <span class="spec-tag">Inter peso 600 (puntaje 58 px)</span>
+        <span class="spec-tag">Inter peso 600 (delta 32 px)</span>
+        <span class="spec-tag">mono (etiquetas sparkline 9-10 px)</span>
+        <span class="spec-tag">radius-lg (hero) / radius-md (cards)</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 9b v2 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Registro de comida · Pantalla 7 · v2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  /* PAGE WRAPPER + HEADER */
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 620px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+  .version-tag {
+    background: var(--fodmap-low-bg) !important;
+    color: var(--fodmap-low-text) !important;
+  }
+  .version-tag i { color: var(--fodmap-low-text) !important; }
+
+  /* DEVICE FRAME */
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* APP BAR */
+  .app-bar {
+    padding: 4px 12px 8px;
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    flex: 1;
+    font-size: 18px; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+  .app-bar-spacer { width: 40px; flex-shrink: 0; }
+
+  /* SCREEN CONTENT */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 8px 20px 16px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* SECTIONS */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 10px; padding: 0 2px;
+  }
+  .section-title {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+  .section-counter {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+
+  /* MEAL TIME SELECTOR */
+  .meal-time-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .meal-pill {
+    background: var(--bg-card);
+    border: var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 10px 4px 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-sans);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .meal-pill i { font-size: 20px; color: var(--text-tertiary); }
+  .meal-pill:hover {
+    border-color: var(--brand-base);
+    color: var(--text-primary);
+  }
+  .meal-pill.active {
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border-color: var(--brand-base);
+    box-shadow: 0 4px 10px rgba(153, 60, 29, 0.22);
+    font-weight: 600;
+  }
+  .meal-pill.active i { color: #FFFFFF; }
+
+  /* TIME ROW */
+  .time-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .time-label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+  }
+  .time-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-card);
+    border: var(--border-default);
+    border-radius: var(--radius-full);
+    padding: 7px 12px 7px 10px;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    transition: border-color 0.15s;
+  }
+  .time-chip:hover { border-color: var(--brand-base); }
+  .time-chip .ti-clock { color: var(--brand-base); font-size: 15px; }
+  .time-chip .ti-chevron-down { color: var(--text-tertiary); font-size: 14px; }
+
+  /* ============ SEARCH TRIGGER (CAMBIO: opción C) ============ */
+  .search-trigger {
+    width: 100%;
+    background: var(--bg-card);
+    border: var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .search-trigger:hover {
+    border-color: var(--brand-base);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(153, 60, 29, 0.08);
+  }
+  .search-trigger .search-icon {
+    color: var(--brand-base);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .search-trigger-text {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-tertiary);
+    font-weight: 400;
+  }
+  .search-trigger .search-chev {
+    color: var(--text-tertiary);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  /* FOOD ITEM CARD */
+  .items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .food-item-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 8px 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .food-item-card:hover {
+    border-color: var(--brand-base);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(153, 60, 29, 0.05);
+  }
+  .food-icon {
+    width: 44px; height: 44px;
+    border-radius: var(--radius-md);
+    background: var(--bg-subtle);
+    color: var(--brand-base);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .food-info { flex: 1; min-width: 0; }
+  .food-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .food-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    font-family: var(--font-mono);
+  }
+  .fodmap-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.1px;
+  }
+  .fodmap-pill.low { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+  .fodmap-pill.mod { background: var(--fodmap-mod-bg); color: var(--fodmap-mod-text); }
+  .fodmap-pill.high { background: var(--fodmap-high-bg); color: var(--fodmap-high-text); }
+
+  /* ============ DOBLE ACCIÓN (CAMBIO: editar + eliminar) ============ */
+  .food-actions {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .food-action {
+    background: transparent;
+    border: none;
+    width: 34px; height: 34px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 17px;
+    transition: all 0.15s;
+  }
+  .food-action:hover {
+    background: var(--bg-subtle);
+    color: var(--brand-base);
+  }
+  .food-action.delete:hover {
+    background: var(--fodmap-high-bg);
+    color: var(--fodmap-high-text);
+  }
+
+  /* CUSTOM FOOD CTA */
+  .custom-food-link {
+    width: 100%;
+    background: rgba(250, 236, 231, 0.4);
+    border: 1.5px dashed var(--brand-base);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 18px;
+    font-family: var(--font-sans);
+    text-align: left;
+  }
+  .custom-food-link:hover { background: var(--brand-soft); }
+  .cf-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--brand-soft);
+    color: var(--brand-base);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .cf-content { flex: 1; min-width: 0; }
+  .cf-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .cf-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .cf-chev {
+    color: var(--brand-base);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* SUMMARY CARD */
+  .summary-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+  }
+  .summary-row + .summary-row {
+    border-top: var(--border-subtle);
+    margin-top: 4px;
+    padding-top: 9px;
+  }
+  .summary-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .summary-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+  }
+  .summary-note {
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: var(--border-subtle);
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  /* SAVE FOOTER */
+  .save-footer {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 20px 14px;
+    flex-shrink: 0;
+  }
+  .save-button {
+    width: 100%;
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 14px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s, transform 0.1s;
+    box-shadow: 0 4px 12px rgba(153, 60, 29, 0.22);
+  }
+  .save-button:hover {
+    background: var(--brand-strong);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(153, 60, 29, 0.28);
+  }
+  .save-button i { font-size: 18px; }
+
+  /* HOME INDICATOR */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* SPEC PANEL */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+  .spec-tag.change { background: var(--fodmap-low-bg); color: var(--fodmap-low-text); }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 7 · Registro de comida <span style="color:var(--fodmap-low-text);font-size:16px;font-weight:500;">v2</span></h1>
+    <p>Iteración v2 de P7. Aplica correcciones de la pasada de observaciones: search bar convertido en trigger clicable explícito (Opción C) y doble acción editar+eliminar en cada ingrediente de la comida, eliminando la ambigüedad del lápiz único.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-tools-kitchen-2"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US09 + US10</span>
+      <span class="meta-tag version-tag"><i class="ti ti-refresh"></i>v2 · iteración aplicada</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver">
+            <i class="ti ti-chevron-left"></i>
+          </button>
+          <span class="app-bar-title">Registrar comida</span>
+          <div class="app-bar-spacer"></div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- Meal time selector -->
+          <div class="meal-time-selector" role="radiogroup" aria-label="Momento del día">
+            <button class="meal-pill" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-coffee"></i>
+              <span>Desayuno</span>
+            </button>
+            <button class="meal-pill active" type="button" role="radio" aria-checked="true">
+              <i class="ti ti-tools-kitchen-2"></i>
+              <span>Almuerzo</span>
+            </button>
+            <button class="meal-pill" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-moon"></i>
+              <span>Cena</span>
+            </button>
+            <button class="meal-pill" type="button" role="radio" aria-checked="false">
+              <i class="ti ti-cookie"></i>
+              <span>Snack</span>
+            </button>
+          </div>
+
+          <!-- Time row -->
+          <div class="time-row">
+            <span class="time-label">¿Cuándo?</span>
+            <button class="time-chip" type="button" aria-label="Cambiar hora del consumo">
+              <i class="ti ti-clock"></i>
+              <span>Hoy, 1:00 p.m.</span>
+              <i class="ti ti-chevron-down"></i>
+            </button>
+          </div>
+
+          <!-- CAMBIO v2: Search trigger (Opción C) -->
+          <button class="search-trigger" type="button" aria-label="Abrir buscador del catálogo de alimentos">
+            <i class="ti ti-search search-icon"></i>
+            <span class="search-trigger-text">Buscar alimento en el catálogo peruano…</span>
+            <i class="ti ti-chevron-right search-chev"></i>
+          </button>
+
+          <!-- Items added -->
+          <div class="section-head">
+            <span class="section-title">Tu almuerzo</span>
+            <span class="section-counter">2 alimentos</span>
+          </div>
+
+          <div class="items-list">
+
+            <!-- CAMBIO v2: Doble acción editar + eliminar -->
+            <article class="food-item-card">
+              <div class="food-icon"><i class="ti ti-meat"></i></div>
+              <div class="food-info">
+                <div class="food-name">Pollo a la plancha</div>
+                <div class="food-meta">150 g · 248 kcal aprox.</div>
+                <span class="fodmap-pill low">Bajo FODMAP</span>
+              </div>
+              <div class="food-actions">
+                <button class="food-action" type="button" aria-label="Editar porción de pollo a la plancha">
+                  <i class="ti ti-pencil"></i>
+                </button>
+                <button class="food-action delete" type="button" aria-label="Eliminar pollo a la plancha de la comida">
+                  <i class="ti ti-trash"></i>
+                </button>
+              </div>
+            </article>
+
+            <article class="food-item-card">
+              <div class="food-icon"><i class="ti ti-leaf"></i></div>
+              <div class="food-info">
+                <div class="food-name">Quinua cocida</div>
+                <div class="food-meta">1 taza · 222 kcal aprox.</div>
+                <span class="fodmap-pill low">Bajo FODMAP</span>
+              </div>
+              <div class="food-actions">
+                <button class="food-action" type="button" aria-label="Editar porción de quinua cocida">
+                  <i class="ti ti-pencil"></i>
+                </button>
+                <button class="food-action delete" type="button" aria-label="Eliminar quinua cocida de la comida">
+                  <i class="ti ti-trash"></i>
+                </button>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Custom food CTA -->
+          <button class="custom-food-link" type="button" aria-label="Crear un alimento personalizado">
+            <div class="cf-icon"><i class="ti ti-plus"></i></div>
+            <div class="cf-content">
+              <div class="cf-title">¿No encuentras un alimento?</div>
+              <div class="cf-subtitle">Crea un plato personalizado con sus ingredientes</div>
+            </div>
+            <i class="ti ti-chevron-right cf-chev"></i>
+          </button>
+
+          <!-- Summary card -->
+          <div class="summary-card">
+            <div class="summary-row">
+              <span class="summary-label">Total estimado</span>
+              <span class="summary-value">470 kcal</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Carga FODMAP</span>
+              <span class="fodmap-pill low">Baja</span>
+            </div>
+            <p class="summary-note">Valores aproximados con base en el catálogo TPCA-CENAN. La carga FODMAP es informativa, no es una recomendación clínica.</p>
+          </div>
+
+        </div>
+
+        <!-- Save footer -->
+        <div class="save-footer">
+          <button class="save-button" type="button">
+            <i class="ti ti-check"></i>
+            Guardar comida
+          </button>
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC PANEL -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica · v2</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Iteración v2 de P7. Mantiene el flujo y la estructura general de la versión original, con dos correcciones específicas derivadas de la pasada de observaciones del usuario: el search bar se reemplaza por un trigger clicable explícito que abre el modal del buscador (no es input directo), y las cards de alimento agregado incluyen doble acción (editar porción + eliminar de la comida) en lugar de un único ícono de lápiz que generaba ambigüedad.</dd>
+
+      <dt>Cambios vs v1</dt>
+      <dd>
+        <span class="spec-tag change">v2 · Search trigger Opción C</span>
+        <span class="spec-tag change">v2 · Doble acción editar/eliminar</span>
+        <br/>
+        <strong>Cambio 1 · Search trigger clicable.</strong> El bloque <code>.search-input</code> con <code>&lt;input&gt;</code> embebido se reemplaza por <code>.search-trigger</code> que es un <code>&lt;button&gt;</code> con ícono lupa coral + microcopy + chevron derecho. Visualmente similar al original pero comunica claramente que es un trigger que abre el buscador en pantalla completa (modal), no un campo donde se escribe directamente. Texto del trigger: "Buscar alimento en el catálogo peruano…". Hover con borde coral + traslación + sombra suave para reforzar affordance.<br />
+        <strong>Cambio 2 · Doble acción por ingrediente.</strong> Cada <code>.food-item-card</code> ahora termina con <code>.food-actions</code> que contiene dos <code>.food-action</code>: editar (ícono pencil) y eliminar (ícono trash). El eliminar tiene hover destructivo con fondo fodmap-high-bg para diferenciar de la acción primaria. Resuelve la ambigüedad detectada de "estoy editando este ingrediente o toda la comida".
+      </dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US09 · Registro de comidas desde el catálogo</span>
+        <span class="spec-tag">US10 · Creación de alimentos personalizados (entrada)</span>
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Sin cambios respecto a v1. Paciente registrando su almuerzo del día con <code>meal_time = LUNCH</code> y hora "Hoy, 1:00 p.m.". Dos alimentos del catálogo ya agregados (pollo a la plancha 150 g, quinua cocida 1 taza), ambos bajo FODMAP. Total estimado 470 kcal, carga FODMAP baja. Search trigger en estado de reposo, listo para abrir el modal de búsqueda al toque.
+      </dd>
+
+      <dt>Flujo de selección de alimentos</dt>
+      <dd>
+        <strong>Trigger → modal → vuelta automática.</strong> El paciente toca el search trigger → se abre un sheet modal en pantalla completa con el buscador en grande y tres secciones de sugerencias iniciales (alimentos frecuentes del paciente, registrados recientemente, peruanos sugeridos). Al escribir, las sugerencias desaparecen y aparecen resultados del autocomplete sobre <code>food_items</code>. Tap en un resultado abre un mini-modal de porción (cantidad + unidad). Confirma y vuelve automáticamente a P7 con el alimento agregado a la lista. Repite el ciclo para cada alimento adicional. Cuando termina, "Guardar comida" persiste todo.<br />
+        El modal de búsqueda queda como variante pendiente de P7 modelable en Figma como frame separado.
+      </dd>
+
+      <dt>Aplicación de decisiones</dt>
+      <dd>
+        <strong>DEC-007 respetada</strong> (sin cambios vs v1). El registro de comida es captura neutral de datos. El pill "Bajo FODMAP" es metadato del catálogo, no interpretación clínica del paciente. La nota textual del summary refuerza el límite.<br />
+        <strong>Estrategia offline</strong> (sin cambios vs v1). El comportamiento canónico es offline-first con <code>client_guid</code> en SQLite local y worker de sincronización. <code>client_created_at</code> es el canónico para correlaciones temporales con síntomas en ventana 4h.<br />
+        <strong>Hora del consumo libre</strong> (decisión confirmada). El time chip permite seleccionar fecha+hora pasada sin restricción de antigüedad. Solo validación dura: no se permite hora futura. Sin warning blando.
+      </dd>
+
+      <dt>Validaciones críticas</dt>
+      <dd>
+        Sin cambios respecto a v1. Cantidad mayor que cero (CHECK SQL), unidad obligatoria del enum <code>MeasurementUnit</code>, restricción XOR de origen (<code>food_id</code> o <code>custom_food_id</code>, nunca ambos), al menos un item para habilitar guardar, hora coherente sin permitir futuro.
+      </dd>
+
+      <dt>Variantes pendientes</dt>
+      <dd>
+        <strong>Modal de búsqueda en pantalla completa</strong> · con tres secciones de sugerencias iniciales (frecuentes, recientes, peruanos) que se ocultan al empezar a escribir.<br />
+        <strong>Bottom sheet de edición de porción</strong> · modal pequeño que aparece al tocar el lápiz de un ingrediente, con input de gramos + chips rápidos.<br />
+        <strong>Confirmación de eliminación</strong> · diálogo nativo iOS al tocar el trash, "¿Eliminar pollo a la plancha de la comida?" con confirm/cancel.<br />
+        <strong>Estado sin conexión</strong> · banner discreto "Modo sin conexión" debajo del app bar + indicador sync_pending por item.<br />
+        <strong>Estado guardado exitoso</strong> · pantalla intermedia de confirmación post-save antes de volver al dashboard.
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Catálogo Alimentario</span>
+        <span class="spec-tag neutral">Módulo de Registro Clínico</span>
+        <span class="spec-tag neutral">SQLite local · offline-first</span>
+        <span class="spec-tag neutral">Worker de Sincronización</span>
+        <span class="spec-tag neutral">API REST de Comidas</span>
+        <span class="spec-tag neutral">PostgreSQL · food_items, meals, meal_items</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">food_items · catálogo</span>
+        <span class="spec-tag neutral">custom_foods · US10</span>
+        <span class="spec-tag neutral">meals · escritura</span>
+        <span class="spec-tag neutral">meal_items · escritura</span>
+        <span class="spec-tag neutral">MealTime · enum</span>
+        <span class="spec-tag neutral">MeasurementUnit · enum</span>
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base / brand-soft</span>
+        <span class="spec-tag">fodmap-low/mod/high</span>
+        <span class="spec-tag">radius-md/full</span>
+        <span class="spec-tag">search-trigger v2</span>
+        <span class="spec-tag">food-actions doble v2</span>
+        <span class="spec-tag">sticky save footer</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 7 v2 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

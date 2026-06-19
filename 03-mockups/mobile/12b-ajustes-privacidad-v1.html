@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Ajustes y privacidad · Pantalla 12-B · v1</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6; --bg-card: #FFFFFF; --bg-subtle: #F5EFE6; --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15; --text-secondary: #524A42; --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7; --brand-base: #993C1D; --brand-strong: #712B13; --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE; --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA; --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB; --fodmap-high-text: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7; --border-default: 1px solid #EDE5D7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans); background: var(--bg-subtle);
+    color: var(--text-primary); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px;
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 { font-size: 24px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--text-secondary); max-width: 620px; margin: 0 auto; }
+  .meta-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+  .version-tag {
+    background: var(--fodmap-low-bg) !important;
+    color: var(--fodmap-low-text) !important;
+  }
+  .version-tag i { color: var(--fodmap-low-text) !important; }
+
+  /* DEVICE FRAME */
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* APP BAR STACK */
+  .app-bar {
+    padding: 4px 12px 8px;
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    flex: 1;
+    font-size: 17px; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+  .app-bar-spacer { width: 40px; flex-shrink: 0; }
+
+  /* SCREEN CONTENT */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 4px 0 24px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* SECTION HEAD */
+  .section-head {
+    margin: 14px 22px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-head:first-of-type { margin-top: 6px; }
+  .section-head i {
+    font-size: 14px;
+    color: var(--brand-base);
+  }
+  .section-title {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+
+  /* SECTION INTRO */
+  .section-intro {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0 22px 10px;
+  }
+
+  /* SETTINGS CARD */
+  .settings-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin: 0 20px;
+    overflow: hidden;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    padding: 13px 16px;
+    gap: 12px;
+  }
+  .settings-row + .settings-row {
+    border-top: var(--border-subtle);
+  }
+  .settings-row-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .settings-row-title {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .settings-row-description {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+  }
+
+  /* TOGGLE iOS-style */
+  .toggle {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+  .toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-divider);
+    border-radius: var(--radius-full);
+    transition: background 0.2s;
+  }
+  .toggle-slider:before {
+    position: absolute;
+    content: '';
+    height: 22px;
+    width: 22px;
+    left: 2px;
+    top: 2px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  }
+  .toggle input:checked + .toggle-slider {
+    background: var(--brand-base);
+  }
+  .toggle input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+  }
+
+  /* ACTION CARDS (ARCO) */
+  .action-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 20px;
+  }
+  .action-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 13px 14px 13px 14px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: background 0.15s;
+  }
+  .action-card:hover {
+    background: var(--bg-subtle);
+  }
+  .action-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--brand-soft);
+    color: var(--brand-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+  .action-card-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .action-card-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .action-card-description {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+  }
+  .action-card-chevron {
+    color: var(--text-tertiary);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* MEDICAL INFO CARD (banderas rojas educativas) */
+  .medical-info-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin: 0 20px;
+    padding: 16px 18px;
+  }
+  .medical-info-intro {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .medical-info-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+  .medical-info-list li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+  .medical-info-list li:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--brand-base);
+  }
+  .emergency-contact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--brand-soft);
+    border-radius: var(--radius-sm);
+  }
+  .emergency-contact i {
+    color: var(--brand-base);
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .emergency-contact-text { flex: 1; }
+  .emergency-contact-title {
+    font-size: 10px;
+    color: var(--brand-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 1px;
+  }
+  .emergency-contact-info {
+    font-size: 13.5px;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* LINK ROWS (sobre la app) */
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 13px 16px;
+    width: 100%;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: background 0.15s;
+  }
+  .link-row:hover {
+    background: var(--bg-subtle);
+  }
+  .link-row + .link-row,
+  .link-row + .version-row {
+    border-top: var(--border-subtle);
+  }
+  .link-row > i {
+    color: var(--brand-base);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .link-row-label {
+    flex: 1;
+    text-align: left;
+    font-size: 13.5px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .link-row-chevron {
+    color: var(--text-tertiary);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .version-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+  }
+  .version-label {
+    font-size: 13.5px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .version-value {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+  .credits {
+    margin: 10px 24px 18px;
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  /* DESTRUCTIVE BUTTON */
+  .action-area {
+    padding: 6px 20px 0;
+  }
+  .btn-destructive {
+    width: 100%;
+    background: var(--bg-card);
+    color: var(--fodmap-high-text);
+    border: 1.5px solid var(--fodmap-high-text);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s;
+  }
+  .btn-destructive:hover {
+    background: var(--fodmap-high-bg);
+  }
+  .btn-destructive i { font-size: 17px; }
+
+  /* HOME INDICATOR */
+  .home-indicator {
+    height: 30px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-card); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* SPEC PANEL */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-grid dd code {
+    font-family: var(--font-mono);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+  .spec-tag.decision { background: var(--info-bg); color: var(--info-text); }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 12-B · Ajustes y privacidad <span style="color:var(--fodmap-low-text);font-size:16px;font-weight:500;">v1</span></h1>
+    <p>Sub-pantalla auxiliar de P12 accedida mediante el ícono de engranaje en el app bar. Contiene las cinco secciones operacionales del paciente: preferencias de notificaciones, ejercicio de derechos ARCO según Ley 29733, información educativa sobre cuándo consultar al médico (DEC-012 reformulada), información de la app y cierre de sesión. Cierra el set completo de 13 pantallas del frente móvil del paciente.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-settings"></i>Sub-pantalla de P12</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US26 + Compliance</span>
+      <span class="meta-tag version-tag"><i class="ti ti-flag-check"></i>Pantalla final del set móvil</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <!-- App bar stack -->
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver a mi perfil">
+            <i class="ti ti-chevron-left"></i>
+          </button>
+          <span class="app-bar-title">Ajustes y privacidad</span>
+          <div class="app-bar-spacer"></div>
+        </div>
+
+        <div class="screen-content">
+
+          <!-- 1 · NOTIFICACIONES -->
+          <div class="section-head">
+            <i class="ti ti-bell"></i>
+            <span class="section-title">Notificaciones</span>
+          </div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-title">Evaluaciones quincenales</div>
+                <div class="settings-row-description">Recordatorio cada 14 días para responder el cuestionario IBS-SSS</div>
+              </div>
+              <label class="toggle" aria-label="Activar recordatorios quincenales">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-title">Nuevas recomendaciones</div>
+                <div class="settings-row-description">Aviso cuando tu nutricionista te envía una recomendación nueva</div>
+              </div>
+              <label class="toggle" aria-label="Activar avisos de nuevas recomendaciones">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2 · MIS DERECHOS SOBRE MIS DATOS -->
+          <div class="section-head">
+            <i class="ti ti-shield-lock"></i>
+            <span class="section-title">Mis derechos sobre mis datos</span>
+          </div>
+          <p class="section-intro">
+            Según la Ley 29733 de Protección de Datos Personales, tienes derechos sobre la información que recopilamos sobre ti.
+          </p>
+          <div class="action-cards">
+            <button class="action-card" type="button" aria-label="Descargar mis datos">
+              <div class="action-card-icon"><i class="ti ti-download"></i></div>
+              <div class="action-card-content">
+                <div class="action-card-title">Descargar mis datos</div>
+                <div class="action-card-description">Obtén un archivo con toda tu información registrada</div>
+              </div>
+              <i class="ti ti-chevron-right action-card-chevron"></i>
+            </button>
+            <button class="action-card" type="button" aria-label="Solicitar corrección o eliminación de mis datos">
+              <div class="action-card-icon"><i class="ti ti-edit-circle"></i></div>
+              <div class="action-card-content">
+                <div class="action-card-title">Solicitar corrección o eliminación</div>
+                <div class="action-card-description">Corrige información incorrecta o solicita eliminar tus datos</div>
+              </div>
+              <i class="ti ti-chevron-right action-card-chevron"></i>
+            </button>
+            <button class="action-card" type="button" aria-label="Oponerme al uso de mis datos">
+              <div class="action-card-icon"><i class="ti ti-hand-stop"></i></div>
+              <div class="action-card-content">
+                <div class="action-card-title">Oponerme al uso de mis datos</div>
+                <div class="action-card-description">Solicita limitar el uso de tu información para investigación</div>
+              </div>
+              <i class="ti ti-chevron-right action-card-chevron"></i>
+            </button>
+          </div>
+
+          <!-- 3 · ¿CUÁNDO CONSULTAR AL MÉDICO? -->
+          <div class="section-head">
+            <i class="ti ti-medical-cross"></i>
+            <span class="section-title">¿Cuándo consultar al médico?</span>
+          </div>
+          <div class="medical-info-card">
+            <p class="medical-info-intro">
+              Algunas señales no son típicas del SII y pueden requerir atención médica directa. Si experimentas alguna de estas, considera contactar a tu médico:
+            </p>
+            <ul class="medical-info-list">
+              <li>Sangre en heces</li>
+              <li>Vómitos persistentes</li>
+              <li>Pérdida de peso sin razón aparente</li>
+              <li>Fiebre alta sostenida</li>
+              <li>Dolor abdominal muy intenso e inusual</li>
+              <li>Heces muy oscuras o con color inusual</li>
+            </ul>
+            <div class="emergency-contact">
+              <i class="ti ti-phone-call"></i>
+              <div class="emergency-contact-text">
+                <div class="emergency-contact-title">En caso de emergencia</div>
+                <div class="emergency-contact-info">EsSalud Línea 411</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 · SOBRE LA APP -->
+          <div class="section-head">
+            <i class="ti ti-info-circle"></i>
+            <span class="section-title">Sobre la app</span>
+          </div>
+          <div class="settings-card">
+            <button class="link-row" type="button" aria-label="Leer términos y condiciones">
+              <i class="ti ti-file-text"></i>
+              <span class="link-row-label">Términos y condiciones</span>
+              <i class="ti ti-chevron-right link-row-chevron"></i>
+            </button>
+            <button class="link-row" type="button" aria-label="Leer política de privacidad">
+              <i class="ti ti-shield-check"></i>
+              <span class="link-row-label">Política de privacidad</span>
+              <i class="ti ti-chevron-right link-row-chevron"></i>
+            </button>
+            <div class="version-row">
+              <span class="version-label">Versión de la app</span>
+              <span class="version-value">1.0.0-pilot</span>
+            </div>
+          </div>
+          <p class="credits">
+            Desarrollado por la Universidad Peruana de Ciencias Aplicadas en convenio con EsSalud · Complejo Hospitalario Guillermo Kaelín de la Fuente
+          </p>
+
+          <!-- 5 · CERRAR SESIÓN -->
+          <div class="action-area">
+            <button class="btn-destructive" type="button" aria-label="Cerrar sesión">
+              <i class="ti ti-logout"></i>
+              Cerrar sesión
+            </button>
+          </div>
+
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEC PANEL -->
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica · v1</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Sub-pantalla auxiliar de P12 que agrupa las acciones operacionales del paciente: configuración de notificaciones, ejercicio de derechos ARCO según Ley 29733, información educativa sobre banderas rojas clínicas no típicas del SII (DEC-012 reformulada), información de la app y cierre de sesión. Stack screen accedida desde el ícono de engranaje en el app bar root de P12. El back en el app bar regresa a P12 conservando el scroll state.</dd>
+
+      <dt>Posición en el plan</dt>
+      <dd>
+        <strong>Pantalla final del set móvil del paciente.</strong> Cierra el conjunto de 13 pantallas (P1 a P12 más sub-pantallas P7-B, P11 y P12-B). Con esta entrega, el frente móvil del paciente queda completo para el alcance del piloto clínico. Las pantallas P13 a P18 del portal web del nutricionista quedan en standby para iteración post-sustentación.
+      </dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US26 · Ejercicio de derechos ARCO</span>
+        <span class="spec-tag">US18 · Configuración de notificaciones</span>
+        <span class="spec-tag">US20 · Cerrar sesión</span>
+        <span class="spec-tag">Compliance Ley 29733</span>
+        <br />
+        Además contiene contenido educativo no asociado a US específica (banderas rojas, sobre la app).
+      </dd>
+
+      <dt>Estado mostrado</dt>
+      <dd>
+        Carlos Mendoza Vargas (mismo paciente que en P12) consultando sus ajustes y privacidad. Ambos toggles de notificaciones activados (default). Las tres acciones de derechos ARCO disponibles. La sección educativa de banderas rojas visible directamente sin necesidad de tap adicional. Contacto de emergencia EsSalud Línea 411 destacado. Información de la app con versión 1.0.0-pilot. Botón de cerrar sesión en estilo destructivo outline rojo al pie.
+      </dd>
+
+      <dt>Sección · Notificaciones</dt>
+      <dd>
+        <strong>Dos toggles iOS-style con descripción clara.</strong> Cada fila contiene título principal a 13.5 px peso 500 más descripción contextual a 11.5 px tertiary. Los toggles a la derecha usan brand-base como color activo y bg-divider como inactivo, con animación de slide de 200 ms.<br /><br />
+
+        <strong>Default ambos activados.</strong> En primer login, ambos toggles vienen activados. El paciente puede desactivar cualquiera. La persistencia se hace en <code>user_preferences</code> con campos <code>notif_periodic_assessment</code> y <code>notif_new_recommendations</code> (booleanos).<br /><br />
+
+        <strong>Alcance mínimo viable.</strong> No incluye horarios configurables, canales múltiples ni frecuencia personalizable. Para el piloto basta. La configuración detallada queda para post-piloto.
+      </dd>
+
+      <dt>Sección · Derechos ARCO</dt>
+      <dd>
+        <strong>Intro educativa breve.</strong> Texto secondary explicando que la sección implementa la Ley 29733 de Protección de Datos Personales. Sin tecnicismos legales innecesarios.<br /><br />
+
+        <strong>Tres cards de acción concretas.</strong> Cada card tiene ícono coral izquierdo en cuadrado brand-soft, título peso 600, descripción tertiary y chevron derecho. Tap → abre flujo correspondiente (no implementado visualmente, queda como variante pendiente).<br /><br />
+
+        <strong>Mapeo de cards a derechos ARCO:</strong><br />
+        — <strong>"Descargar mis datos"</strong> implementa <strong>Acceso</strong>. Genera archivo JSON/PDF con la información registrada del paciente. Implementación backend: endpoint <code>/me/export</code> que produce archivo descargable y eventualmente lo envía por email al paciente.<br />
+        — <strong>"Solicitar corrección o eliminación"</strong> combina <strong>Rectificación + Cancelación</strong> en una sola acción. La combinación es deliberada: pocos pacientes saben diferenciar técnicamente "rectificar" de "cancelar". Abre formulario de contacto con el responsable de datos.<br />
+        — <strong>"Oponerme al uso de mis datos"</strong> implementa <strong>Oposición</strong>. Aplica en contexto de investigación científica del piloto: el paciente puede solicitar que sus datos no se incluyan en análisis agregados. Abre flujo de solicitud formal.<br /><br />
+
+        <strong>Eliminación no automática.</strong> Ninguna de las cards dispara un proceso automático irreversible. Todas abren flujos de solicitud que pasan por verificación humana del responsable de datos. Esto evita errores irreversibles y cumple correctamente con el procedimiento de Ley 29733.
+      </dd>
+
+      <dt>Sección · Banderas rojas</dt>
+      <dd>
+        <strong>DEC-012 reformulada implementada visualmente.</strong> Las banderas rojas que originalmente se planificaron como modal alarmista disparado desde P8 se reubican aquí como material educativo. Accesibles cuando el paciente quiere consultar, no como respuesta reactiva a un evento.<br /><br />
+
+        <strong>Visible directamente, no escondida tras tap.</strong> A diferencia de las cards ARCO o links de la app, la lista de banderas rojas se muestra completa al hacer scroll a esta sección. Razón: si es información que puede salvar al paciente, no debe requerir tap adicional para verla. Excepción justificada al patrón estándar de "lista de filas" de configuración.<br /><br />
+
+        <strong>Wording educativo, no alarmista.</strong> Frase introductoria con tono neutral ("Algunas señales no son típicas del SII y pueden requerir atención médica directa..."). Sin íconos de peligro extremo (no ⚠ ni 🚨). Sin colores rojos saturados en la lista (texto en text-primary normal, bullets en brand-base como elemento decorativo).<br /><br />
+
+        <strong>Seis señales clínicas listadas.</strong> Curadas con base en literatura de banderas rojas para SII (Rome IV criteria, NICE guidelines): sangre en heces, vómitos persistentes, pérdida de peso sin razón aparente, fiebre alta sostenida, dolor abdominal muy intenso e inusual, heces muy oscuras o con color inusual. La lista es informativa, no diagnóstica. No se incluye edad de aparición ni síntomas técnicos que requieran interpretación clínica.<br /><br />
+
+        <strong>Contacto de emergencia destacado.</strong> Box con fondo brand-soft + ícono coral + texto principal. EsSalud Línea 411 como recurso oficial para pacientes del piloto en EsSalud. Texto puede ampliarse en futuras iteraciones para incluir más líneas de emergencia según convenio del piloto.
+      </dd>
+
+      <dt>Sección · Sobre la app</dt>
+      <dd>
+        <strong>Dos link rows + una version row.</strong> Patrón estándar mobile de lista de configuración con ícono coral izquierdo, label peso 500 al centro y chevron derecho indicando navegación. La version row no tiene chevron (no es navegable, es solo dato).<br /><br />
+
+        <strong>Versión en mono coral.</strong> Texto "1.0.0-pilot" en JetBrains Mono small color tertiary. Mantiene consistencia con el patrón de "mono para datos técnicos".<br /><br />
+
+        <strong>Créditos al pie.</strong> Texto tertiary muy pequeño centrado que nombra explícitamente a UPC y EsSalud + Complejo Hospitalario Guillermo Kaelín de la Fuente. Cumple parcialmente OBS-006 al identificar responsables del tratamiento de datos (la implementación completa de OBS-006 corresponde al consentimiento en P3).<br /><br />
+
+        <strong>Implementación futura.</strong> Los tap en "Términos y condiciones" y "Política de privacidad" abren un webview con el contenido legal correspondiente. Los textos legales serán curados por el equipo legal de UPC + EsSalud antes de Sprint 1 de desarrollo.
+      </dd>
+
+      <dt>Cerrar sesión</dt>
+      <dd>
+        <strong>Botón destructivo outline al pie.</strong> Color <code>fodmap-high-text</code> (#A32D2D) en texto y borde 1.5 px. Hover cambia fondo a <code>fodmap-high-bg</code>. Outline en lugar de filled porque la acción no es catastrófica (el paciente puede volver a iniciar sesión inmediatamente), pero sí requiere distinción visual del resto de elementos.<br /><br />
+
+        <strong>Por qué reutilizar fodmap-high-text.</strong> El design system no tiene un token destructivo formal. Reutilizar <code>fodmap-high-text</code> es consistente: en el contexto FODMAP indica "alto contenido" (precaución dietética), aquí indica "acción destructiva" (precaución de UX). Ambos son señales de "atención antes de proceder" en su dominio respectivo. El ícono <code>ti-logout</code> y el texto "Cerrar sesión" eliminan ambigüedad sobre el significado.<br /><br />
+
+        <strong>Confirmación implícita.</strong> En implementación, el tap dispara un sheet de confirmación nativo del OS ("¿Estás seguro de cerrar sesión?" con botones Cancelar / Cerrar sesión). Esto previene taps accidentales. No se diseña el sheet aquí porque es nativo del sistema operativo.<br /><br />
+
+        <strong>Post cerrar sesión.</strong> Limpia tokens JWT del Secure Storage, invalida la sesión en backend (endpoint <code>/auth/logout</code>) y redirige a P1 (login). Datos locales en SQLite se preservan para próximo login del mismo paciente.
+      </dd>
+
+      <dt>Sin bottom nav</dt>
+      <dd>
+        <strong>Patrón consistente con sub-pantallas stack.</strong> P12-B no muestra bottom nav, coherente con P7-B, P8 (cuando entras al detalle), P9a, P9b, P11. El back en el app bar es la salida natural. Si el paciente quiere navegar a otra tab del bottom nav, primero regresa a P12 y luego cambia tab. Esto evita confusión sobre dónde está el paciente en la jerarquía de navegación.
+      </dd>
+
+      <dt>Validaciones críticas</dt>
+      <dd>
+        <strong>Autorización por paciente.</strong> Todas las acciones validan <code>patient_id = current_user.id</code> en backend. Un paciente nunca puede descargar datos, ejercer ARCO ni cerrar sesión de otro.<br /><br />
+
+        <strong>Persistencia de toggles.</strong> El cambio de cada toggle dispara PATCH a <code>/me/preferences</code> con el campo modificado. Optimistic UI: el toggle se mueve inmediatamente y revierte solo si el backend rechaza.<br /><br />
+
+        <strong>Verificación de identidad para ARCO.</strong> Las acciones ARCO no se ejecutan automáticamente. Generan tickets en <code>arco_requests</code> con estado <code>PENDING</code> que el responsable de datos procesa manualmente con verificación de identidad. Plazo legal de respuesta: 20 días hábiles según Ley 29733.<br /><br />
+
+        <strong>Auditoría completa.</strong> Cada acción ejercida en esta pantalla queda registrada en <code>audit_log</code> con timestamp, IP, user agent y tipo de acción. Cumplimiento de inmutabilidad de auditoría a nivel base de datos (triggers PostgreSQL).
+      </dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Privacidad y Compliance</span>
+        <span class="spec-tag neutral">Servicio de Notificaciones</span>
+        <span class="spec-tag neutral">Servicio de Exportación de Datos</span>
+        <span class="spec-tag neutral">Endpoint /me/preferences</span>
+        <span class="spec-tag neutral">Endpoint /me/export</span>
+        <span class="spec-tag neutral">Endpoint /arco/requests</span>
+        <span class="spec-tag neutral">PostgreSQL · user_preferences, arco_requests, audit_log</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">user_preferences · lectura + escritura</span>
+        <span class="spec-tag neutral">arco_requests · escritura</span>
+        <span class="spec-tag neutral">audit_log · escritura inmutable (triggers DB)</span>
+        <span class="spec-tag neutral">consent_records · referencia</span>
+        <span class="spec-tag neutral">ArcoActionType · enum (ACCESS, RECTIFICATION_CANCELLATION, OPPOSITION)</span>
+        <span class="spec-tag neutral">ArcoRequestStatus · enum (PENDING, IN_REVIEW, COMPLETED, REJECTED)</span>
+      </dd>
+
+      <dt>Decisiones registradas</dt>
+      <dd>
+        <span class="spec-tag decision">DEC-012 reformulada · Banderas rojas educativas en P12-B</span>
+        <span class="spec-tag decision">DEC-018 · Separación P12 / P12-B siguiendo patrón mobile</span>
+      </dd>
+
+      <dt>Patrones UX</dt>
+      <dd>
+        <strong>App bar stack con back.</strong> Coherente con P7, P7-B, P8, P9a, P11. Indica sub-pantalla con navegación push.<br />
+        <strong>Lista de configuración por secciones.</strong> Patrón mobile estándar de "settings list" con section heads coral + cards con filas. Apple Settings, Spotify Settings, Instagram Settings comparten este patrón base.<br />
+        <strong>Toggle iOS-style.</strong> 46×26 px con slider blanco circular sobre track. Brand-base cuando on, bg-divider cuando off. Animación de slide 200 ms.<br />
+        <strong>Cards de acción tipo "settings action".</strong> Ícono coral cuadrado + título + descripción + chevron. Patrón estándar para "tap aquí para entrar a un flujo específico".<br />
+        <strong>Medical info card sin alarmismo.</strong> Excepción al patrón de "esconder detrás de tap": información crítica de salud visible directamente. Wording educativo, lista plain con bullets coral, contacto destacado en card brand-soft.<br />
+        <strong>Botón destructivo outline.</strong> Rojo en texto + border, sin fondo destacado. Acción seria pero reversible. Hover sutil con fondo rojo claro.<br />
+        <strong>Sin bottom nav.</strong> Sub-pantalla stack, salida por back del app bar.<br />
+        <strong>Créditos centrados tertiary.</strong> Texto institucional al pie, identifica responsables sin saturar el contenido principal.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base / brand-soft / brand-strong</span>
+        <span class="spec-tag">fodmap-high-text · destructivo (cerrar sesión)</span>
+        <span class="spec-tag">toggle iOS-style 46×26</span>
+        <span class="spec-tag">settings-card pattern</span>
+        <span class="spec-tag">action-card pattern (ARCO)</span>
+        <span class="spec-tag">medical-info-card pattern</span>
+        <span class="spec-tag">emergency-contact brand-soft</span>
+        <span class="spec-tag">link-row pattern</span>
+        <span class="spec-tag">btn-destructive outline rojo</span>
+        <span class="spec-tag">section-head uppercase tertiary</span>
+        <span class="spec-tag">section-intro secondary 12.5px</span>
+        <span class="spec-tag">credits tertiary 10.5px centrado</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 12-B v1 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+</body>
+</html>

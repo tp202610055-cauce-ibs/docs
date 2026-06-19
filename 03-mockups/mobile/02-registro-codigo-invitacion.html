@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IBS Dieta · Registro · Pantalla 2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+<style>
+  :root {
+    --bg-page: #FDFAF6;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #F5EFE6;
+    --bg-divider: #EDE5D7;
+    --text-primary: #1F1A15;
+    --text-secondary: #524A42;
+    --text-tertiary: #6E635A;
+    --brand-soft: #FAECE7;
+    --brand-base: #993C1D;
+    --brand-strong: #712B13;
+    --brand-darkest: #4A1B0C;
+    --fodmap-low-bg: #EAF3DE;
+    --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA;
+    --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB;
+    --fodmap-high-text: #A32D2D;
+    --success-bg: #EAF3DE;
+    --success-text: #27500A;
+    --warning-bg: #FAEEDA;
+    --warning-text: #854F0B;
+    --danger-bg: #FCEBEB;
+    --danger-text: #A32D2D;
+    --info-bg: #E6F1FB;
+    --info-text: #0C447C;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    --border-subtle: 0.5px solid #EDE5D7;
+    --border-default: 1px solid #EDE5D7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 24px;
+  }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; }
+  .page-header { margin-bottom: 24px; text-align: center; }
+  .page-header h1 {
+    font-size: 24px; font-weight: 500;
+    color: var(--text-primary); margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 14px; color: var(--text-secondary);
+    max-width: 600px; margin: 0 auto;
+  }
+  .meta-tags {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin-top: 16px;
+  }
+  .meta-tag {
+    background: var(--bg-card); border: var(--border-subtle);
+    border-radius: var(--radius-full); padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .meta-tag i { font-size: 14px; color: var(--brand-base); }
+
+  .device-stage { display: flex; justify-content: center; padding: 24px 0; }
+
+  /* Frame iPhone 14 Pro */
+  .device-frame {
+    width: 393px; height: 852px;
+    background: #1F1A15; border-radius: 56px; padding: 10px;
+    box-shadow: 0 30px 60px rgba(31,26,21,0.18), 0 0 0 1px rgba(31,26,21,0.05);
+    position: relative;
+  }
+  .device-screen {
+    width: 100%; height: 100%; background: var(--bg-page);
+    border-radius: 46px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 34px; background: #1F1A15;
+    border-radius: 20px; z-index: 20;
+  }
+  .status-bar {
+    height: 54px; padding: 16px 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons i { font-size: 16px; }
+
+  /* App bar */
+  .app-bar {
+    padding: 6px 16px 12px;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: transparent; border: none;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 22px;
+    transition: background 0.15s;
+  }
+  .icon-btn:hover { background: var(--bg-subtle); }
+  .app-bar-title {
+    font-size: 17px; font-weight: 500;
+    color: var(--text-primary); flex: 1;
+  }
+
+  /* Contenido */
+  .screen-content {
+    flex: 1; overflow-y: auto;
+    padding: 0 24px 16px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* Header del formulario */
+  .form-intro {
+    margin-bottom: 20px;
+  }
+  .form-intro h2 {
+    font-size: 22px; font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2; letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .form-intro p {
+    font-size: 14px; color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Form */
+  .form-group { margin-bottom: 14px; }
+  .ds-label {
+    display: block; font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px; font-weight: 500;
+  }
+  .ds-label .optional {
+    color: var(--text-tertiary);
+    font-weight: 400; margin-left: 4px;
+  }
+  .ds-input {
+    width: 100%; height: 48px; padding: 0 16px;
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans); font-size: 16px;
+    background: var(--bg-card); color: var(--text-primary);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .ds-input:focus {
+    outline: none; border-color: var(--brand-base);
+    box-shadow: 0 0 0 3px var(--brand-soft);
+  }
+  .ds-input::placeholder { color: var(--text-tertiary); }
+  .ds-input.is-valid {
+    border-color: var(--fodmap-low-text);
+  }
+  .input-with-icon { position: relative; }
+  .input-with-icon .ds-input { padding-left: 44px; }
+  .input-with-icon.has-trailing .ds-input { padding-right: 48px; }
+  .input-leading-icon {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary); font-size: 20px;
+    pointer-events: none;
+  }
+  .input-trailing-btn {
+    position: absolute; right: 6px; top: 50%;
+    transform: translateY(-50%);
+    background: transparent; border: none;
+    color: var(--text-tertiary);
+    width: 38px; height: 38px;
+    border-radius: var(--radius-sm);
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 20px; transition: background 0.15s, color 0.15s;
+  }
+  .input-trailing-btn:hover {
+    background: var(--bg-subtle); color: var(--text-primary);
+  }
+  .input-trailing-status {
+    position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+  }
+  .input-trailing-status.valid { color: var(--fodmap-low-text); }
+
+  /* Requisitos de contraseña */
+  .password-strength {
+    margin-top: 8px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+  }
+  .strength-bar {
+    height: 4px; background: var(--bg-divider);
+    border-radius: 2px; overflow: hidden;
+    margin-bottom: 8px; display: flex; gap: 3px;
+  }
+  .strength-segment {
+    flex: 1; height: 100%; background: var(--bg-divider);
+    border-radius: 2px; transition: background 0.2s;
+  }
+  .strength-segment.active.weak { background: var(--fodmap-high-text); }
+  .strength-segment.active.medium { background: var(--fodmap-mod-text); }
+  .strength-segment.active.strong { background: var(--fodmap-low-text); }
+
+  .strength-label {
+    font-size: 12px; color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .strength-label strong { color: var(--text-primary); }
+
+  .requirements-list {
+    list-style: none; display: flex;
+    flex-direction: column; gap: 4px;
+  }
+  .requirements-list li {
+    font-size: 12px; color: var(--text-tertiary);
+    display: flex; align-items: center; gap: 6px;
+    transition: color 0.15s;
+  }
+  .requirements-list li i { font-size: 14px; }
+  .requirements-list li.met {
+    color: var(--fodmap-low-text);
+  }
+  .requirements-list li.met i { color: var(--fodmap-low-text); }
+
+  /* Código de invitación · destacado opcional */
+  .invitation-block {
+    background: var(--brand-soft);
+    border: 1px dashed var(--brand-base);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .invitation-block .invitation-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .invitation-block .invitation-header i {
+    color: var(--brand-base); font-size: 20px;
+  }
+  .invitation-block .invitation-header span {
+    font-size: 14px; font-weight: 500;
+    color: var(--brand-strong);
+  }
+  .invitation-block .invitation-note {
+    font-size: 12px; color: var(--text-secondary);
+    line-height: 1.5; margin-bottom: 10px;
+  }
+  .invitation-block .ds-input {
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    letter-spacing: 1.5px;
+  }
+
+  /* Checkbox consentimiento */
+  .consent-row {
+    display: flex; gap: 10px;
+    align-items: flex-start;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin: 18px 0 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .consent-row:hover { border-color: var(--brand-base); }
+  .consent-row.checked {
+    background: var(--brand-soft);
+    border-color: var(--brand-base);
+  }
+
+  .ds-checkbox {
+    appearance: none;
+    width: 22px; height: 22px;
+    border: 2px solid var(--bg-divider);
+    border-radius: 6px;
+    background: var(--bg-card);
+    cursor: pointer; flex-shrink: 0;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .ds-checkbox:checked {
+    background: var(--brand-base);
+    border-color: var(--brand-base);
+  }
+  .ds-checkbox:checked::after {
+    content: '✓'; position: absolute;
+    color: #FFFFFF; font-size: 14px; font-weight: 700;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .consent-text {
+    font-size: 13px; color: var(--text-primary);
+    line-height: 1.5;
+  }
+  .consent-text a {
+    color: var(--brand-base);
+    font-weight: 500;
+    text-decoration: underline;
+  }
+
+  /* Botones */
+  .ds-btn-primary {
+    background: var(--brand-base);
+    color: #FFFFFF; border: none;
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 500;
+    min-height: 48px; cursor: pointer;
+    transition: background 0.15s;
+    width: 100%; margin-bottom: 12px;
+  }
+  .ds-btn-primary:hover { background: var(--brand-strong); }
+  .ds-btn-primary:active { background: var(--brand-darkest); }
+  .ds-btn-primary:disabled {
+    background: var(--bg-divider);
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+  }
+
+  .secondary-link-row {
+    text-align: center;
+    padding: 4px 0 16px;
+    font-size: 14px; color: var(--text-secondary);
+  }
+  .secondary-link-row a {
+    color: var(--brand-base);
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: 4px;
+    cursor: pointer;
+  }
+  .secondary-link-row a:hover {
+    color: var(--brand-strong);
+    text-decoration: underline;
+  }
+
+  /* Home indicator */
+  .home-indicator {
+    height: 34px; display: flex;
+    align-items: center; justify-content: center;
+    background: var(--bg-page); flex-shrink: 0;
+  }
+  .home-indicator::before {
+    content: ''; width: 134px; height: 5px;
+    background: var(--text-primary); border-radius: 3px;
+  }
+
+  /* Spec panel */
+  .spec-panel {
+    max-width: 720px; margin: 32px auto 0;
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .spec-panel h2 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .spec-panel h2 i { color: var(--brand-base); font-size: 20px; }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 14px 20px;
+    font-size: 13px;
+  }
+  .spec-grid dt {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .spec-grid dd { color: var(--text-primary); line-height: 1.55; }
+  .spec-tag {
+    display: inline-block;
+    background: var(--brand-soft);
+    color: var(--brand-strong);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 4px; margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+  .spec-tag.neutral {
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+  }
+
+  .page-footer {
+    max-width: 720px; margin: 24px auto 0;
+    text-align: center;
+    font-size: 13px; color: var(--text-tertiary);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <h1>Pantalla 2 · Registro + código de invitación</h1>
+    <p>Creación de cuenta del paciente con vinculación opcional a su nutricionista mediante código generado desde el portal clínico.</p>
+    <div class="meta-tags">
+      <span class="meta-tag"><i class="ti ti-device-mobile"></i>iPhone 14 Pro · 393 × 852</span>
+      <span class="meta-tag"><i class="ti ti-user-plus"></i>Paciente con SII</span>
+      <span class="meta-tag"><i class="ti ti-id-badge-2"></i>US01 · US20</span>
+      <span class="meta-tag"><i class="ti ti-shield-check"></i>EP01 · Identidad</span>
+    </div>
+  </header>
+
+  <div class="device-stage">
+    <div class="device-frame">
+      <div class="device-screen">
+
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <span class="status-icons">
+            <i class="ti ti-signal-4g"></i>
+            <i class="ti ti-wifi"></i>
+            <i class="ti ti-battery-3"></i>
+          </span>
+        </div>
+
+        <div class="app-bar">
+          <button class="icon-btn" aria-label="Volver"><i class="ti ti-arrow-left"></i></button>
+          <span class="app-bar-title">Crear cuenta</span>
+        </div>
+
+        <div class="screen-content">
+
+          <div class="form-intro">
+            <h2>Empieza tu seguimiento clínico</h2>
+            <p>Solo te tomará un par de minutos. Tus datos quedan protegidos bajo la Ley N° 29733.</p>
+          </div>
+
+          <form onsubmit="event.preventDefault();" autocomplete="off" novalidate>
+
+            <!-- Nombre -->
+            <div class="form-group">
+              <label class="ds-label" for="fullName">Nombre completo</label>
+              <div class="input-with-icon">
+                <i class="ti ti-user input-leading-icon"></i>
+                <input class="ds-input" type="text" id="fullName" placeholder="Nombres y apellidos" autocomplete="off" />
+              </div>
+            </div>
+
+            <!-- Correo -->
+            <div class="form-group">
+              <label class="ds-label" for="email">Correo electrónico</label>
+              <div class="input-with-icon">
+                <i class="ti ti-mail input-leading-icon"></i>
+                <input class="ds-input" type="email" id="email" placeholder="tu@correo.com" autocomplete="off" inputmode="email" />
+              </div>
+            </div>
+
+            <!-- Contraseña con indicador de fortaleza -->
+            <div class="form-group">
+              <label class="ds-label" for="password">Contraseña</label>
+              <div class="input-with-icon has-trailing">
+                <i class="ti ti-lock input-leading-icon"></i>
+                <input class="ds-input" type="password" id="password" placeholder="Mínimo 8 caracteres" autocomplete="off" />
+                <button type="button" class="input-trailing-btn" id="togglePwd" aria-label="Mostrar contraseña">
+                  <i class="ti ti-eye" id="pwdIcon"></i>
+                </button>
+              </div>
+              <div class="password-strength" id="strengthBlock">
+                <div class="strength-bar">
+                  <div class="strength-segment" id="seg1"></div>
+                  <div class="strength-segment" id="seg2"></div>
+                  <div class="strength-segment" id="seg3"></div>
+                </div>
+                <div class="strength-label">Seguridad de la contraseña: <strong id="strengthLabel">Pendiente</strong></div>
+                <ul class="requirements-list">
+                  <li id="reqLength"><i class="ti ti-circle"></i>Al menos 8 caracteres</li>
+                  <li id="reqUpper"><i class="ti ti-circle"></i>Una letra mayúscula</li>
+                  <li id="reqNumber"><i class="ti ti-circle"></i>Un número</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Confirmar contraseña -->
+            <div class="form-group">
+              <label class="ds-label" for="passwordConfirm">Confirmar contraseña</label>
+              <div class="input-with-icon has-trailing">
+                <i class="ti ti-lock-check input-leading-icon"></i>
+                <input class="ds-input" type="password" id="passwordConfirm" placeholder="Repite tu contraseña" autocomplete="off" />
+                <i class="ti ti-circle-check input-trailing-status valid" id="matchIcon" style="display:none;"></i>
+              </div>
+            </div>
+
+            <!-- Código de invitación · destacado opcional -->
+            <div class="invitation-block">
+              <div class="invitation-header">
+                <i class="ti ti-ticket"></i>
+                <span>Código de invitación</span>
+                <span style="margin-left:auto;font-size:11px;color:var(--text-tertiary);font-weight:400;">Opcional</span>
+              </div>
+              <p class="invitation-note">Si tu nutricionista te proporcionó un código, ingrésalo para vincularte directamente con su seguimiento clínico. Podrás agregarlo más adelante desde tu perfil.</p>
+              <input class="ds-input" type="text" id="invitationCode" placeholder="ABC-1234-XYZ" maxlength="20" autocomplete="off" />
+            </div>
+
+            <!-- Consentimiento -->
+            <label class="consent-row" id="consentRow" for="consentCheck">
+              <input type="checkbox" class="ds-checkbox" id="consentCheck" />
+              <span class="consent-text">
+                He leído y acepto el <a id="openConsent">consentimiento informado</a> y la política de tratamiento de mis datos personales y de salud bajo la <strong>Ley N° 29733</strong>.
+              </span>
+            </label>
+
+            <button type="submit" class="ds-btn-primary" id="submitBtn" disabled>Crear cuenta</button>
+
+            <div class="secondary-link-row">
+              ¿Ya tienes una cuenta?<a id="goLogin">Inicia sesión</a>
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="home-indicator"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="spec-panel">
+    <h2><i class="ti ti-file-description"></i>Especificación académica</h2>
+    <dl class="spec-grid">
+
+      <dt>Pantalla</dt>
+      <dd>Formulario de registro del paciente con vinculación clínica opcional. Bloque destacado del código de invitación para reforzar su importancia clínica sin imponerlo como obligatorio.</dd>
+
+      <dt>Historias</dt>
+      <dd>
+        <span class="spec-tag">US01 · Registro de paciente</span>
+        <span class="spec-tag">US20 · Vinculación por código</span>
+      </dd>
+
+      <dt>CA cubiertos</dt>
+      <dd>
+        US01-CA01 · Validación en tiempo real del formato del correo, requisitos de contraseña (≥ 8 caracteres, una mayúscula, un número) y aceptación obligatoria del consentimiento.<br />
+        US01-CA03 · Botón "Crear cuenta" deshabilitado hasta que el consentimiento informado esté aceptado.<br />
+        US20-CA01 · Campo opcional de código de invitación que valida formato y vincula al nutricionista.<br />
+        US20-CA02 · Registro sin código permitido · paciente queda como "no asignado".
+      </dd>
+
+      <dt>Actor primario</dt>
+      <dd>Paciente con Síndrome del Intestino Irritable.</dd>
+
+      <dt>Componentes C4</dt>
+      <dd>
+        <span class="spec-tag neutral">Aplicación Móvil · Flutter</span>
+        <span class="spec-tag neutral">Módulo de Identidad</span>
+        <span class="spec-tag neutral">Módulo de Pacientes</span>
+        <span class="spec-tag neutral">Keycloak · creación de usuario</span>
+        <span class="spec-tag neutral">Servicio SMTP · verificación</span>
+      </dd>
+
+      <dt>Entidades ERD</dt>
+      <dd>
+        <span class="spec-tag neutral">users</span>
+        <span class="spec-tag neutral">invitation_codes</span>
+        <span class="spec-tag neutral">nutritionist_patient</span>
+        <span class="spec-tag neutral">consent_records</span>
+      </dd>
+
+      <dt>Cumplimiento</dt>
+      <dd>
+        Ley N° 29733 · consentimiento obligatorio con trazabilidad versionada.<br />
+        RM 688-2020/MINSA · autorización expresa, voluntaria, informada e indudable.<br />
+        WCAG 2.1 AA · áreas táctiles ≥ 48 px, indicador de fortaleza con triple canal (color + ícono + texto).<br />
+        Política de contraseñas alineada con NIST SP 800-63B.
+      </dd>
+
+      <dt>Tokens del DS</dt>
+      <dd>
+        <span class="spec-tag">brand-base</span>
+        <span class="spec-tag">brand-soft</span>
+        <span class="spec-tag">fodmap-low-text</span>
+        <span class="spec-tag">fodmap-mod-text</span>
+        <span class="spec-tag">fodmap-high-text</span>
+        <span class="spec-tag">radius-md</span>
+        <span class="spec-tag">font-mono</span>
+      </dd>
+
+    </dl>
+  </section>
+
+  <footer class="page-footer">
+    IBS Dieta · Pantalla 2 de 18 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+  </footer>
+
+</div>
+
+<script>
+  /* Toggle visibilidad contraseña */
+  (function () {
+    var btn = document.getElementById('togglePwd');
+    var input = document.getElementById('password');
+    var icon = document.getElementById('pwdIcon');
+    btn.addEventListener('click', function () {
+      var hidden = input.type === 'password';
+      input.type = hidden ? 'text' : 'password';
+      icon.classList.toggle('ti-eye', !hidden);
+      icon.classList.toggle('ti-eye-off', hidden);
+      btn.setAttribute('aria-label', hidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+  })();
+
+  /* Validación contraseña en tiempo real */
+  (function () {
+    var pwd = document.getElementById('password');
+    var confirmPwd = document.getElementById('passwordConfirm');
+    var reqLength = document.getElementById('reqLength');
+    var reqUpper = document.getElementById('reqUpper');
+    var reqNumber = document.getElementById('reqNumber');
+    var seg1 = document.getElementById('seg1');
+    var seg2 = document.getElementById('seg2');
+    var seg3 = document.getElementById('seg3');
+    var strengthLabel = document.getElementById('strengthLabel');
+    var matchIcon = document.getElementById('matchIcon');
+    var consentCheck = document.getElementById('consentCheck');
+    var submitBtn = document.getElementById('submitBtn');
+    var consentRow = document.getElementById('consentRow');
+
+    function toggleReq(li, ok, iconName) {
+      li.classList.toggle('met', ok);
+      var i = li.querySelector('i');
+      i.className = 'ti ti-' + (ok ? 'circle-check-filled' : 'circle');
+    }
+
+    function evaluatePassword() {
+      var v = pwd.value;
+      var hasLength = v.length >= 8;
+      var hasUpper  = /[A-Z]/.test(v);
+      var hasNumber = /[0-9]/.test(v);
+
+      toggleReq(reqLength, hasLength);
+      toggleReq(reqUpper, hasUpper);
+      toggleReq(reqNumber, hasNumber);
+
+      var score = (hasLength ? 1 : 0) + (hasUpper ? 1 : 0) + (hasNumber ? 1 : 0);
+      [seg1, seg2, seg3].forEach(function (s) { s.className = 'strength-segment'; });
+
+      var levelClass = '';
+      var labelText  = 'Pendiente';
+      if (v.length === 0) {
+        labelText = 'Pendiente';
+      } else if (score === 1) {
+        levelClass = 'weak'; labelText = 'Débil';
+        seg1.classList.add('active', 'weak');
+      } else if (score === 2) {
+        levelClass = 'medium'; labelText = 'Aceptable';
+        seg1.classList.add('active', 'medium');
+        seg2.classList.add('active', 'medium');
+      } else if (score === 3) {
+        levelClass = 'strong'; labelText = 'Fuerte';
+        seg1.classList.add('active', 'strong');
+        seg2.classList.add('active', 'strong');
+        seg3.classList.add('active', 'strong');
+      } else {
+        levelClass = 'weak'; labelText = 'Muy débil';
+      }
+      strengthLabel.textContent = labelText;
+
+      validateForm();
+      validateMatch();
+    }
+
+    function validateMatch() {
+      var matches = confirmPwd.value.length > 0 && confirmPwd.value === pwd.value;
+      matchIcon.style.display = matches ? 'block' : 'none';
+      confirmPwd.classList.toggle('is-valid', matches);
+    }
+
+    function validateForm() {
+      var score = [reqLength, reqUpper, reqNumber]
+        .filter(function (li) { return li.classList.contains('met'); }).length;
+      var ok = score === 3 && consentCheck.checked && pwd.value === confirmPwd.value && pwd.value.length > 0;
+      submitBtn.disabled = !ok;
+    }
+
+    pwd.addEventListener('input', evaluatePassword);
+    confirmPwd.addEventListener('input', function () { validateMatch(); validateForm(); });
+    consentCheck.addEventListener('change', function () {
+      consentRow.classList.toggle('checked', consentCheck.checked);
+      validateForm();
+    });
+  })();
+</script>
+
+</body>
+</html>
