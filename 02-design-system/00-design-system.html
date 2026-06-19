@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cauce · Design System v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+  :root {
+    /* Superficies */
+    --bg-page: #FDFAF6;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #F5EFE6;
+    --bg-divider: #EDE5D7;
+ 
+    /* Texto */
+    --text-primary: #1F1A15;
+    --text-secondary: #524A42;
+    --text-tertiary: #6E635A;
+ 
+    /* Marca · coral profundo */
+    --brand-soft: #FAECE7;
+    --brand-base: #993C1D;
+    --brand-strong: #712B13;
+    --brand-darkest: #4A1B0C;
+ 
+    /* FODMAP */
+    --fodmap-low-bg: #EAF3DE;
+    --fodmap-low-text: #27500A;
+    --fodmap-mod-bg: #FAEEDA;
+    --fodmap-mod-text: #854F0B;
+    --fodmap-high-bg: #FCEBEB;
+    --fodmap-high-text: #A32D2D;
+ 
+    /* Estados semánticos */
+    --success-bg: #EAF3DE;
+    --success-text: #27500A;
+    --warning-bg: #FAEEDA;
+    --warning-text: #854F0B;
+    --danger-bg: #FCEBEB;
+    --danger-text: #A32D2D;
+    --info-bg: #E6F1FB;
+    --info-text: #0C447C;
+ 
+    /* Tipografía */
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", "Courier New", monospace;
+ 
+    /* Radios */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+ 
+    /* Bordes */
+    --border-subtle: 0.5px solid #EDE5D7;
+    --border-default: 1px solid #EDE5D7;
+    --border-strong: 1.5px solid #6E635A;
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.5;
+    padding: 32px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+ 
+  /* Encabezado del catálogo */
+  .ds-header {
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: var(--border-default);
+  }
+  .ds-header h1 {
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .ds-header p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 700px;
+  }
+  .ds-header .ds-meta-info {
+    margin-top: 16px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+  .ds-header .ds-meta-info span { display: inline-flex; align-items: center; gap: 6px; }
+ 
+  /* Secciones */
+  .ds-section { margin-bottom: 56px; }
+  .ds-section-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-primary);
+    padding-bottom: 12px;
+    border-bottom: var(--border-subtle);
+    margin-bottom: 8px;
+  }
+  .ds-section-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
+    max-width: 700px;
+  }
+  .ds-group-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 24px 0 12px;
+  }
+ 
+  /* Utilitarios */
+  .ds-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+  .ds-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ds-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ds-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .ds-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .ds-meta { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); }
+  .ds-card-box { background: var(--bg-card); border: var(--border-subtle); border-radius: var(--radius-lg); padding: 16px 20px; }
+ 
+  /* Swatches de color */
+  .ds-swatch {
+    border-radius: var(--radius-md);
+    padding: 14px;
+    min-height: 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .ds-swatch-name { font-size: 13px; font-weight: 500; }
+  .ds-swatch-hex { font-size: 11px; font-family: var(--font-mono); opacity: 0.85; }
+ 
+  /* Botones */
+  .ds-btn-primary {
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ds-btn-primary:hover { background: var(--brand-strong); }
+  .ds-btn-primary:active { background: var(--brand-darkest); }
+  .ds-btn-primary:disabled {
+    background: var(--bg-divider);
+    color: #8A7F73;
+    cursor: not-allowed;
+  }
+ 
+  .ds-btn-secondary {
+    background: transparent;
+    color: var(--brand-strong);
+    border: 1.5px solid var(--brand-base);
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ds-btn-secondary:hover { background: var(--brand-soft); }
+ 
+  .ds-btn-tertiary {
+    background: transparent;
+    color: var(--brand-base);
+    border: none;
+    padding: 14px 16px;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    min-height: 48px;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: background 0.15s;
+  }
+  .ds-btn-tertiary:hover { background: var(--brand-soft); }
+ 
+  .ds-fab {
+    background: var(--brand-base);
+    color: #FFFFFF;
+    border: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    font-size: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .ds-fab:hover { background: var(--brand-strong); }
+  .ds-fab:active { transform: scale(0.96); }
+ 
+  .ds-icon-btn {
+    background: transparent;
+    color: var(--text-primary);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: background 0.15s;
+  }
+  .ds-icon-btn:hover { background: var(--bg-subtle); }
+ 
+  /* Inputs */
+  .ds-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1.5px solid var(--bg-divider);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .ds-input:focus {
+    outline: none;
+    border-color: var(--brand-base);
+    box-shadow: 0 0 0 3px var(--brand-soft);
+  }
+  .ds-input--error { border-color: var(--danger-text); }
+  .ds-label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+ 
+  /* Range slider personalizado */
+  .ds-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--bg-divider);
+    border-radius: 3px;
+    outline: none;
+  }
+  .ds-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: var(--brand-base);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 0 0 1.5px var(--brand-base);
+  }
+  .ds-range::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: var(--brand-base);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 0 0 1.5px var(--brand-base);
+  }
+ 
+  /* Badges */
+  .ds-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .ds-badge i { font-size: 14px; }
+ 
+  /* Tarjetas reutilizables */
+  .ds-mockup-card {
+    background: var(--bg-card);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+  }
+ 
+  /* Indicador de confianza */
+  .ds-confidence {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .ds-confidence-bars { display: flex; gap: 3px; }
+  .ds-confidence-bar {
+    width: 8px;
+    height: 16px;
+    border-radius: 2px;
+  }
+ 
+  /* Pasos del wizard */
+  .ds-stepper { display: flex; align-items: center; gap: 8px; }
+  .ds-step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .ds-step-num--done { background: var(--brand-base); color: #FFFFFF; }
+  .ds-step-num--current { background: var(--brand-base); color: #FFFFFF; }
+  .ds-step-num--pending { background: #FFFFFF; color: var(--text-tertiary); border: 1.5px solid var(--bg-divider); }
+  .ds-step-line { height: 2px; flex: 1; }
+ 
+  /* Mockup de bottom nav */
+  .ds-mobile-frame {
+    width: 320px;
+    background: var(--bg-page);
+    border-radius: var(--radius-xl);
+    border: var(--border-subtle);
+    overflow: hidden;
+  }
+  .ds-bottom-nav {
+    background: var(--bg-card);
+    border-top: var(--border-subtle);
+    padding: 12px 8px 16px;
+    position: relative;
+  }
+  .ds-fab-elevated {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid var(--bg-page);
+  }
+  .ds-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+  }
+  .ds-nav-btn {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-tertiary);
+    transition: color 0.15s;
+  }
+  .ds-nav-btn--active { color: var(--brand-base); }
+  .ds-nav-btn i { font-size: 22px; }
+  .ds-nav-btn span { font-size: 11px; font-weight: 500; }
+ 
+  /* Toast */
+  .ds-toast {
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid;
+  }
+  .ds-toast--success {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border-left-color: var(--success-text);
+  }
+  .ds-toast--error {
+    background: var(--danger-bg);
+    color: var(--danger-text);
+    border-left-color: var(--danger-text);
+  }
+ 
+  /* App bar */
+  .ds-app-bar {
+    background: var(--bg-page);
+    padding: 16px;
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+ 
+  /* Footer */
+  .ds-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: var(--border-subtle);
+    font-size: 13px;
+    color: var(--text-tertiary);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+ 
+<header class="ds-header">
+  <h1>Design System · Cauce v1.0</h1>
+  <p>Catálogo visual de tokens y componentes para construir los mockups móviles y web del piloto clínico en el Complejo Hospitalario Guillermo Kaelín de la Fuente. Todos los colores están validados WCAG 2.1 AA o superior.</p>
+  <div class="ds-meta-info">
+    <span><i class="ti ti-palette"></i>Paleta coral profundo + crema</span>
+    <span><i class="ti ti-typography"></i>Inter · 400 / 500</span>
+    <span><i class="ti ti-accessible"></i>WCAG 2.1 AA mínimo</span>
+    <span><i class="ti ti-device-mobile"></i>Móvil 393px · Web 1440px</span>
+  </div>
+</header>
+ 
+<!-- SECCIÓN A · COLOR -->
+<section class="ds-section">
+  <h2 class="ds-section-title">A. Fundamentos · Color</h2>
+  <p class="ds-section-desc">Toda la paleta está validada WCAG 2.1. La combinación crema cálido + coral profundo se mantiene como acento principal. Texto principal pasa AAA con 16.6:1 sobre crema.</p>
+ 
+  <h3 class="ds-group-title">Superficies</h3>
+  <div class="ds-grid-4">
+    <div class="ds-swatch" style="background: #FDFAF6; border: 0.5px solid #EDE5D7; color: #1F1A15;">
+      <span class="ds-swatch-name">bg-page</span>
+      <span class="ds-swatch-hex">#FDFAF6</span>
+    </div>
+    <div class="ds-swatch" style="background: #FFFFFF; border: 0.5px solid #EDE5D7; color: #1F1A15;">
+      <span class="ds-swatch-name">bg-card</span>
+      <span class="ds-swatch-hex">#FFFFFF</span>
+    </div>
+    <div class="ds-swatch" style="background: #F5EFE6; color: #1F1A15;">
+      <span class="ds-swatch-name">bg-subtle</span>
+      <span class="ds-swatch-hex">#F5EFE6</span>
+    </div>
+    <div class="ds-swatch" style="background: #EDE5D7; color: #1F1A15;">
+      <span class="ds-swatch-name">bg-divider</span>
+      <span class="ds-swatch-hex">#EDE5D7</span>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Texto</h3>
+  <div class="ds-grid-3">
+    <div class="ds-swatch" style="background: #FDFAF6; border: 0.5px solid #EDE5D7; color: #1F1A15;">
+      <span class="ds-swatch-name" style="font-size: 16px;">text-primary</span>
+      <span class="ds-swatch-hex">#1F1A15 · 16.6:1 AAA</span>
+    </div>
+    <div class="ds-swatch" style="background: #FDFAF6; border: 0.5px solid #EDE5D7; color: #524A42;">
+      <span class="ds-swatch-name" style="font-size: 16px;">text-secondary</span>
+      <span class="ds-swatch-hex">#524A42 · 8.4:1 AAA</span>
+    </div>
+    <div class="ds-swatch" style="background: #FDFAF6; border: 0.5px solid #EDE5D7; color: #6E635A;">
+      <span class="ds-swatch-name" style="font-size: 16px;">text-tertiary</span>
+      <span class="ds-swatch-hex">#6E635A · 5.0:1 AA</span>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Marca · coral profundo</h3>
+  <div class="ds-grid-4">
+    <div class="ds-swatch" style="background: #FAECE7; color: #712B13;">
+      <span class="ds-swatch-name">brand-soft</span>
+      <span class="ds-swatch-hex">#FAECE7</span>
+    </div>
+    <div class="ds-swatch" style="background: #993C1D; color: #FFFFFF;">
+      <span class="ds-swatch-name">brand-base</span>
+      <span class="ds-swatch-hex">#993C1D · 7.0:1 AAA</span>
+    </div>
+    <div class="ds-swatch" style="background: #712B13; color: #FFFFFF;">
+      <span class="ds-swatch-name">brand-strong</span>
+      <span class="ds-swatch-hex">#712B13 · 9.8:1 AAA</span>
+    </div>
+    <div class="ds-swatch" style="background: #4A1B0C; color: #FFFFFF;">
+      <span class="ds-swatch-name">brand-darkest</span>
+      <span class="ds-swatch-hex">#4A1B0C · 12.5:1 AAA</span>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Semánticos FODMAP · independientes de color con texto</h3>
+  <div class="ds-grid-3">
+    <div class="ds-swatch" style="background: #EAF3DE; color: #27500A;">
+      <span class="ds-swatch-name"><i class="ti ti-leaf"></i> fodmap-low</span>
+      <span class="ds-swatch-hex">#27500A · 8.2:1 AAA</span>
+    </div>
+    <div class="ds-swatch" style="background: #FAEEDA; color: #854F0B;">
+      <span class="ds-swatch-name"><i class="ti ti-alert-triangle"></i> fodmap-moderate</span>
+      <span class="ds-swatch-hex">#854F0B · 5.9:1 AA</span>
+    </div>
+    <div class="ds-swatch" style="background: #FCEBEB; color: #A32D2D;">
+      <span class="ds-swatch-name"><i class="ti ti-circle-x"></i> fodmap-high</span>
+      <span class="ds-swatch-hex">#A32D2D · 6.1:1 AAA</span>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Semánticos de estado</h3>
+  <div class="ds-grid-4">
+    <div class="ds-swatch" style="background: #EAF3DE; color: #27500A;">
+      <span class="ds-swatch-name">success</span>
+      <span class="ds-swatch-hex">#27500A</span>
+    </div>
+    <div class="ds-swatch" style="background: #FAEEDA; color: #854F0B;">
+      <span class="ds-swatch-name">warning</span>
+      <span class="ds-swatch-hex">#854F0B</span>
+    </div>
+    <div class="ds-swatch" style="background: #FCEBEB; color: #A32D2D;">
+      <span class="ds-swatch-name">danger</span>
+      <span class="ds-swatch-hex">#A32D2D</span>
+    </div>
+    <div class="ds-swatch" style="background: #E6F1FB; color: #0C447C;">
+      <span class="ds-swatch-name">info / sync</span>
+      <span class="ds-swatch-hex">#0C447C</span>
+    </div>
+  </div>
+</section>
+ 
+<!-- SECCIÓN B · TIPOGRAFÍA -->
+<section class="ds-section">
+  <h2 class="ds-section-title">B. Fundamentos · Tipografía</h2>
+  <p class="ds-section-desc">Familia Inter. Solo dos pesos principales: 400 regular y 500 semibold. Base 16px. Body line-height 1.6 para lectura cómoda en pacientes adultos.</p>
+ 
+  <div class="ds-card-box">
+    <div style="font-size: 32px; font-weight: 500; line-height: 1.25; color: #1F1A15; margin-bottom: 12px;">Tu dieta, tu bienestar</div>
+    <div class="ds-meta">display · 32px · 500 · línea 1.25 · pantallas hero</div>
+  </div>
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <div style="font-size: 24px; font-weight: 500; line-height: 1.3; color: #1F1A15; margin-bottom: 12px;">Registrar comida</div>
+    <div class="ds-meta">h1 · 24px · 500 · línea 1.3 · título de pantalla</div>
+  </div>
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <div style="font-size: 20px; font-weight: 500; line-height: 1.4; color: #1F1A15; margin-bottom: 12px;">Alimentos peruanos</div>
+    <div class="ds-meta">h2 · 20px · 500 · línea 1.4 · subtítulo o sección</div>
+  </div>
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <div style="font-size: 18px; font-weight: 500; line-height: 1.45; color: #1F1A15; margin-bottom: 12px;">Avena con plátano</div>
+    <div class="ds-meta">h3 · 18px · 500 · línea 1.45 · título de tarjeta</div>
+  </div>
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <div style="font-size: 16px; font-weight: 400; line-height: 1.6; color: #1F1A15; margin-bottom: 12px;">Texto general del cuerpo. Pensado para lectura cómoda en pacientes adultos. La altura de línea 1.6 favorece a usuarios mayores y con fatiga visual.</div>
+    <div class="ds-meta">body · 16px · 400 · línea 1.6 · texto por defecto</div>
+  </div>
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <div style="font-size: 14px; font-weight: 400; line-height: 1.55; color: #524A42; margin-bottom: 12px;">Texto secundario. Metadata, descripciones y ayudas inline.</div>
+    <div class="ds-meta">body-sm · 14px · 400 · línea 1.55 · secundario</div>
+  </div>
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <div style="font-size: 12px; font-weight: 500; letter-spacing: 0.3px; color: #524A42; margin-bottom: 12px;">CAPTION · BADGE · TIMESTAMP</div>
+    <div class="ds-meta">caption · 12px · 500 · 0.3px tracking · etiquetas</div>
+  </div>
+</section>
+ 
+<!-- SECCIÓN C · ESPACIADO Y RADIOS -->
+<section class="ds-section">
+  <h2 class="ds-section-title">C. Fundamentos · Espaciado y radios</h2>
+  <p class="ds-section-desc">Escala base 4px. Radio default 12px para componentes, 16px para tarjetas grandes, pill para FAB y badges.</p>
+ 
+  <h3 class="ds-group-title">Escala de espaciado</h3>
+  <div class="ds-card-box">
+    <div style="display: grid; grid-template-columns: 100px 1fr; gap: 8px; align-items: center;">
+      <span class="ds-meta">space-1 · 4px</span><div style="background: #993C1D; height: 12px; width: 4px;"></div>
+      <span class="ds-meta">space-2 · 8px</span><div style="background: #993C1D; height: 12px; width: 8px;"></div>
+      <span class="ds-meta">space-3 · 12px</span><div style="background: #993C1D; height: 12px; width: 12px;"></div>
+      <span class="ds-meta">space-4 · 16px</span><div style="background: #993C1D; height: 12px; width: 16px;"></div>
+      <span class="ds-meta">space-6 · 24px</span><div style="background: #993C1D; height: 12px; width: 24px;"></div>
+      <span class="ds-meta">space-8 · 32px</span><div style="background: #993C1D; height: 12px; width: 32px;"></div>
+      <span class="ds-meta">space-12 · 48px</span><div style="background: #993C1D; height: 12px; width: 48px;"></div>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Radios de borde</h3>
+  <div class="ds-grid-5">
+    <div style="background: #993C1D; height: 72px; border-radius: 8px; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px;">8px · sm</div>
+    <div style="background: #993C1D; height: 72px; border-radius: 12px; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px;">12px · md</div>
+    <div style="background: #993C1D; height: 72px; border-radius: 16px; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px;">16px · lg</div>
+    <div style="background: #993C1D; height: 72px; border-radius: 24px; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px;">24px · xl</div>
+    <div style="background: #993C1D; height: 72px; border-radius: 9999px; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px;">pill · full</div>
+  </div>
+</section>
+ 
+<!-- SECCIÓN D · BOTONES -->
+<section class="ds-section">
+  <h2 class="ds-section-title">D. Átomos · Botones</h2>
+  <p class="ds-section-desc">Altura mínima 48px para áreas táctiles cómodas. Estados default, hover, pressed y disabled visibles. Probá pasar el mouse y hacer click.</p>
+ 
+  <h3 class="ds-group-title">Primario</h3>
+  <div class="ds-row">
+    <button class="ds-btn-primary">Guardar comida</button>
+    <button class="ds-btn-primary" style="background: #712B13;">Hover</button>
+    <button class="ds-btn-primary" style="background: #4A1B0C;">Pressed</button>
+    <button class="ds-btn-primary" disabled>Disabled</button>
+  </div>
+ 
+  <h3 class="ds-group-title">Secundario · outline</h3>
+  <div class="ds-row">
+    <button class="ds-btn-secondary">Cancelar</button>
+    <button class="ds-btn-secondary" style="background: #FAECE7;">Hover</button>
+  </div>
+ 
+  <h3 class="ds-group-title">Terciario · texto</h3>
+  <div class="ds-row">
+    <button class="ds-btn-tertiary">Ya tengo cuenta</button>
+    <button class="ds-btn-tertiary" style="background: #FAECE7;">Hover</button>
+  </div>
+ 
+  <h3 class="ds-group-title">FAB · acción flotante</h3>
+  <div class="ds-row">
+    <button class="ds-fab" aria-label="Acción rápida"><i class="ti ti-plus"></i></button>
+    <button class="ds-fab" aria-label="Acción rápida hover" style="background: #712B13;"><i class="ti ti-plus"></i></button>
+    <span class="ds-meta">56x56px · brand-base / brand-strong hover</span>
+  </div>
+ 
+  <h3 class="ds-group-title">Botón ícono · 48x48</h3>
+  <div class="ds-row">
+    <button class="ds-icon-btn" aria-label="Atrás"><i class="ti ti-arrow-left"></i></button>
+    <button class="ds-icon-btn" aria-label="Buscar"><i class="ti ti-search"></i></button>
+    <button class="ds-icon-btn" aria-label="Notificaciones"><i class="ti ti-bell"></i></button>
+    <button class="ds-icon-btn" aria-label="Configuración"><i class="ti ti-settings"></i></button>
+  </div>
+</section>
+ 
+<!-- SECCIÓN E · INPUTS -->
+<section class="ds-section">
+  <h2 class="ds-section-title">E. Átomos · Inputs</h2>
+  <p class="ds-section-desc">Altura 48px mínimo. Focus ring de 3px en coral suave. Mensajes de error con ícono y texto, nunca solo color.</p>
+ 
+  <div class="ds-card-box">
+    <label class="ds-label">Correo electrónico · default</label>
+    <input type="email" class="ds-input" placeholder="tucorreo@ejemplo.com" />
+    <div class="ds-meta" style="margin-top: 8px;">default · borde EDE5D7</div>
+  </div>
+ 
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <label class="ds-label">Correo electrónico · con valor (haz click para ver focus)</label>
+    <input type="email" class="ds-input" value="trigueros@upc.edu.pe" />
+  </div>
+ 
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <label class="ds-label">Correo electrónico · estado error</label>
+    <input type="email" class="ds-input ds-input--error" value="trigueros@upc" />
+    <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px; color: #A32D2D; font-size: 14px;">
+      <i class="ti ti-alert-circle"></i><span>El correo no tiene un formato válido</span>
+    </div>
+  </div>
+ 
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <label class="ds-label">Subtipo de SII (Roma IV)</label>
+    <select class="ds-input">
+      <option>SII con diarrea predominante (IBS-D)</option>
+      <option>SII con estreñimiento predominante (IBS-C)</option>
+      <option>SII mixto (IBS-M)</option>
+      <option>SII no clasificable (IBS-U)</option>
+    </select>
+  </div>
+ 
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <label class="ds-label">Intensidad del dolor abdominal</label>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <input type="range" min="0" max="100" value="60" class="ds-range" />
+      <div style="background: #993C1D; color: #FFFFFF; min-width: 56px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 500;">60</div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: #6E635A;">
+      <span>Sin dolor</span><span>Insoportable</span>
+    </div>
+  </div>
+ 
+  <div class="ds-card-box" style="margin-top: 8px;">
+    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+      <input type="checkbox" checked style="width: 22px; height: 22px; accent-color: #993C1D;" />
+      <span style="font-size: 16px; color: #1F1A15;">Acepto el consentimiento informado</span>
+    </label>
+    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
+      <input type="checkbox" style="width: 22px; height: 22px; accent-color: #993C1D;" />
+      <span style="font-size: 16px; color: #1F1A15;">Recibir recordatorios por correo</span>
+    </label>
+  </div>
+</section>
+ 
+<!-- SECCIÓN F · BADGES -->
+<section class="ds-section">
+  <h2 class="ds-section-title">F. Moléculas · Badges</h2>
+  <p class="ds-section-desc">Todos los badges combinan ícono y texto. Nunca solo color. Esto cumple WCAG 1.4.1 — independencia de color.</p>
+ 
+  <h3 class="ds-group-title">FODMAP · tres niveles</h3>
+  <div class="ds-row">
+    <span class="ds-badge" style="background: #EAF3DE; color: #27500A;"><i class="ti ti-leaf"></i>Bajo en FODMAP</span>
+    <span class="ds-badge" style="background: #FAEEDA; color: #854F0B;"><i class="ti ti-alert-triangle"></i>Moderado FODMAP</span>
+    <span class="ds-badge" style="background: #FCEBEB; color: #A32D2D;"><i class="ti ti-circle-x"></i>Alto en FODMAP</span>
+  </div>
+ 
+  <h3 class="ds-group-title">Estado de recomendación · 7 estados de la máquina</h3>
+  <div class="ds-row">
+    <span class="ds-badge" style="background: #F1EFE8; color: #444441;"><i class="ti ti-sparkles"></i>Generada</span>
+    <span class="ds-badge" style="background: #FAEEDA; color: #854F0B;"><i class="ti ti-clock"></i>En revisión</span>
+    <span class="ds-badge" style="background: #EAF3DE; color: #27500A;"><i class="ti ti-circle-check"></i>Aprobada</span>
+    <span class="ds-badge" style="background: #FCEBEB; color: #A32D2D;"><i class="ti ti-circle-x"></i>Rechazada</span>
+  </div>
+  <div class="ds-row" style="margin-top: 8px;">
+    <span class="ds-badge" style="background: #E6F1FB; color: #0C447C;"><i class="ti ti-send"></i>Entregada</span>
+    <span class="ds-badge" style="background: #FAECE7; color: #712B13;"><i class="ti ti-message-circle"></i>Con feedback</span>
+    <span class="ds-badge" style="background: #F1EFE8; color: #6E635A;"><i class="ti ti-calendar-x"></i>Expirada</span>
+  </div>
+ 
+  <h3 class="ds-group-title">Confianza del modelo · 3 niveles visuales</h3>
+  <div class="ds-row">
+    <div class="ds-confidence" style="background: #EAF3DE; color: #27500A;">
+      <div class="ds-confidence-bars">
+        <div class="ds-confidence-bar" style="background: #27500A;"></div>
+        <div class="ds-confidence-bar" style="background: #27500A;"></div>
+        <div class="ds-confidence-bar" style="background: #27500A;"></div>
+      </div>
+      <span>Confianza alta</span>
+    </div>
+    <div class="ds-confidence" style="background: #FAEEDA; color: #854F0B;">
+      <div class="ds-confidence-bars">
+        <div class="ds-confidence-bar" style="background: #854F0B;"></div>
+        <div class="ds-confidence-bar" style="background: #854F0B;"></div>
+        <div class="ds-confidence-bar" style="background: #EDE5D7;"></div>
+      </div>
+      <span>Confianza media</span>
+    </div>
+    <div class="ds-confidence" style="background: #FCEBEB; color: #A32D2D;">
+      <div class="ds-confidence-bars">
+        <div class="ds-confidence-bar" style="background: #A32D2D;"></div>
+        <div class="ds-confidence-bar" style="background: #EDE5D7;"></div>
+        <div class="ds-confidence-bar" style="background: #EDE5D7;"></div>
+      </div>
+      <span>Confianza baja</span>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Sincronización offline</h3>
+  <div class="ds-row">
+    <span class="ds-badge" style="background: #E6F1FB; color: #0C447C;"><i class="ti ti-cloud-upload"></i>Pendiente de sincronizar</span>
+    <span class="ds-badge" style="background: #EAF3DE; color: #27500A;"><i class="ti ti-cloud-check"></i>Sincronizado</span>
+  </div>
+ 
+  <h3 class="ds-group-title">Progreso del wizard · 3 pasos</h3>
+  <div class="ds-card-box">
+    <div class="ds-stepper">
+      <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <div class="ds-step-num ds-step-num--done"><i class="ti ti-check"></i></div>
+        <div class="ds-step-line" style="background: #993C1D;"></div>
+      </div>
+      <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <div class="ds-step-num ds-step-num--current">2</div>
+        <div class="ds-step-line" style="background: #EDE5D7;"></div>
+      </div>
+      <div class="ds-step-num ds-step-num--pending">3</div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 13px; color: #524A42;">
+      <span>Demográficos</span>
+      <span style="color: #1F1A15; font-weight: 500;">Clínico</span>
+      <span>Alergias</span>
+    </div>
+  </div>
+</section>
+ 
+<!-- SECCIÓN G · TARJETAS -->
+<section class="ds-section">
+  <h2 class="ds-section-title">G. Organismos · Tarjetas</h2>
+  <p class="ds-section-desc">Bordes 0.5px sutiles. Todas con radio 16px para coherencia visual.</p>
+ 
+  <h3 class="ds-group-title">Tarjeta de alimento del catálogo</h3>
+  <div class="ds-mockup-card" style="display: flex; align-items: center; gap: 14px;">
+    <div style="width: 56px; height: 56px; background: #F5EFE6; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;"><i class="ti ti-wheat" style="color: #854F0B;"></i></div>
+    <div style="flex: 1;">
+      <div style="font-size: 16px; font-weight: 500; color: #1F1A15;">Quinua blanca</div>
+      <div style="font-size: 13px; color: #524A42; margin-top: 2px;">Cereales · 368 kcal por 100g</div>
+    </div>
+    <span class="ds-badge" style="background: #EAF3DE; color: #27500A; padding: 4px 10px;"><i class="ti ti-leaf"></i>Bajo</span>
+  </div>
+ 
+  <h3 class="ds-group-title">Tarjeta de comida registrada · timeline</h3>
+  <div class="ds-mockup-card" style="margin-top: 8px; padding: 16px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+      <i class="ti ti-bowl" style="color: #993C1D; font-size: 18px;"></i>
+      <span style="font-size: 14px; color: #524A42;">Almuerzo</span>
+      <span style="font-size: 13px; color: #6E635A;">· 1:00 p.m.</span>
+      <span class="ds-badge" style="background: #EAF3DE; color: #27500A; padding: 3px 8px; margin-left: auto;"><i class="ti ti-cloud-check"></i>Sincronizado</span>
+    </div>
+    <div style="font-size: 16px; font-weight: 500; color: #1F1A15;">Pollo a la plancha con quinua</div>
+    <div style="font-size: 13px; color: #524A42; margin-top: 4px;">150 g pollo · 100 g quinua · zapallo italiano</div>
+  </div>
+ 
+  <h3 class="ds-group-title">Tarjeta de síntoma · timeline (con asociación 4h opcional)</h3>
+  <div class="ds-mockup-card" style="margin-top: 8px; padding: 16px; border-left: 4px solid #854F0B;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+      <i class="ti ti-activity" style="color: #854F0B; font-size: 18px;"></i>
+      <span style="font-size: 14px; color: #524A42;">Hinchazón</span>
+      <span style="font-size: 13px; color: #6E635A;">· 2:30 p.m.</span>
+      <span class="ds-badge" style="background: #FAEEDA; color: #854F0B; padding: 3px 10px; margin-left: auto;">Intensidad 60</span>
+    </div>
+    <div style="font-size: 13px; color: #524A42; margin-top: 4px;"><i class="ti ti-arrow-up" style="font-size: 14px; vertical-align: -2px;"></i> Asociado con almuerzo (1h 30m después)</div>
+  </div>
+ 
+  <h3 class="ds-group-title">Tarjeta de recomendación · con XAI y HITL</h3>
+  <div class="ds-mockup-card" style="margin-top: 8px; padding: 16px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+      <span class="ds-badge" style="background: #EAF3DE; color: #27500A; padding: 4px 10px;"><i class="ti ti-circle-check"></i>Aprobada</span>
+      <span class="ds-badge" style="background: #FAECE7; color: #712B13; padding: 4px 10px;"><i class="ti ti-user-check"></i>Revisada por Dra. Pérez</span>
+    </div>
+    <div style="font-size: 18px; font-weight: 500; color: #1F1A15;">Evita la leche entera por 2 semanas</div>
+    <div style="font-size: 14px; color: #524A42; line-height: 1.5; margin-top: 8px;">Tu historial muestra hinchazón frecuente en las 4 horas siguientes a desayunos con lácteos. Sustituye por bebida de almendras sin azúcar.</div>
+    <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 0.5px solid #EDE5D7;">
+      <div class="ds-confidence-bars">
+        <div class="ds-confidence-bar" style="background: #27500A;"></div>
+        <div class="ds-confidence-bar" style="background: #27500A;"></div>
+        <div class="ds-confidence-bar" style="background: #27500A;"></div>
+      </div>
+      <span style="font-size: 13px; color: #27500A; font-weight: 500;">Confianza alta del modelo</span>
+    </div>
+  </div>
+</section>
+ 
+<!-- SECCIÓN H · NAVEGACIÓN -->
+<section class="ds-section">
+  <h2 class="ds-section-title">H. Organismos · Navegación móvil</h2>
+  <p class="ds-section-desc">Bottom nav de 5 ítems con FAB central elevado. Solo el ítem activo lleva color de marca. Iconos y etiquetas siempre juntos.</p>
+ 
+  <div style="background: #F5EFE6; border-radius: 24px; padding: 24px; display: flex; justify-content: center;">
+    <div class="ds-mobile-frame">
+      <div style="height: 200px; padding: 16px; color: #6E635A; font-size: 13px; display: flex; align-items: flex-end;">Contenido de la pantalla</div>
+      <div class="ds-bottom-nav">
+        <button class="ds-fab ds-fab-elevated" aria-label="Acción rápida"><i class="ti ti-plus"></i></button>
+        <div class="ds-nav-grid">
+          <button class="ds-nav-btn ds-nav-btn--active"><i class="ti ti-home"></i><span>Inicio</span></button>
+          <button class="ds-nav-btn"><i class="ti ti-notebook"></i><span>Diario</span></button>
+          <div></div>
+          <button class="ds-nav-btn"><i class="ti ti-bulb"></i><span>Consejos</span></button>
+          <button class="ds-nav-btn"><i class="ti ti-user"></i><span>Perfil</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">FAB expandido · menú de acciones (cumple regla de 2 toques)</h3>
+  <div style="background: #F5EFE6; border-radius: 24px; padding: 24px; display: flex; justify-content: center; margin-top: 8px;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
+      <button style="background: #FFFFFF; color: #1F1A15; border: 0.5px solid #EDE5D7; padding: 12px 20px; border-radius: 24px; min-height: 48px; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(31,26,21,0.06);"><i class="ti ti-clipboard-text" style="color: #993C1D; font-size: 20px;"></i>Cuestionario IBS-SSS</button>
+      <button style="background: #FFFFFF; color: #1F1A15; border: 0.5px solid #EDE5D7; padding: 12px 20px; border-radius: 24px; min-height: 48px; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(31,26,21,0.06);"><i class="ti ti-activity" style="color: #993C1D; font-size: 20px;"></i>Registrar síntoma</button>
+      <button style="background: #FFFFFF; color: #1F1A15; border: 0.5px solid #EDE5D7; padding: 12px 20px; border-radius: 24px; min-height: 48px; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: 0 2px 8px rgba(31,26,21,0.06);"><i class="ti ti-bowl" style="color: #993C1D; font-size: 20px;"></i>Registrar comida</button>
+      <button class="ds-fab" aria-label="Cerrar menú" style="background: #712B13;"><i class="ti ti-x"></i></button>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">App bar · barra superior</h3>
+  <div class="ds-app-bar" style="margin-top: 8px;">
+    <button class="ds-icon-btn" aria-label="Atrás" style="width: 40px; height: 40px;"><i class="ti ti-arrow-left"></i></button>
+    <div style="font-size: 18px; font-weight: 500; color: #1F1A15; flex: 1;">Registrar comida</div>
+    <button class="ds-icon-btn" aria-label="Notificaciones" style="width: 40px; height: 40px;"><i class="ti ti-bell"></i></button>
+  </div>
+</section>
+ 
+<!-- SECCIÓN I · ESTADOS DE PANTALLA -->
+<section class="ds-section">
+  <h2 class="ds-section-title">I. Organismos · Estados de pantalla</h2>
+  <p class="ds-section-desc">Estados vacío, carga y error claramente diseñados. Reducen ansiedad del paciente al transmitir que el sistema está bajo control.</p>
+ 
+  <h3 class="ds-group-title">Estado vacío</h3>
+  <div class="ds-card-box" style="padding: 48px 24px; text-align: center;">
+    <div style="width: 72px; height: 72px; background: #F5EFE6; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;"><i class="ti ti-bowl" style="font-size: 36px; color: #993C1D;"></i></div>
+    <div style="font-size: 18px; font-weight: 500; color: #1F1A15; margin-bottom: 8px;">Aún no tienes comidas registradas hoy</div>
+    <div style="font-size: 14px; color: #524A42; margin-bottom: 24px; line-height: 1.5;">Cuando registres una comida, aparecerá aquí en tu diario.</div>
+    <button class="ds-btn-primary">Registrar primera comida</button>
+  </div>
+ 
+  <h3 class="ds-group-title">Estado de carga · skeleton</h3>
+  <div class="ds-card-box" style="margin-top: 8px; padding: 16px;">
+    <div style="display: flex; gap: 14px; align-items: center;">
+      <div style="width: 56px; height: 56px; background: #EDE5D7; border-radius: 12px;"></div>
+      <div style="flex: 1;">
+        <div style="height: 14px; background: #EDE5D7; border-radius: 4px; width: 60%; margin-bottom: 8px;"></div>
+        <div style="height: 12px; background: #F5EFE6; border-radius: 4px; width: 80%;"></div>
+      </div>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Toast de confirmación · éxito</h3>
+  <div class="ds-toast ds-toast--success" style="margin-top: 8px;">
+    <i class="ti ti-circle-check" style="font-size: 22px;"></i>
+    <div style="flex: 1;">
+      <div style="font-weight: 500; font-size: 15px;">Comida guardada</div>
+      <div style="font-size: 13px;">Se sincronizará cuando recuperes conexión.</div>
+    </div>
+  </div>
+ 
+  <h3 class="ds-group-title">Toast de error · con CTA de reintentar</h3>
+  <div class="ds-toast ds-toast--error" style="margin-top: 8px;">
+    <i class="ti ti-alert-circle" style="font-size: 22px;"></i>
+    <div style="flex: 1;">
+      <div style="font-weight: 500; font-size: 15px;">No pudimos guardar tu registro</div>
+      <div style="font-size: 13px;">Toca para reintentar.</div>
+    </div>
+    <button style="background: transparent; color: #A32D2D; border: 1px solid #A32D2D; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;">Reintentar</button>
+  </div>
+</section>
+ 
+<footer class="ds-footer">
+  Cauce · Design System v1.0 · Flavio Eduardo Trigueros Chumacero · UPC 2026
+</footer>
+ 
+</body>
+</html>
