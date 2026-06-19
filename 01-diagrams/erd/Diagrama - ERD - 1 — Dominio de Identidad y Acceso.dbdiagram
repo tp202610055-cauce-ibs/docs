@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "darkMode": true,
+  "gridEnabling": false,
+  "currentViewName": null,
+  "defaultView": {
+    "detailLevel": "All",
+    "tablePositions": [
+      {
+        "name": "user_roles",
+        "schemaName": "public",
+        "x": 12,
+        "y": 12
+      },
+      {
+        "name": "users",
+        "schemaName": "public",
+        "x": 516.90869140625,
+        "y": 12
+      },
+      {
+        "name": "invitation_codes",
+        "schemaName": "public",
+        "x": 1090.37744140625,
+        "y": -38.867617107942976
+      },
+      {
+        "name": "password_reset_tokens",
+        "schemaName": "public",
+        "x": 1064.64501953125,
+        "y": 346
+      },
+      {
+        "name": "consent_records",
+        "schemaName": "public",
+        "x": 1064.64501953125,
+        "y": 648
+      }
+    ],
+    "tableGroupCollapseStates": [],
+    "stickyNoteLayouts": [],
+    "referencePaths": []
+  },
+  "views": {}
+}

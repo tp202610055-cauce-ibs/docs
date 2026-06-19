@@ -1,0 +1,90 @@
+// ============================================================
+// DOMINIO 2: DATOS CLÍNICOS DEL PACIENTE
+// Sistema de Recomendaciones Dietéticas para SII
+// ============================================================
+
+// --- TABLAS FANTASMA (referencias externas) ---
+Table users {
+  user_id uuid [primary key]
+  note: 'Ver Dominio 1 - Identidad y Acceso'
+}
+
+Table invitation_codes {
+  code_id uuid [primary key]
+  note: 'Ver Dominio 1 - Identidad y Acceso'
+}
+// ------------------------------------------------
+
+Table patient_profiles {
+  profile_id uuid [primary key, default: `gen_random_uuid()`]
+  user_id uuid [not null, unique, note: 'Relación 1:1 con users. Solo para pacientes']
+  date_of_birth date [not null]
+  biological_sex varchar(10) [not null, note: 'male | female | other']
+  weight_kg decimal(5,2) [not null, note: 'Rango válido: mayor a 0 y menor a 500']
+  height_cm decimal(5,2) [not null, note: 'Rango válido: mayor a 0 y menor a 250']
+  ibs_subtype varchar(10) [not null, note: 'IBS-D | IBS-C | IBS-M | IBS-U']
+  diagnosis_date date [null]
+  medications text [null]
+  onboarding_completed boolean [not null, default: false]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  note: 'Perfil clínico exclusivo del paciente. Separado de users por minimización de datos sensibles'
+}
+
+Table allergies {
+  allergy_id uuid [primary key, default: `gen_random_uuid()`]
+  name varchar(100) [not null, unique]
+  allergy_type varchar(30) [not null, note: 'allergy (mediada por IgE) | intolerance (metabólica) | sensitivity (no caracterizada)']
+  description text [null]
+  is_active boolean [not null, default: true]
+
+  note: 'Catálogo cerrado de alergias e intolerancias alimentarias'
+}
+
+Table patient_allergies {
+  patient_allergy_id uuid [primary key, default: `gen_random_uuid()`]
+  patient_id uuid [not null, note: 'FK al paciente que declara la alergia']
+  allergy_id uuid [not null]
+  severity varchar(20) [not null, note: 'mild | moderate | severe']
+  declared_at timestamp [not null, default: `now()`]
+  notes varchar(500) [null, note: 'Texto libre opcional con matices de la declaración']
+
+  indexes {
+    (patient_id, allergy_id) [unique, name: 'uq_patient_allergy']
+  }
+
+  note: 'Tabla de unión M:N entre pacientes y alergias del catálogo'
+}
+
+Table nutritionist_patient {
+  assignment_id uuid [primary key, default: `gen_random_uuid()`]
+  nutritionist_id uuid [not null]
+  patient_id uuid [not null]
+  invitation_code_id uuid [null]
+  status varchar(20) [not null, default: 'active', note: 'active | inactive']
+  assigned_at timestamp [not null, default: `now()`]
+  unassigned_at timestamp [null]
+
+  note: 'Asignación clínica entre nutricionistas y pacientes con histórico'
+}
+
+// --- RELACIONES ---
+
+Ref: patient_profiles.user_id - users.user_id
+// 1:1 - Un usuario paciente tiene exactamente un perfil clínico
+
+Ref: patient_allergies.patient_id > users.user_id
+// El paciente que declara la alergia (apunta a users por consistencia con el resto del modelo)
+
+Ref: patient_allergies.allergy_id > allergies.allergy_id
+// La alergia del catálogo declarada por el paciente
+
+Ref: nutritionist_patient.nutritionist_id > users.user_id
+// El nutricionista asignado
+
+Ref: nutritionist_patient.patient_id > users.user_id
+// El paciente asignado
+
+Ref: nutritionist_patient.invitation_code_id > invitation_codes.code_id
+// El código que originó la vinculación clínica

@@ -1,0 +1,54 @@
+// ============================================================
+// DOMINIO 5: AUDITORÍA Y OPERACIONES
+// Sistema de Recomendaciones Dietéticas para SII
+// ============================================================
+
+// --- TABLA FANTASMA (referencia externa) ---
+Table users {
+  user_id uuid [primary key]
+  note: 'Ver Dominio 1 - Identidad y Acceso'
+}
+// ------------------------------------------------
+
+Table audit_logs {
+  log_id bigserial [primary key, note: 'BIGSERIAL por eficiencia en inserciones masivas']
+  actor_user_id uuid [null, note: 'Nulo cuando la acción la ejecuta el sistema automáticamente']
+  action_type varchar(50) [not null, note: 'INSERT | UPDATE | DELETE | LOGIN | LOGOUT | APPROVE | REJECT | EXPORT | DELETE_ACCOUNT | FAILED_LOGIN']
+  table_affected varchar(100) [null]
+  record_id uuid [null]
+  old_values_hash varchar(64) [null, note: 'Hash SHA-256 de valores antes del cambio']
+  new_values_hash varchar(64) [null, note: 'Hash SHA-256 de valores después del cambio']
+  ip_address varchar(45) [null]
+  user_agent varchar(255) [null]
+  timestamp timestamp [not null, default: `now()`, note: 'UTC. Inmutable mediante triggers']
+  additional_context jsonb [null, note: 'Contexto estructurado para eventos complejos']
+
+  note: 'Registro inmutable. Auditoría en doble capa: middleware + triggers. Cumplimiento Ley 29733'
+}
+
+Table notifications {
+  notification_id uuid [primary key, default: `gen_random_uuid()`]
+  user_id uuid [not null, note: 'Usuario destinatario de la notificación']
+  notification_type varchar(50) [not null, note: 'recommendation | reminder | alert | system']
+  channel varchar(20) [not null, note: 'push | email']
+  title varchar(150) [not null]
+  body text [not null]
+  status varchar(20) [not null, default: 'pending', note: 'pending | sent | delivered | failed']
+  retry_count integer [not null, default: 0, note: 'Política de reintentos con backoff exponencial. Máximo 3 intentos']
+  related_entity_type varchar(50) [null, note: 'recommendation | ibs_sss_assessment']
+  related_entity_id uuid [null, note: 'ID de entidad para deep linking']
+  scheduled_for timestamp [not null, note: 'Momento desde el cual la notificación debe enviarse']
+  sent_at timestamp [null]
+  delivered_at timestamp [null, note: 'Momento de confirmación de entrega exitosa']
+  error_message text [null, note: 'Mensaje del proveedor en caso de fallo. Insumo de diagnóstico']
+
+  note: 'Bitácora de notificaciones push y correos con política de reintentos'
+}
+
+// --- RELACIONES ---
+
+Ref: audit_logs.actor_user_id > users.user_id
+// Un usuario genera múltiples registros de auditoría
+
+Ref: notifications.user_id > users.user_id
+// Un usuario recibe múltiples notificaciones

@@ -1,0 +1,167 @@
+// ============================================================
+// DOMINIO 3: CATÁLOGO ALIMENTARIO Y REGISTRO CLÍNICO DIARIO
+// Sistema de Recomendaciones Dietéticas para SII
+// ============================================================
+
+// --- TABLA FANTASMA (referencia externa) ---
+Table users {
+  user_id uuid [primary key]
+  note: 'Ver Dominio 1 - Identidad y Acceso'
+}
+// ------------------------------------------------
+
+Table food_items {
+  food_id uuid [primary key, default: `gen_random_uuid()`]
+  name varchar(150) [not null, unique]
+  category varchar(50) [not null, note: 'cereales | proteínas | lácteos | frutas | verduras | leguminosas | preparaciones']
+  calories_per_100g decimal(6,2) [not null, default: 0, note: 'Aporte calórico por 100g (estándar USDA)']
+  protein_g_per_100g decimal(5,2) [not null, default: 0]
+  carbs_g_per_100g decimal(5,2) [not null, default: 0]
+  fat_g_per_100g decimal(5,2) [not null, default: 0]
+  fiber_g_per_100g decimal(5,2) [not null, default: 0]
+  fodmap_level varchar(10) [not null, note: 'low | moderate | high']
+  fodmap_tags text [null, note: 'Etiquetas controladas: fructans | lactose | polyols | oligos']
+  is_peruvian boolean [not null, default: false]
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  note: 'Catálogo oficial de alimentos peruanos. Cargado por script semilla. Nutrientes por 100g'
+}
+
+Table custom_foods {
+  custom_food_id uuid [primary key, default: `gen_random_uuid()`]
+  patient_id uuid [not null]
+  name varchar(150) [not null]
+  portion_size_grams decimal(7,2) [not null, note: 'Peso total de una porción estándar de la preparación']
+  created_at timestamp [not null, default: `now()`]
+
+  indexes {
+    (patient_id, name) [unique, name: 'uq_custom_food_per_patient']
+  }
+
+  note: 'Preparaciones propias creadas por pacientes. Nutrientes calculados al vuelo desde ingredientes'
+}
+
+Table custom_food_ingredients {
+  ingredient_id uuid [primary key, default: `gen_random_uuid()`]
+  custom_food_id uuid [not null]
+  food_id uuid [not null]
+  proportion_grams decimal(6,2) [not null, note: 'Cantidad en gramos del ingrediente en la porción estándar']
+
+  indexes {
+    (custom_food_id, food_id) [unique, name: 'uq_ingredient_per_custom_food']
+  }
+
+  note: 'Composición de cada alimento personalizado. Sin duplicados de ingrediente'
+}
+
+Table meals {
+  meal_id uuid [primary key, default: `gen_random_uuid()`]
+  client_guid uuid [not null, unique, note: 'Generado en el dispositivo para idempotencia en sync offline']
+  patient_id uuid [not null]
+  meal_time varchar(20) [not null, note: 'breakfast | lunch | dinner | snack']
+  consumed_at timestamp [not null]
+  sync_status varchar(20) [not null, default: 'sync_completed', note: 'sync_pending | sync_completed']
+  created_at timestamp [not null, default: `now()`]
+  client_created_at timestamp [not null, note: 'Canónico para correlación de ventana de 4h con síntomas']
+
+  note: 'Registro de comidas. Soporta modo offline con sincronización diferida'
+}
+
+Table meal_items {
+  meal_item_id uuid [primary key, default: `gen_random_uuid()`]
+  meal_id uuid [not null]
+  food_id uuid [null, note: 'Alimento del catálogo. Mutuamente exclusivo con custom_food_id']
+  custom_food_id uuid [null, note: 'Alimento personalizado. Mutuamente exclusivo con food_id']
+  quantity decimal(8,2) [not null]
+  unit varchar(20) [not null, note: 'grams | cups | units | ounces | tablespoons']
+
+  note: 'Detalle de alimentos por comida. CHECK XOR garantiza solo uno de food_id o custom_food_id'
+}
+
+Table symptoms {
+  symptom_id uuid [primary key, default: `gen_random_uuid()`]
+  client_guid uuid [not null, unique, note: 'Generado en el dispositivo para idempotencia en sync']
+  patient_id uuid [not null]
+  symptom_type varchar(50) [not null, note: 'abdominal_pain | bloating | flatulence | diarrhea | constipation | other']
+  intensity integer [not null, note: 'Escala VAS 1-100 alineada con IBS-SSS']
+  occurred_at timestamp [not null]
+  associated_meal_id uuid [null, note: 'Comida registrada dentro de la ventana de correlación de 4 horas']
+  has_meal_association boolean [not null, default: false, note: 'Denormalización para acelerar consultas del motor IA']
+  sync_status varchar(20) [not null, default: 'sync_completed']
+  created_at timestamp [not null, default: `now()`]
+  client_created_at timestamp [not null]
+
+  note: 'Síntomas gastrointestinales. Ventana de 4h justificada por Monash University y Ford et al. 2024'
+}
+
+Table clinical_notes {
+  note_id uuid [primary key, default: `gen_random_uuid()`]
+  patient_id uuid [not null]
+  meal_id uuid [null, note: 'Comida asociada. Mutuamente exclusivo con symptom_id']
+  symptom_id uuid [null, note: 'Síntoma asociado. Mutuamente exclusivo con meal_id']
+  content varchar(500) [not null]
+  created_at timestamp [not null, default: `now()`]
+
+  note: 'Notas de contexto del paciente: estrés, medicamentos, ciclo menstrual, etc.'
+}
+
+Table ibs_sss_assessments {
+  assessment_id uuid [primary key, default: `gen_random_uuid()`]
+  patient_id uuid [not null]
+  assessment_type varchar(20) [not null, note: 'baseline | periodic']
+  cycle_number integer [not null, default: 0, note: '0 para línea base. Incrementa con cada ciclo']
+  pain_severity integer [not null, note: 'Escala 0-100']
+  pain_frequency integer [not null, note: 'Escala 0-100']
+  bloating_severity integer [not null, note: 'Escala 0-100']
+  bowel_habits_dissatisfaction integer [not null, note: 'Escala 0-100']
+  life_interference integer [not null, note: 'Escala 0-100']
+  total_score integer [not null, note: 'Suma de las 5 dimensiones. Rango 0-500']
+  severity_category varchar(20) [not null, note: 'mild (0-174) | moderate (175-300) | severe (301-500)']
+  completed_at timestamp [not null, default: `now()`]
+  next_assessment_date date [null, note: 'Próxima evaluación cada 14 días']
+
+  note: 'Evaluaciones IBS-SSS. Instrumento de medición principal del piloto clínico'
+}
+
+// --- RELACIONES ---
+
+Ref: custom_foods.patient_id > users.user_id
+// Un paciente crea múltiples alimentos personalizados
+
+Ref: custom_food_ingredients.custom_food_id > custom_foods.custom_food_id
+// Un alimento personalizado tiene múltiples ingredientes
+
+Ref: custom_food_ingredients.food_id > food_items.food_id
+// Un ingrediente del catálogo se usa en múltiples platos personalizados
+
+Ref: meals.patient_id > users.user_id
+// Un paciente registra múltiples comidas
+
+Ref: meal_items.meal_id > meals.meal_id
+// Una comida tiene múltiples ítems
+
+Ref: meal_items.food_id > food_items.food_id
+// Un alimento del catálogo aparece en múltiples ítems
+
+Ref: meal_items.custom_food_id > custom_foods.custom_food_id
+// Un alimento personalizado aparece en múltiples ítems
+
+Ref: symptoms.patient_id > users.user_id
+// Un paciente registra múltiples síntomas
+
+Ref: symptoms.associated_meal_id > meals.meal_id
+// Un síntoma puede asociarse a una comida reciente
+
+Ref: clinical_notes.patient_id > users.user_id
+// Un paciente escribe múltiples notas clínicas
+
+Ref: clinical_notes.meal_id > meals.meal_id
+// Una nota puede asociarse a una comida
+
+Ref: clinical_notes.symptom_id > symptoms.symptom_id
+// Una nota puede asociarse a un síntoma
+
+Ref: ibs_sss_assessments.patient_id > users.user_id
+// Un paciente tiene múltiples evaluaciones IBS-SSS

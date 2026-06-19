@@ -1,0 +1,94 @@
+// ============================================================
+// DOMINIO 4: RECOMENDACIONES E INTELIGENCIA ARTIFICIAL
+// Sistema de Recomendaciones Dietéticas para SII
+// ============================================================
+
+// --- TABLAS FANTASMA (referencias externas) ---
+Table users {
+  user_id uuid [primary key]
+  note: 'Ver Dominio 1 - Identidad y Acceso'
+}
+
+Table food_items {
+  food_id uuid [primary key]
+  note: 'Ver Dominio 3 - Catálogo Alimentario'
+}
+// ------------------------------------------------
+
+Table model_versions {
+  version_id uuid [primary key, default: `gen_random_uuid()`]
+  version_name varchar(50) [not null, unique, note: 'Versionado semántico: v1.0.0, v1.1.0']
+  model_hash varchar(64) [not null, unique, note: 'Hash SHA-256 del archivo ONNX']
+  training_dataset_size integer [null]
+  performance_metrics jsonb [null, note: 'precision, recall, F1, AUC-ROC en JSON']
+  deployed_at timestamp [not null, default: `now()`]
+  deployed_by varchar(100) [not null, note: 'Identificador del operador o script administrativo del despliegue']
+  is_active boolean [not null, default: false, note: 'Solo una versión activa simultáneamente']
+
+  note: 'Versiones del modelo XGBoost. Provisioning técnico via script administrativo'
+}
+
+Table recommendations {
+  recommendation_id uuid [primary key, default: `gen_random_uuid()`]
+  patient_id uuid [not null]
+  model_version_id uuid [not null]
+  status varchar(30) [not null, default: 'Generated', note: 'Generated | Pending_Review | Approved | Rejected | Delivered | Feedback_Received | Expired']
+  confidence_score decimal(4,3) [not null, note: 'Score del modelo entre 0.000 y 1.000']
+  auto_approved boolean [not null, default: false]
+  reviewed_by_nutritionist_id uuid [null]
+  nutritionist_note text [null, note: 'Nota clínica obligatoria al aprobar o rechazar en flujo HITL']
+  ai_explanation text [null, note: 'Explicación generada por LLM con guardrails']
+  explanation_source varchar(20) [not null, default: 'llm_generated', note: 'llm_generated | fallback']
+  generated_at timestamp [not null, default: `now()`]
+  reviewed_at timestamp [null]
+  delivered_at timestamp [null]
+  expires_at timestamp [null]
+
+  note: 'Recomendaciones dietéticas. Máquina de estados de 7 valores que materializa el flujo HITL'
+}
+
+Table recommendation_items {
+  recommendation_item_id uuid [primary key, default: `gen_random_uuid()`]
+  recommendation_id uuid [not null]
+  food_id uuid [not null]
+  action_type varchar(20) [not null, note: 'suggest | reduce | avoid | substitute']
+  substitute_food_id uuid [null, note: 'Alimento sustituto cuando action_type es substitute']
+  reasoning text [null, note: 'Razonamiento del motor para este ítem específico']
+
+  note: 'Detalle de alimentos por recomendación con su acción específica'
+}
+
+Table recommendation_feedback {
+  feedback_id uuid [primary key, default: `gen_random_uuid()`]
+  recommendation_id uuid [not null, unique, note: 'Una recomendación tiene máximo un feedback']
+  was_applied boolean [not null]
+  outcome varchar(20) [not null, note: 'improvement | no_change | worsening']
+  comment varchar(500) [null]
+  sync_status varchar(20) [not null, default: 'sync_completed']
+  submitted_at timestamp [not null, default: `now()`]
+
+  note: 'Retroalimentación del paciente. Insumo para reentrenamiento del modelo'
+}
+
+// --- RELACIONES ---
+
+Ref: recommendations.patient_id > users.user_id
+// Un paciente recibe múltiples recomendaciones
+
+Ref: recommendations.model_version_id > model_versions.version_id
+// Una versión del modelo genera múltiples recomendaciones
+
+Ref: recommendations.reviewed_by_nutritionist_id > users.user_id
+// El nutricionista que revisó la recomendación en HITL
+
+Ref: recommendation_items.recommendation_id > recommendations.recommendation_id
+// Una recomendación contiene múltiples ítems
+
+Ref: recommendation_items.food_id > food_items.food_id
+// Alimento principal del ítem
+
+Ref: recommendation_items.substitute_food_id > food_items.food_id
+// Alimento sustituto propuesto
+
+Ref: recommendation_feedback.recommendation_id - recommendations.recommendation_id
+// Relación 1:1 entre recomendación y feedback

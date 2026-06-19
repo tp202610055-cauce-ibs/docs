@@ -1,0 +1,84 @@
+// ============================================================
+// DOMINIO 1: IDENTIDAD Y ACCESO
+// Sistema de Recomendaciones Dietéticas para SII
+// ============================================================
+
+Table user_roles {
+  role_id integer [primary key, increment]
+  role_name varchar(50) [not null, unique, note: 'patient | nutritionist']
+  description varchar(255) [null]
+  is_active boolean [not null, default: true]
+
+  note: 'Catálogo cerrado de roles humanos del sistema'
+}
+
+Table users {
+  user_id uuid [primary key, default: `gen_random_uuid()`]
+  keycloak_id varchar(100) [not null, unique]
+  email varchar(150) [not null, unique]
+  full_name varchar(150) [not null]
+  role_id integer [not null]
+  status varchar(20) [not null, default: 'pending_activation', note: 'active | inactive | pending_activation | suspended']
+  email_verified boolean [not null, default: false]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  last_login_at timestamp [null]
+  failed_login_attempts integer [not null, default: 0]
+  locked_until timestamp [null]
+
+  note: 'Tabla maestra de usuarios humanos del sistema: pacientes y dietistas-nutricionistas'
+}
+
+Table invitation_codes {
+  code_id uuid [primary key, default: `gen_random_uuid()`]
+  code varchar(20) [not null, unique]
+  nutritionist_id uuid [not null, note: 'FK al nutricionista que generó el código']
+  used_by_patient_id uuid [null, note: 'FK al paciente que usó el código']
+  status varchar(20) [not null, default: 'active', note: 'active | used | expired']
+  created_at timestamp [not null, default: `now()`]
+  expires_at timestamp [not null, note: 'Expira 72 horas después de la generación']
+  used_at timestamp [null]
+
+  note: 'Códigos generados por nutricionistas para vincular pacientes'
+}
+
+Table password_reset_tokens {
+  token_id uuid [primary key, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  token_hash varchar(255) [not null, unique]
+  created_at timestamp [not null, default: `now()`]
+  expires_at timestamp [not null, note: 'Expira 30 minutos después de la generación']
+  used_at timestamp [null]
+  is_used boolean [not null, default: false]
+
+  note: 'Tokens de un solo uso para recuperación de contraseña'
+}
+
+Table consent_records {
+  consent_id uuid [primary key, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  document_version varchar(20) [not null]
+  accepted_at timestamp [not null, default: `now()`]
+  ip_address varchar(45) [null]
+  consent_text_hash varchar(64) [not null]
+  is_current boolean [not null, default: true]
+
+  note: 'Historial inmutable de aceptaciones del consentimiento informado. Cumplimiento Ley 29733'
+}
+
+// --- RELACIONES ---
+
+Ref: users.role_id > user_roles.role_id
+// Muchos usuarios tienen un mismo rol
+
+Ref: invitation_codes.nutritionist_id > users.user_id
+// El nutricionista que generó el código
+
+Ref: invitation_codes.used_by_patient_id > users.user_id
+// El paciente que usó el código
+
+Ref: password_reset_tokens.user_id > users.user_id
+// Tokens de recuperación pertenecen a un usuario
+
+Ref: consent_records.user_id > users.user_id
+// Historial de consentimientos de un usuario
