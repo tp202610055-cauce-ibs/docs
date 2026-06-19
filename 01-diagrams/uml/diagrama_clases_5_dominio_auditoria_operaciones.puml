@@ -1,0 +1,138 @@
+@startuml DiagramaClases_D5_AuditoriaOperaciones
+!theme plain
+title Modelo de Clases del Dominio de Auditoría y Operaciones
+
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #D6EAF8
+skinparam classBorderColor #2E86C1
+skinparam classHeaderBackgroundColor #2E86C1
+skinparam classHeaderFontColor #FFFFFF
+skinparam classFontSize 11
+skinparam ArrowColor #2E4057
+skinparam packageBackgroundColor #F8F9FA
+skinparam packageBorderColor #AEB6BF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+skinparam nodesep 75
+skinparam ranksep 55
+
+package "Identidad y Acceso (referencia)" #F5F5F5 {
+    class "User" as ExtUser <<external>> #FFFFFF {
+        + userId : UUID
+        + role : UserRole
+    }
+
+    note bottom of ExtUser
+      Clase definida en el Dominio
+      de Identidad y Acceso.
+    end note
+}
+
+package "Auditoría y Operaciones" #F4F6F7 {
+
+    enum AuditActionType {
+        INSERT
+        UPDATE
+        DELETE
+        LOGIN
+        LOGOUT
+        APPROVE
+        REJECT
+        EXPORT
+        DELETE_ACCOUNT
+        FAILED_LOGIN
+    }
+
+    enum NotificationType {
+        RECOMMENDATION
+        REMINDER
+        ALERT
+        SYSTEM
+    }
+
+    enum NotificationChannel {
+        PUSH
+        EMAIL
+    }
+
+    enum NotificationStatus {
+        PENDING
+        SENT
+        DELIVERED
+        FAILED
+    }
+
+    class AuditLog {
+        + logId : Long
+        + actorUserId : UUID
+        + actionType : AuditActionType
+        + tableAffected : String
+        + recordId : UUID
+        + oldValuesHash : String
+        + newValuesHash : String
+        + ipAddress : String
+        + userAgent : String
+        + timestamp : DateTime
+        + additionalContext : JSON
+        --
+        + register(actor: User,\n  action: AuditActionType) : void
+        + verifyIntegrity() : Boolean
+    }
+
+    class Notification {
+        + notificationId : UUID
+        + userId : UUID
+        + notificationType : NotificationType
+        + channel : NotificationChannel
+        + title : String
+        + body : String
+        + status : NotificationStatus
+        + retryCount : Integer
+        + relatedEntityType : String
+        + relatedEntityId : UUID
+        + scheduledFor : DateTime
+        + sentAt : DateTime
+        + deliveredAt : DateTime
+        + errorMessage : String
+        --
+        + send() : void
+        + retry() : void
+        + markAsDelivered() : void
+    }
+
+    note right of AuditLog
+      Bitácora permanente e inmodificable
+      de todas las acciones importantes
+      del sistema: quién hizo qué, cuándo
+      y desde qué dispositivo. Ningún
+      usuario puede borrar ni editar estos
+      registros. Responde a los requisitos
+      legales de la Ley N.° 29733 y la
+      norma del MINSA. El sistema usa dos
+      mecanismos de registro en paralelo
+      para mayor seguridad: uno en la
+      aplicación y otro directamente en
+      la base de datos.
+    end note
+
+    note right of Notification
+      Gestiona los avisos que el sistema
+      envía a pacientes y nutricionistas
+      por notificación push o correo
+      electrónico. Si un envío falla, el
+      sistema lo reintenta hasta tres veces
+      con pausas progresivas. Al tocar la
+      notificación, la app abre directamente
+      la pantalla relevante, como una
+      recomendación pendiente.
+    end note
+
+    AuditLog "0..*" ..> "0..1" ExtUser : ejecutada por >
+    AuditLog "1" --> "1" AuditActionType
+    Notification "0..*" --> "1" ExtUser : destinatario >
+    Notification "1" --> "1" NotificationType
+    Notification "1" --> "1" NotificationChannel
+    Notification "1" --> "1" NotificationStatus
+}
+
+@enduml

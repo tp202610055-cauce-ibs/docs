@@ -1,0 +1,261 @@
+@startuml DiagramaClases_D3_CatalogoRegistro
+!theme plain
+title Modelo de Clases del Dominio de Catálogo Alimentario y Registro Clínico Diario
+left to right direction
+
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #D6EAF8
+skinparam classBorderColor #2E86C1
+skinparam classHeaderBackgroundColor #2E86C1
+skinparam classHeaderFontColor #FFFFFF
+skinparam classFontSize 11
+skinparam ArrowColor #2E4057
+skinparam packageBackgroundColor #F8F9FA
+skinparam packageBorderColor #AEB6BF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+skinparam nodesep 65
+skinparam ranksep 50
+
+package "Identidad y Acceso (referencia)" #F5F5F5 {
+    class "User" as ExtUser <<external>> #FFFFFF {
+        + userId : UUID
+        + role : UserRole
+    }
+    note bottom of ExtUser
+      Clase definida en el Dominio
+      de Identidad y Acceso.
+    end note
+}
+
+package "Catálogo y Registro Clínico" #FEF9E7 {
+
+    enum FodmapLevel {
+        LOW
+        MODERATE
+        HIGH
+    }
+
+    enum MealTime {
+        BREAKFAST
+        LUNCH
+        DINNER
+        SNACK
+    }
+
+    enum SymptomType {
+        ABDOMINAL_PAIN
+        BLOATING
+        FLATULENCE
+        DIARRHEA
+        CONSTIPATION
+        OTHER
+    }
+
+    enum MeasurementUnit {
+        GRAMS
+        CUPS
+        UNITS
+        OUNCES
+        TABLESPOONS
+    }
+
+    enum SyncStatus {
+        SYNC_PENDING
+        SYNC_COMPLETED
+    }
+
+    enum AssessmentType {
+        BASELINE
+        PERIODIC
+    }
+
+    enum SeverityCategory {
+        MILD
+        MODERATE
+        SEVERE
+    }
+
+    class FoodItem {
+        + foodId : UUID
+        + name : String
+        + category : String
+        + caloriesPer100g : Decimal
+        + proteinGPer100g : Decimal
+        + carbsGPer100g : Decimal
+        + fatGPer100g : Decimal
+        + fiberGPer100g : Decimal
+        + fodmapLevel : FodmapLevel
+        + fodmapTags : String
+        + isPeruvian : Boolean
+        + isActive : Boolean
+        + createdAt : DateTime
+        + updatedAt : DateTime
+        --
+        + isHighFodmap() : Boolean
+        + getNutritionalProfile() : Map
+    }
+
+    class CustomFood {
+        + customFoodId : UUID
+        + patientId : UUID
+        + name : String
+        + portionSizeGrams : Decimal
+        + createdAt : DateTime
+        --
+        + calculateNutrients() : Map
+    }
+
+    class CustomFoodIngredient {
+        + ingredientId : UUID
+        + customFoodId : UUID
+        + foodId : UUID
+        + proportionGrams : Decimal
+        --
+        + getContribution() : Map
+    }
+
+    class Meal {
+        + mealId : UUID
+        + clientGuid : UUID
+        + patientId : UUID
+        + mealTime : MealTime
+        + consumedAt : DateTime
+        + syncStatus : SyncStatus
+        + createdAt : DateTime
+        + clientCreatedAt : DateTime
+        --
+        + markAsSynced() : void
+        + getTotalCalories() : Decimal
+        + getFodmapLoad() : FodmapLevel
+    }
+
+    class MealItem {
+        + mealItemId : UUID
+        + mealId : UUID
+        + foodId : UUID
+        + customFoodId : UUID
+        + quantity : Decimal
+        + unit : MeasurementUnit
+        --
+        + getCalories() : Decimal
+        + isCustom() : Boolean
+    }
+
+    class Symptom {
+        + symptomId : UUID
+        + clientGuid : UUID
+        + patientId : UUID
+        + symptomType : SymptomType
+        + intensity : Integer
+        + occurredAt : DateTime
+        + associatedMealId : UUID
+        + hasMealAssociation : Boolean
+        + syncStatus : SyncStatus
+        + createdAt : DateTime
+        + clientCreatedAt : DateTime
+        --
+        + markAsSynced() : void
+        + correlateWith(meal: Meal) : void
+    }
+
+    class ClinicalNote {
+        + noteId : UUID
+        + patientId : UUID
+        + mealId : UUID
+        + symptomId : UUID
+        + content : String
+        + createdAt : DateTime
+        --
+        + summarize() : String
+    }
+
+    class IbsSssAssessment {
+        + assessmentId : UUID
+        + patientId : UUID
+        + assessmentType : AssessmentType
+        + cycleNumber : Integer
+        + painSeverity : Integer
+        + painFrequency : Integer
+        + bloatingSeverity : Integer
+        + bowelHabitsDissatisfaction : Integer
+        + lifeInterference : Integer
+        + totalScore : Integer
+        + severityCategory : SeverityCategory
+        + completedAt : DateTime
+        + nextAssessmentDate : Date
+        --
+        + classify() : SeverityCategory
+        + compareTo(previous: IbsSssAssessment) : Integer
+    }
+
+    note right of FoodItem
+      Catálogo oficial de 
+      alimentos disponibles
+      en el sistema, con 
+      énfasis en comida
+      peruana. Cada alimento 
+      tiene su perfil
+      nutricional por cada 
+      100 gramos y su
+      clasificación FODMAP.
+    end note
+
+    note bottom of CustomFood
+      Permite al paciente registrar platos
+      caseros propios que no están en el
+      catálogo. Se descompone en sus 
+      ingredientes para que el sistema
+      pueda calcular sus nutrientes.
+    end note
+
+    note right of Meal
+      Registra cada comida del paciente.
+      Funciona incluso sin internet: el
+      registro se guarda en el celular y
+      se envía al servidor cuando vuelve
+      la conexión, sin duplicarse.
+    end note
+
+    note right of Symptom
+      Registra molestias gastrointestinales. 
+      Si ocurren dentro de las 4 horas después de una
+      comida, el sistema las asocia para detectar qué 
+      alimentos podrían estar relacionados.
+    end note
+
+    note bottom of IbsSssAssessment
+      Cuestionario clínico 
+      que mide la severidad 
+      del SII en una escala 
+      de 0 a 500 puntos. Se 
+      aplica al inicio del 
+      piloto y luego cada 
+      14 días para medir si el 
+      paciente está mejorando.
+    end note
+
+    FoodItem "1" --> "1" FodmapLevel
+    CustomFood "0..*" --> "1" ExtUser : creado por\n(patient) >
+    CustomFood "1" *-- "1..*" CustomFoodIngredient
+    CustomFoodIngredient "0..*" --> "1" FoodItem
+    Meal "0..*" --> "1" ExtUser : registrada por (patient) >
+    Meal "1" --> "1" MealTime
+    Meal "1" --> "1" SyncStatus
+    Meal "1" *-- "1..*" MealItem
+    MealItem "0..1" --> "0..1" FoodItem
+    MealItem "0..1" --> "0..1" CustomFood
+    MealItem "1" --> "1" MeasurementUnit
+    Symptom "0..*" --> "1" ExtUser : reportado por (patient) >
+    Symptom "0..*" --> "0..1" Meal : >
+    Symptom "1" --> "1" SymptomType
+    Symptom "1" --> "1" SyncStatus
+    ClinicalNote "0..*" --> "1" ExtUser : autor >
+    ClinicalNote "0..1" --> "0..1" Meal
+    ClinicalNote "0..1" --> "0..1" Symptom
+    IbsSssAssessment "0..*" --> "1" ExtUser : paciente >
+    IbsSssAssessment "1" --> "1" AssessmentType
+    IbsSssAssessment "1" --> "1" SeverityCategory
+}
+
+@enduml

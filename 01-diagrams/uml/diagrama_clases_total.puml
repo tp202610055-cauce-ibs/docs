@@ -1,0 +1,727 @@
+@startuml DiagramaClases_Unificado
+!theme plain
+title Modelo de Clases Unificado - Sistema de Recomendaciones Dieteticas para SII
+
+' =============================================================================
+' CONFIGURACION VISUAL GLOBAL
+' =============================================================================
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #D6EAF8
+skinparam classBorderColor #2E86C1
+skinparam classHeaderBackgroundColor #2E86C1
+skinparam classHeaderFontColor #FFFFFF
+skinparam classFontSize 11
+skinparam ArrowColor #2E4057
+skinparam ArrowFontSize 10
+skinparam packageBackgroundColor #F8F9FA
+skinparam packageBorderColor #AEB6BF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+skinparam nodesep 70
+skinparam ranksep 80
+
+
+' =============================================================================
+' DOMINIO 1: IDENTIDAD Y ACCESO
+' =============================================================================
+package "Dominio 1: Identidad y Acceso" #EAF2FF {
+
+    enum UserRole {
+        PATIENT
+        NUTRITIONIST
+    }
+
+    enum UserStatus {
+        ACTIVE
+        INACTIVE
+        PENDING_ACTIVATION
+        SUSPENDED
+    }
+
+    enum InvitationStatus {
+        ACTIVE
+        USED
+        EXPIRED
+    }
+
+    class User {
+        + userId : UUID
+        + keycloakId : String
+        + email : String
+        + fullName : String
+        + role : UserRole
+        + status : UserStatus
+        + emailVerified : Boolean
+        + createdAt : DateTime
+        + updatedAt : DateTime
+        + lastLoginAt : DateTime
+        + failedLoginAttempts : Integer
+        + lockedUntil : DateTime
+        --
+        + activate() : void
+        + suspend() : void
+        + registerFailedLogin() : void
+        + isLocked() : Boolean
+        + hasRole(role: UserRole) : Boolean
+    }
+
+    class InvitationCode {
+        + codeId : UUID
+        + code : String
+        + nutritionistId : UUID
+        + usedByPatientId : UUID
+        + status : InvitationStatus
+        + createdAt : DateTime
+        + expiresAt : DateTime
+        + usedAt : DateTime
+        --
+        + isValid() : Boolean
+        + markAsUsed(patient: User) : void
+        + expire() : void
+    }
+
+    class PasswordResetToken {
+        + tokenId : UUID
+        + userId : UUID
+        + tokenHash : String
+        + createdAt : DateTime
+        + expiresAt : DateTime
+        + usedAt : DateTime
+        + isUsed : Boolean
+        --
+        + isExpired() : Boolean
+        + consume() : void
+    }
+
+    class ConsentRecord {
+        + consentId : UUID
+        + userId : UUID
+        + documentVersion : String
+        + acceptedAt : DateTime
+        + ipAddress : String
+        + consentTextHash : String
+        + isCurrent : Boolean
+        --
+        + verifyIntegrity(text: String) : Boolean
+        + supersede() : void
+    }
+
+    note bottom of User
+      Tabla central de personas que usan
+      el sistema: pacientes y nutricionistas.
+      No guarda contrasenas, eso lo maneja
+      Keycloak por separado. Si alguien falla
+      varias veces el inicio de sesion, la
+      cuenta se bloquea temporalmente.
+    end note
+
+    note right of ConsentRecord
+      Aceptacion del consentimiento informado.
+      Una vez registrado, nadie puede modificar
+      ni borrar el registro: es la prueba legal
+      de que el usuario acepto usar el sistema.
+      Cumple con la Ley N. 29733.
+    end note
+
+    User "1" --> "1" UserRole
+    User "1" --> "1" UserStatus
+    User "1" *-- "0..*" ConsentRecord
+    User "1" *-- "0..*" PasswordResetToken
+    InvitationCode "0..*" --> "1" User : generado por (nutricionista) >
+    InvitationCode "0..*" --> "0..1" User : usado por (paciente) >
+    InvitationCode "1" --> "1" InvitationStatus
+}
+
+
+' =============================================================================
+' DOMINIO 2: DATOS CLINICOS DEL PACIENTE
+' =============================================================================
+package "Dominio 2: Datos Clinicos del Paciente" #EAFAF1 {
+
+    enum BiologicalSex {
+        MALE
+        FEMALE
+        OTHER
+    }
+
+    enum IbsSubtype {
+        IBS_D
+        IBS_C
+        IBS_M
+        IBS_U
+    }
+
+    enum AllergyType {
+        ALLERGY
+        INTOLERANCE
+        SENSITIVITY
+    }
+
+    enum AllergySeverity {
+        MILD
+        MODERATE
+        SEVERE
+    }
+
+    enum AssignmentStatus {
+        ACTIVE
+        INACTIVE
+    }
+
+    class PatientProfile {
+        + profileId : UUID
+        + userId : UUID
+        + dateOfBirth : Date
+        + biologicalSex : BiologicalSex
+        + weightKg : Decimal
+        + heightCm : Decimal
+        + ibsSubtype : IbsSubtype
+        + diagnosisDate : Date
+        + medications : String
+        + onboardingCompleted : Boolean
+        + createdAt : DateTime
+        + updatedAt : DateTime
+        --
+        + calculateBMI() : Decimal
+        + getAge() : Integer
+        + completeOnboarding() : void
+    }
+
+    class Allergy {
+        + allergyId : UUID
+        + name : String
+        + allergyType : AllergyType
+        + description : String
+        + isActive : Boolean
+        --
+        + deactivate() : void
+    }
+
+    class PatientAllergy {
+        + patientAllergyId : UUID
+        + patientId : UUID
+        + allergyId : UUID
+        + severity : AllergySeverity
+        + declaredAt : DateTime
+        + notes : String
+        --
+        + updateSeverity(s: AllergySeverity) : void
+    }
+
+    class NutritionistPatient {
+        + assignmentId : UUID
+        + nutritionistId : UUID
+        + patientId : UUID
+        + invitationCodeId : UUID
+        + status : AssignmentStatus
+        + assignedAt : DateTime
+        + unassignedAt : DateTime
+        --
+        + activate() : void
+        + deactivate() : void
+        + isActive() : Boolean
+    }
+
+    note top of PatientProfile
+      Ficha clinica del paciente, separada
+      de la cuenta de usuario por minimizacion
+      de datos sensibles (Ley 29733).
+    end note
+
+    note bottom of NutritionistPatient
+      Relacion de seguimiento clinico.
+      Conserva el historial: si termina,
+      pasa a inactivo, no se elimina.
+    end note
+
+    PatientProfile "1" --> "1" IbsSubtype
+    PatientProfile "1" --> "1" BiologicalSex
+    Allergy "1" --> "1" AllergyType
+    PatientAllergy "1" --> "1" Allergy
+    PatientAllergy "1" --> "1" AllergySeverity
+    NutritionistPatient "1" --> "1" AssignmentStatus
+}
+
+
+' =============================================================================
+' DOMINIO 3: CATALOGO ALIMENTARIO Y REGISTRO CLINICO DIARIO
+' =============================================================================
+package "Dominio 3: Catalogo Alimentario y Registro Clinico" #FEF9E7 {
+
+    enum FodmapLevel {
+        LOW
+        MODERATE
+        HIGH
+    }
+
+    enum MealTime {
+        BREAKFAST
+        LUNCH
+        DINNER
+        SNACK
+    }
+
+    enum SymptomType {
+        ABDOMINAL_PAIN
+        BLOATING
+        FLATULENCE
+        DIARRHEA
+        CONSTIPATION
+        OTHER
+    }
+
+    enum MeasurementUnit {
+        GRAMS
+        CUPS
+        UNITS
+        OUNCES
+        TABLESPOONS
+    }
+
+    enum SyncStatus {
+        SYNC_PENDING
+        SYNC_COMPLETED
+    }
+
+    enum AssessmentType {
+        BASELINE
+        PERIODIC
+    }
+
+    enum SeverityCategory {
+        MILD
+        MODERATE
+        SEVERE
+    }
+
+    class FoodItem {
+        + foodId : UUID
+        + name : String
+        + category : String
+        + caloriesPer100g : Decimal
+        + proteinGPer100g : Decimal
+        + carbsGPer100g : Decimal
+        + fatGPer100g : Decimal
+        + fiberGPer100g : Decimal
+        + fodmapLevel : FodmapLevel
+        + fodmapTags : String
+        + isPeruvian : Boolean
+        + isActive : Boolean
+        + createdAt : DateTime
+        + updatedAt : DateTime
+        --
+        + isHighFodmap() : Boolean
+        + getNutritionalProfile() : Map
+    }
+
+    class CustomFood {
+        + customFoodId : UUID
+        + patientId : UUID
+        + name : String
+        + portionSizeGrams : Decimal
+        + createdAt : DateTime
+        --
+        + calculateNutrients() : Map
+    }
+
+    class CustomFoodIngredient {
+        + ingredientId : UUID
+        + customFoodId : UUID
+        + foodId : UUID
+        + proportionGrams : Decimal
+        --
+        + getContribution() : Map
+    }
+
+    class Meal {
+        + mealId : UUID
+        + clientGuid : UUID
+        + patientId : UUID
+        + mealTime : MealTime
+        + consumedAt : DateTime
+        + syncStatus : SyncStatus
+        + createdAt : DateTime
+        + clientCreatedAt : DateTime
+        --
+        + markAsSynced() : void
+        + getTotalCalories() : Decimal
+        + getFodmapLoad() : FodmapLevel
+    }
+
+    class MealItem {
+        + mealItemId : UUID
+        + mealId : UUID
+        + foodId : UUID
+        + customFoodId : UUID
+        + quantity : Decimal
+        + unit : MeasurementUnit
+        --
+        + getCalories() : Decimal
+        + isCustom() : Boolean
+    }
+
+    class Symptom {
+        + symptomId : UUID
+        + clientGuid : UUID
+        + patientId : UUID
+        + symptomType : SymptomType
+        + intensity : Integer
+        + occurredAt : DateTime
+        + associatedMealId : UUID
+        + hasMealAssociation : Boolean
+        + syncStatus : SyncStatus
+        + createdAt : DateTime
+        + clientCreatedAt : DateTime
+        --
+        + markAsSynced() : void
+        + correlateWith(meal: Meal) : void
+    }
+
+    class ClinicalNote {
+        + noteId : UUID
+        + patientId : UUID
+        + mealId : UUID
+        + symptomId : UUID
+        + content : String
+        + createdAt : DateTime
+        --
+        + summarize() : String
+    }
+
+    class IbsSssAssessment {
+        + assessmentId : UUID
+        + patientId : UUID
+        + assessmentType : AssessmentType
+        + cycleNumber : Integer
+        + painSeverity : Integer
+        + painFrequency : Integer
+        + bloatingSeverity : Integer
+        + bowelHabitsDissatisfaction : Integer
+        + lifeInterference : Integer
+        + totalScore : Integer
+        + severityCategory : SeverityCategory
+        + completedAt : DateTime
+        + nextAssessmentDate : Date
+        --
+        + classify() : SeverityCategory
+        + compareTo(previous: IbsSssAssessment) : Integer
+    }
+
+    note right of FoodItem
+      Catalogo oficial de alimentos peruanos
+      basado en TPCA-CENAN del INS Peru.
+      Cada alimento tiene perfil nutricional
+      por 100g y clasificacion FODMAP, el rasgo
+      clave para las recomendaciones.
+    end note
+
+    note bottom of CustomFood
+      Permite al paciente registrar platos
+      caseros propios. Se descompone en sus
+      ingredientes para que el sistema pueda
+      calcular sus nutrientes y FODMAP.
+    end note
+
+    note right of Meal
+      Registra cada comida del paciente.
+      Funciona incluso sin internet: el
+      registro se guarda en el celular y se
+      envia al servidor cuando vuelve la
+      conexion, sin duplicarse.
+    end note
+
+    note right of Symptom
+      Registra molestias gastrointestinales
+      como dolor o hinchazon. Si ocurren
+      dentro de las 4 horas despues de una
+      comida, el sistema las asocia para
+      detectar que alimentos podrian estar
+      causando los sintomas.
+    end note
+
+    note bottom of IbsSssAssessment
+      Cuestionario clinico que mide la
+      severidad del SII en una escala de
+      0 a 500 puntos. Se aplica al inicio
+      del piloto y luego cada 14 dias para
+      medir si el paciente esta mejorando.
+    end note
+
+    FoodItem "1" --> "1" FodmapLevel
+    CustomFood "1" *-- "1..*" CustomFoodIngredient
+    CustomFoodIngredient "0..*" --> "1" FoodItem
+    Meal "1" --> "1" MealTime
+    Meal "1" --> "1" SyncStatus
+    Meal "1" *-- "1..*" MealItem
+    MealItem "0..1" --> "0..1" FoodItem
+    MealItem "0..1" --> "0..1" CustomFood
+    MealItem "1" --> "1" MeasurementUnit
+    Symptom "0..*" --> "0..1" Meal : asociado a >
+    Symptom "1" --> "1" SymptomType
+    Symptom "1" --> "1" SyncStatus
+    ClinicalNote "0..1" --> "0..1" Meal
+    ClinicalNote "0..1" --> "0..1" Symptom
+    IbsSssAssessment "1" --> "1" AssessmentType
+    IbsSssAssessment "1" --> "1" SeverityCategory
+}
+
+
+' =============================================================================
+' DOMINIO 4: RECOMENDACIONES E INTELIGENCIA ARTIFICIAL
+' =============================================================================
+package "Dominio 4: Recomendaciones e Inteligencia Artificial" #FDF2F8 {
+
+    enum RecommendationStatus {
+        GENERATED
+        PENDING_REVIEW
+        APPROVED
+        REJECTED
+        DELIVERED
+        FEEDBACK_RECEIVED
+        EXPIRED
+    }
+
+    enum ExplanationSource {
+        LLM_GENERATED
+        FALLBACK
+    }
+
+    enum ActionType {
+        SUGGEST
+        REDUCE
+        AVOID
+        SUBSTITUTE
+    }
+
+    enum FeedbackOutcome {
+        IMPROVEMENT
+        NO_CHANGE
+        WORSENING
+    }
+
+    class ModelVersion {
+        + versionId : UUID
+        + versionName : String
+        + modelHash : String
+        + trainingDatasetSize : Integer
+        + performanceMetrics : JSON
+        + deployedAt : DateTime
+        + deployedBy : String
+        + isActive : Boolean
+        --
+        + activate() : void
+        + deactivate() : void
+        + verifyIntegrity() : Boolean
+    }
+
+    class Recommendation {
+        + recommendationId : UUID
+        + patientId : UUID
+        + modelVersionId : UUID
+        + reviewedByNutritionistId : UUID
+        + status : RecommendationStatus
+        + confidenceScore : Decimal
+        + autoApproved : Boolean
+        + nutritionistNote : String
+        + aiExplanation : String
+        + explanationSource : ExplanationSource
+        + generatedAt : DateTime
+        + reviewedAt : DateTime
+        + deliveredAt : DateTime
+        + expiresAt : DateTime
+        --
+        + approve(note: String, by: User) : void
+        + reject(reason: String, by: User) : void
+        + deliver() : void
+        + requiresHitl() : Boolean
+        + isExpired() : Boolean
+    }
+
+    class RecommendationItem {
+        + recommendationItemId : UUID
+        + recommendationId : UUID
+        + foodId : UUID
+        + substituteFoodId : UUID
+        + actionType : ActionType
+        + reasoning : String
+        --
+        + describe() : String
+    }
+
+    class RecommendationFeedback {
+        + feedbackId : UUID
+        + recommendationId : UUID
+        + wasApplied : Boolean
+        + outcome : FeedbackOutcome
+        + comment : String
+        + syncStatus : SyncStatus
+        + submittedAt : DateTime
+        --
+        + submit() : void
+        + toTrainingLabel() : Integer
+    }
+
+    note top of ModelVersion
+      Versiones del modelo ONNX. Solo una
+      puede estar activa simultaneamente.
+      Despliegue out-of-band via script
+      administrativo del equipo de desarrollo.
+    end note
+
+    note bottom of Recommendation
+      Sugerencia dietetica generada por la IA
+      con maquina de estados HITL. Si la
+      confianza es alta y no hay riesgos, se
+      aprueba sola. Si no, la revisa el
+      nutricionista con nota clinica obligatoria.
+    end note
+
+    note bottom of RecommendationItem
+      Accion concreta sobre un alimento:
+      sugerir, reducir, evitar o sustituir.
+    end note
+
+    note top of RecommendationFeedback
+      Respuesta del paciente sobre si la
+      recomendacion funciono. Alimenta el
+      reentrenamiento del modelo.
+    end note
+
+    Recommendation "0..*" --> "1" ModelVersion
+    Recommendation "1" --> "1" RecommendationStatus
+    Recommendation "1" --> "1" ExplanationSource
+    Recommendation "1" *-- "1..*" RecommendationItem
+    Recommendation "1" *-- "0..1" RecommendationFeedback
+    RecommendationItem "1" --> "1" ActionType
+    RecommendationFeedback "1" --> "1" FeedbackOutcome
+}
+
+
+' =============================================================================
+' DOMINIO 5: AUDITORIA Y OPERACIONES
+' =============================================================================
+package "Dominio 5: Auditoria y Operaciones" #F4F6F7 {
+
+    enum AuditActionType {
+        INSERT
+        UPDATE
+        DELETE
+        LOGIN
+        LOGOUT
+        APPROVE
+        REJECT
+        EXPORT
+        DELETE_ACCOUNT
+        FAILED_LOGIN
+    }
+
+    enum NotificationType {
+        RECOMMENDATION
+        REMINDER
+        ALERT
+        SYSTEM
+    }
+
+    enum NotificationChannel {
+        PUSH
+        EMAIL
+    }
+
+    enum NotificationStatus {
+        PENDING
+        SENT
+        DELIVERED
+        FAILED
+    }
+
+    class AuditLog {
+        + logId : Long
+        + actorUserId : UUID
+        + actionType : AuditActionType
+        + tableAffected : String
+        + recordId : UUID
+        + oldValuesHash : String
+        + newValuesHash : String
+        + ipAddress : String
+        + userAgent : String
+        + timestamp : DateTime
+        + additionalContext : JSON
+        --
+        + register(actor: User, action: AuditActionType) : void
+        + verifyIntegrity() : Boolean
+    }
+
+    class Notification {
+        + notificationId : UUID
+        + userId : UUID
+        + notificationType : NotificationType
+        + channel : NotificationChannel
+        + title : String
+        + body : String
+        + status : NotificationStatus
+        + retryCount : Integer
+        + relatedEntityType : String
+        + relatedEntityId : UUID
+        + scheduledFor : DateTime
+        + sentAt : DateTime
+        + deliveredAt : DateTime
+        + errorMessage : String
+        --
+        + send() : void
+        + retry() : void
+        + markAsDelivered() : void
+    }
+
+    note right of AuditLog
+      Bitacora permanente e inmodificable de
+      todas las acciones importantes del
+      sistema: quien hizo que, cuando y desde
+      que dispositivo. Defensa en profundidad:
+      middleware aplicativo + triggers BD.
+      Cumple Ley N. 29733 y RM 688-2020/MINSA.
+    end note
+
+    note right of Notification
+      Avisos push y correos a pacientes y
+      nutricionistas. Si un envio falla, el
+      sistema lo reintenta hasta tres veces
+      con pausas progresivas. Al tocar la
+      notificacion abre la pantalla relevante.
+    end note
+
+    AuditLog "1" --> "1" AuditActionType
+    Notification "1" --> "1" NotificationType
+    Notification "1" --> "1" NotificationChannel
+    Notification "1" --> "1" NotificationStatus
+}
+
+
+' =============================================================================
+' RELACIONES CRUZADAS ENTRE DOMINIOS
+' =============================================================================
+
+' Dominio 2 -> Dominio 1
+PatientProfile "1" --> "1" User
+PatientAllergy "0..*" --> "1" User : patient >
+NutritionistPatient "0..*" --> "1" User : nutritionist >
+NutritionistPatient "0..*" --> "1" User : patient >
+NutritionistPatient "0..1" --> "0..1" InvitationCode
+
+' Dominio 3 -> Dominio 1
+CustomFood "0..*" --> "1" User : creado por (patient) >
+Meal "0..*" --> "1" User : registrada por (patient) >
+Symptom "0..*" --> "1" User : reportado por (patient) >
+ClinicalNote "0..*" --> "1" User : autor (patient) >
+IbsSssAssessment "0..*" --> "1" User : paciente >
+
+' Dominio 4 -> Dominio 1 y Dominio 3
+Recommendation "0..*" --> "1" User : paciente destinatario >
+Recommendation "0..*" --> "0..1" User : nutricionista revisor >
+RecommendationItem "0..*" --> "1" FoodItem : alimento principal >
+RecommendationItem "0..1" --> "0..1" FoodItem : sustituto >
+
+' Dominio 5 -> Dominio 1
+AuditLog "0..*" ..> "0..1" User : ejecutada por >
+Notification "0..*" --> "1" User : destinatario >
+
+@enduml

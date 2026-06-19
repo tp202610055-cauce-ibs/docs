@@ -1,0 +1,169 @@
+@startuml DiagramaClases_D4_RecomendacionesIA
+!theme plain
+title Modelo de Clases del Dominio de Recomendaciones e Inteligencia Artificial
+
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #D6EAF8
+skinparam classBorderColor #2E86C1
+skinparam classHeaderBackgroundColor #2E86C1
+skinparam classHeaderFontColor #FFFFFF
+skinparam classFontSize 11
+skinparam ArrowColor #2E4057
+skinparam ArrowFontSize 10
+skinparam packageBackgroundColor #F8F9FA
+skinparam packageBorderColor #AEB6BF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+skinparam nodesep 100
+skinparam ranksep 90
+
+package "Identidad y Acceso (referencia)" #F5F5F5 {
+    class "User" as ExtUser <<external>> #FFFFFF {
+        + userId : UUID
+        + role : UserRole
+    }
+}
+
+package "Catálogo (referencia)" #F5F5F5 {
+    class "FoodItem" as ExtFood <<external>> #FFFFFF {
+        + foodId : UUID
+        + name : String
+    }
+}
+
+package "Recomendaciones e IA" #FDF2F8 {
+
+    enum RecommendationStatus {
+        GENERATED
+        PENDING_REVIEW
+        APPROVED
+        REJECTED
+        DELIVERED
+        FEEDBACK_RECEIVED
+        EXPIRED
+    }
+
+    enum ExplanationSource {
+        LLM_GENERATED
+        FALLBACK
+    }
+
+    enum ActionType {
+        SUGGEST
+        REDUCE
+        AVOID
+        SUBSTITUTE
+    }
+
+    enum FeedbackOutcome {
+        IMPROVEMENT
+        NO_CHANGE
+        WORSENING
+    }
+
+    enum SyncStatus {
+        SYNC_PENDING
+        SYNC_COMPLETED
+    }
+
+    class ModelVersion {
+        + versionId : UUID
+        + versionName : String
+        + modelHash : String
+        + trainingDatasetSize : Integer
+        + performanceMetrics : JSON
+        + deployedAt : DateTime
+        + deployedBy : String
+        + isActive : Boolean
+        --
+        + activate() : void
+        + deactivate() : void
+        + verifyIntegrity() : Boolean
+    }
+
+    class Recommendation {
+        + recommendationId : UUID
+        + patientId : UUID
+        + modelVersionId : UUID
+        + reviewedByNutritionistId : UUID
+        + status : RecommendationStatus
+        + confidenceScore : Decimal
+        + autoApproved : Boolean
+        + nutritionistNote : String
+        + aiExplanation : String
+        + explanationSource : ExplanationSource
+        + generatedAt : DateTime
+        + reviewedAt : DateTime
+        + deliveredAt : DateTime
+        + expiresAt : DateTime
+        --
+        + approve(note: String, by: User) : void
+        + reject(reason: String, by: User) : void
+        + deliver() : void
+        + requiresHitl() : Boolean
+        + isExpired() : Boolean
+    }
+
+    class RecommendationItem {
+        + recommendationItemId : UUID
+        + recommendationId : UUID
+        + foodId : UUID
+        + substituteFoodId : UUID
+        + actionType : ActionType
+        + reasoning : String
+        --
+        + describe() : String
+    }
+
+    class RecommendationFeedback {
+        + feedbackId : UUID
+        + recommendationId : UUID
+        + wasApplied : Boolean
+        + outcome : FeedbackOutcome
+        + comment : String
+        + syncStatus : SyncStatus
+        + submittedAt : DateTime
+        --
+        + submit() : void
+        + toTrainingLabel() : Integer
+    }
+
+    note top of ModelVersion
+      Versiones del modelo de IA.
+      Solo una puede estar activa
+      a la vez.
+    end note
+
+    note bottom of Recommendation
+      Sugerencia dietética generada
+      por la IA. Si la confianza es
+      alta se aprueba sola, si no,
+      la revisa el nutricionista.
+    end note
+
+    note bottom of RecommendationItem
+      Acción concreta sobre un alimento:
+      sugerir, reducir, evitar o sustituir.
+    end note
+
+    note top of RecommendationFeedback
+      Respuesta del paciente sobre
+      si la recomendación funcionó.
+      Alimenta el reentrenamiento.
+    end note
+
+    Recommendation "0..*" --> "1" ExtUser
+    Recommendation "0..*" --> "0..1" ExtUser
+    Recommendation "0..*" --> "1" ModelVersion
+    Recommendation "1" --> "1" RecommendationStatus
+    Recommendation "1" --> "1" ExplanationSource
+    Recommendation "1" *-- "1..*" RecommendationItem
+    Recommendation "1" *-- "0..1" RecommendationFeedback
+    RecommendationItem "0..*" --> "1" ExtFood
+    RecommendationItem "0..1" --> "0..1" ExtFood
+    RecommendationItem "1" --> "1" ActionType
+    RecommendationFeedback "1" --> "1" FeedbackOutcome
+    RecommendationFeedback "1" --> "1" SyncStatus
+}
+
+@enduml

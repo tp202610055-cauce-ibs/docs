@@ -1,0 +1,129 @@
+@startuml DiagramaClases_D1_Identidad
+!theme plain
+title Modelo de Clases del Dominio de Identidad y Acceso
+
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #D6EAF8
+skinparam classBorderColor #2E86C1
+skinparam classHeaderBackgroundColor #2E86C1
+skinparam classHeaderFontColor #FFFFFF
+skinparam classFontSize 11
+skinparam ArrowColor #2E4057
+skinparam packageBackgroundColor #F8F9FA
+skinparam packageBorderColor #AEB6BF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+skinparam nodesep 70
+skinparam ranksep 55
+
+package "Identidad y Acceso" #EAF2FF {
+
+    enum UserRole {
+        PATIENT
+        NUTRITIONIST
+    }
+
+    enum UserStatus {
+        ACTIVE
+        INACTIVE
+        PENDING_ACTIVATION
+        SUSPENDED
+    }
+
+    enum InvitationStatus {
+        ACTIVE
+        USED
+        EXPIRED
+    }
+
+    class User {
+        + userId : UUID
+        + keycloakId : String
+        + email : String
+        + fullName : String
+        + role : UserRole
+        + status : UserStatus
+        + emailVerified : Boolean
+        + createdAt : DateTime
+        + updatedAt : DateTime
+        + lastLoginAt : DateTime
+        + failedLoginAttempts : Integer
+        + lockedUntil : DateTime
+        --
+        + activate() : void
+        + suspend() : void
+        + registerFailedLogin() : void
+        + isLocked() : Boolean
+        + hasRole(role: UserRole) : Boolean
+    }
+
+    class InvitationCode {
+        + codeId : UUID
+        + code : String
+        + nutritionistId : UUID
+        + usedByPatientId : UUID
+        + status : InvitationStatus
+        + createdAt : DateTime
+        + expiresAt : DateTime
+        + usedAt : DateTime
+        --
+        + isValid() : Boolean
+        + markAsUsed(patient: User) : void
+        + expire() : void
+    }
+
+    class PasswordResetToken {
+        + tokenId : UUID
+        + userId : UUID
+        + tokenHash : String
+        + createdAt : DateTime
+        + expiresAt : DateTime
+        + usedAt : DateTime
+        + isUsed : Boolean
+        --
+        + isExpired() : Boolean
+        + consume() : void
+    }
+
+    class ConsentRecord {
+        + consentId : UUID
+        + userId : UUID
+        + documentVersion : String
+        + acceptedAt : DateTime
+        + ipAddress : String
+        + consentTextHash : String
+        + isCurrent : Boolean
+        --
+        + verifyIntegrity(text: String) : Boolean
+        + supersede() : void
+    }
+
+    note bottom of User
+      Tabla central de personas que usan
+      el sistema: pacientes y nutricionistas.
+      No guarda contraseñas, eso lo maneja
+      Keycloak por separado. Si alguien
+      falla varias veces el inicio de sesión,
+      la cuenta se bloquea temporalmente.
+    end note
+
+    note right of ConsentRecord
+      Guarda la aceptación del consentimiento
+      informado de cada usuario. Una vez
+      registrado, nadie puede modificarlo
+      ni borrarlo: es la prueba legal de
+      que el usuario aceptó usar el sistema.
+      Cumple con la Ley N.° 29733 de
+      protección de datos personales.
+    end note
+
+    User "1" --> "1" UserRole
+    User "1" --> "1" UserStatus
+    User "1" o-- "0..*" ConsentRecord
+    User "1" *-- "0..*" PasswordResetToken
+    InvitationCode "0..*" --> "1" User
+    InvitationCode "0..*" --> "0..1" User
+    InvitationCode "1" --> "1" InvitationStatus
+}
+
+@enduml

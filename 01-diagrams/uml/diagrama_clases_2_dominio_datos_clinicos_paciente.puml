@@ -1,0 +1,165 @@
+@startuml DiagramaClases_D2_DatosClinicos
+!theme plain
+title Modelo de Clases del Dominio de Datos Clínicos del Paciente
+
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #D6EAF8
+skinparam classBorderColor #2E86C1
+skinparam classHeaderBackgroundColor #2E86C1
+skinparam classHeaderFontColor #FFFFFF
+skinparam classFontSize 11
+skinparam ArrowColor #2E4057
+skinparam ArrowFontSize 10
+skinparam packageBackgroundColor #F8F9FA
+skinparam packageBorderColor #AEB6BF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+skinparam nodesep 90
+skinparam ranksep 110
+
+package "Identidad y Acceso (referencia)" #F5F5F5 {
+    class "User" as ExtUser <<external>> #FFFFFF {
+        + userId : UUID
+        + role : UserRole
+    }
+
+    class "InvitationCode" as ExtInvCode <<external>> #FFFFFF {
+        + codeId : UUID
+    }
+}
+
+package "Datos Clínicos del Paciente" #EAFAF1 {
+
+    class PatientProfile {
+        + profileId : UUID
+        + userId : UUID
+        + dateOfBirth : Date
+        + biologicalSex : BiologicalSex
+        + weightKg : Decimal
+        + heightCm : Decimal
+        + ibsSubtype : IbsSubtype
+        + diagnosisDate : Date
+        + medications : String
+        + onboardingCompleted : Boolean
+        + createdAt : DateTime
+        + updatedAt : DateTime
+        --
+        + calculateBMI() : Decimal
+        + getAge() : Integer
+        + completeOnboarding() : void
+    }
+
+    class PatientAllergy {
+        + patientAllergyId : UUID
+        + patientId : UUID
+        + allergyId : UUID
+        + severity : AllergySeverity
+        + declaredAt : DateTime
+        + notes : String
+        --
+        + updateSeverity(s: AllergySeverity) : void
+    }
+
+    class Allergy {
+        + allergyId : UUID
+        + name : String
+        + allergyType : AllergyType
+        + description : String
+        + isActive : Boolean
+        --
+        + deactivate() : void
+    }
+
+    class NutritionistPatient {
+        + assignmentId : UUID
+        + nutritionistId : UUID
+        + patientId : UUID
+        + invitationCodeId : UUID
+        + status : AssignmentStatus
+        + assignedAt : DateTime
+        + unassignedAt : DateTime
+        --
+        + activate() : void
+        + deactivate() : void
+        + isActive() : Boolean
+    }
+
+    enum BiologicalSex {
+        MALE
+        FEMALE
+        OTHER
+    }
+
+    enum IbsSubtype {
+        IBS_D
+        IBS_C
+        IBS_M
+        IBS_U
+    }
+
+    enum AllergyType {
+        ALLERGY
+        INTOLERANCE
+        SENSITIVITY
+    }
+
+    enum AllergySeverity {
+        MILD
+        MODERATE
+        SEVERE
+    }
+
+    enum AssignmentStatus {
+        ACTIVE
+        INACTIVE
+    }
+
+    note top of PatientProfile
+      Ficha clínica del paciente,
+      separada de la cuenta de usuario.
+    end note
+
+    note top of Allergy
+      Catálogo de alergias,
+      intolerancias y sensibilidades.
+    end note
+
+    note bottom of PatientAllergy
+      Alergias del paciente
+      con nivel de severidad.
+    end note
+
+    note bottom of NutritionistPatient
+      Relación de seguimiento clínico.
+      Conserva el historial.
+    end note
+
+    ' === Enlaces ocultos para forzar layout horizontal ===
+    PatientProfile -[hidden]right- PatientAllergy
+    PatientAllergy -[hidden]right- Allergy
+    Allergy -[hidden]right- NutritionistPatient
+
+    BiologicalSex -[hidden]right- IbsSubtype
+    IbsSubtype -[hidden]right- AllergyType
+    AllergyType -[hidden]right- AllergySeverity
+    AllergySeverity -[hidden]right- AssignmentStatus
+
+    PatientProfile -[hidden]down- BiologicalSex
+    PatientAllergy -[hidden]down- AllergyType
+    Allergy -[hidden]down- AllergySeverity
+    NutritionistPatient -[hidden]down- AssignmentStatus
+
+    ' === Relaciones reales ===
+    PatientProfile "1" --> "1" ExtUser
+    PatientProfile "1" --> "1" IbsSubtype
+    PatientProfile "1" --> "1" BiologicalSex
+    Allergy "1" --> "1" AllergyType
+    PatientAllergy "0..*" --> "1" ExtUser
+    PatientAllergy "0..*" --> "1" Allergy
+    PatientAllergy "1" --> "1" AllergySeverity
+    NutritionistPatient "0..*" --> "1" ExtUser
+    NutritionistPatient "0..1" --> "0..1" ExtInvCode
+    NutritionistPatient "1" --> "1" AssignmentStatus
+}
+
+@enduml
