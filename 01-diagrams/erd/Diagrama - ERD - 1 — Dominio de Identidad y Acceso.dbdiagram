@@ -9,7 +9,7 @@
       {
         "name": "user_roles",
         "schemaName": "public",
-        "x": 12,
+        "x": 86.37310676590866,
         "y": 12
       },
       {
@@ -21,25 +21,101 @@
       {
         "name": "invitation_codes",
         "schemaName": "public",
-        "x": 1090.37744140625,
-        "y": -38.867617107942976
+        "x": 994.177787853959,
+        "y": -20.23997425228896
       },
       {
         "name": "password_reset_tokens",
         "schemaName": "public",
-        "x": 1064.64501953125,
-        "y": 346
+        "x": 905.4569489403793,
+        "y": 287.4884394546003
       },
       {
         "name": "consent_records",
         "schemaName": "public",
-        "x": 1064.64501953125,
-        "y": 648
+        "x": 113.26531841422855,
+        "y": 221.99635983331996
       }
     ],
     "tableGroupCollapseStates": [],
     "stickyNoteLayouts": [],
-    "referencePaths": []
+    "referencePaths": [
+      {
+        "firstFieldNames": [
+          "role_id"
+        ],
+        "firstTableName": "users",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "role_id"
+        ],
+        "secondTableName": "user_roles",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "nutritionist_id"
+        ],
+        "firstTableName": "invitation_codes",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "user_id"
+        ],
+        "secondTableName": "users",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "used_by_patient_id"
+        ],
+        "firstTableName": "invitation_codes",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "user_id"
+        ],
+        "secondTableName": "users",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "user_id"
+        ],
+        "firstTableName": "password_reset_tokens",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "user_id"
+        ],
+        "secondTableName": "users",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "user_id"
+        ],
+        "firstTableName": "consent_records",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "user_id"
+        ],
+        "secondTableName": "users",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      }
+    ]
   },
   "views": {}
 }
