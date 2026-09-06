@@ -1,0 +1,21 @@
+# .gitignore del repo docs
+#
+# Este repo guarda evidencia académica: actas de decisión, diagramas, mockups,
+# backlog y matrices de trazabilidad. No tiene build ni dependencias, así que las
+# reglas de abajo son preventivas. Al 2026-09-06 ninguna ignora un archivo que
+# exista hoy en el árbol. Ver acta A42.
+
+# Artefactos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Bloqueos temporales de Office. El backlog se exporta desde Excel y la tesis se
+# escribe en .docx: un archivo abierto genera un ~$nombre junto al original, que
+# no debe entrar como evidencia.
+~$*
+*.tmp
+
+# Configuración local de IDE
+.vscode/
+.idea/
