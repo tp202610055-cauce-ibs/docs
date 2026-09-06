@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440,initial-scale=1" />
+<title>P14 · Lista de pacientes · Portal Nutricionista · IBS Dieta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+:root{
+  --bg-page:#FDFAF6; --bg-card:#FFFFFF; --bg-subtle:#F5EFE6; --bg-divider:#EDE5D7;
+  --text-primary:#1F1A15; --text-secondary:#524A42; --text-tertiary:#6E635A;
+  --brand-soft:#FAECE7; --brand-base:#993C1D; --brand-strong:#712B13; --brand-darkest:#4A1B0C;
+  --success-bg:#EAF3DE; --success-text:#27500A;
+  --warning-bg:#FAEEDA; --warning-text:#854F0B;
+  --danger-bg:#FCEBEB; --danger-text:#A32D2D;
+  --info-bg:#E6F1FB; --info-text:#0C447C;
+  --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"JetBrains Mono","Courier New",monospace;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-full:9999px;
+  --border-subtle:0.5px solid #EDE5D7;
+  --sidebar-w:240px; --topbar-h:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg-card);border-right:var(--border-subtle);display:flex;flex-direction:column;padding:20px 12px;z-index:10}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:4px 12px 20px;border-bottom:var(--border-subtle);margin-bottom:16px}
+.sidebar-brand-mark{width:34px;height:34px;border-radius:10px;background:var(--brand-base);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.sidebar-brand-title{font-size:15px;font-weight:600;line-height:1.2}
+.sidebar-brand-sub{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:2px}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.sidebar-section{font-size:11px;font-weight:500;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.6px;padding:14px 12px 6px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);color:var(--text-secondary);font-size:14px;font-weight:500;cursor:pointer;transition:background .12s}
+.sidebar-item i{font-size:18px}
+.sidebar-item:hover{background:var(--bg-subtle)}
+.sidebar-item--active{background:var(--brand-soft);color:var(--brand-strong)}
+.sidebar-badge{margin-left:auto;background:var(--brand-base);color:#fff;font-size:11px;padding:1px 7px;border-radius:var(--radius-full);font-weight:600;font-family:var(--font-mono)}
+.sidebar-user{border-top:var(--border-subtle);padding-top:12px;margin-top:8px;display:flex;align-items:center;gap:10px}
+.sidebar-avatar{width:34px;height:34px;border-radius:50%;background:var(--brand-soft);color:var(--brand-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.sidebar-user-name{font-size:13px;font-weight:500;line-height:1.2}
+.sidebar-user-role{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--bg-card);border-bottom:var(--border-subtle);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:9}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-tertiary)}
+.breadcrumb strong{color:var(--text-primary);font-weight:500}
+.breadcrumb .sep{color:var(--text-tertiary)}
+.topbar-search{flex:1;max-width:420px;position:relative}
+.topbar-search input{width:100%;height:38px;padding:0 12px 0 36px;border:1px solid var(--bg-divider);border-radius:var(--radius-sm);background:var(--bg-page);font-family:var(--font-sans);font-size:13px;outline:none}
+.topbar-search input:focus{border-color:var(--brand-base);background:var(--bg-card)}
+.topbar-search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:16px}
+.topbar-actions{display:flex;gap:6px;margin-left:auto;align-items:center}
+.icon-btn{width:38px;height:38px;border-radius:var(--radius-sm);background:transparent;border:none;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;position:relative}
+.icon-btn:hover{background:var(--bg-subtle)}
+.icon-btn-dot{position:absolute;top:8px;right:8px;width:8px;height:8px;background:var(--brand-base);border-radius:50%;border:1.5px solid var(--bg-card)}
+.kbd{font-family:var(--font-mono);font-size:11px;background:var(--bg-subtle);color:var(--text-tertiary);padding:2px 6px;border-radius:4px;border:var(--border-subtle)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 24px 40px}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;gap:16px}
+.page-title h1{font-size:24px;font-weight:600;letter-spacing:-0.2px}
+.page-title p{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.page-actions{display:flex;gap:8px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:13px;font-weight:500;cursor:pointer;transition:background .12s;border:none}
+.btn i{font-size:16px}
+.btn-primary{background:var(--brand-base);color:#fff}
+.btn-primary:hover{background:var(--brand-strong)}
+.btn-secondary{background:var(--bg-card);color:var(--text-primary);border:1px solid var(--bg-divider)}
+.btn-secondary:hover{background:var(--bg-subtle)}
+
+/* FILTER BAR */
+.filter-bar{background:var(--bg-card);border:var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.filter-search{flex:1;min-width:220px;position:relative}
+.filter-search input{width:100%;height:36px;padding:0 12px 0 34px;border:1px solid var(--bg-divider);border-radius:var(--radius-sm);background:var(--bg-page);font-family:var(--font-sans);font-size:13px;outline:none}
+.filter-search input:focus{border-color:var(--brand-base);background:var(--bg-card)}
+.filter-search i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:15px}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--bg-divider);border-radius:var(--radius-sm);background:var(--bg-card);font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:background .12s}
+.filter-chip:hover{background:var(--bg-subtle)}
+.filter-chip i{font-size:14px}
+.filter-chip.active{background:var(--brand-soft);color:var(--brand-strong);border-color:transparent}
+.filter-chip .close{background:rgba(153,60,29,0.18);border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-left:4px}
+.filter-sep{width:1px;height:24px;background:var(--bg-divider);margin:0 4px}
+.filter-count{margin-left:auto;font-size:12px;color:var(--text-tertiary);font-family:var(--font-mono)}
+.filter-count strong{color:var(--text-primary);font-weight:600}
+
+/* SELECTION BAR */
+.selection-bar{display:none;background:var(--brand-soft);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:12px;align-items:center;gap:12px;font-size:13px}
+.selection-bar.visible{display:flex}
+
+/* TABLE */
+.table-wrap{background:var(--bg-card);border:var(--border-subtle);border-radius:var(--radius-md);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--bg-page);text-align:left;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.6px;padding:12px 16px;border-bottom:var(--border-subtle);position:sticky;top:0;white-space:nowrap}
+thead th i{font-size:13px;vertical-align:middle;margin-left:4px;color:var(--text-tertiary)}
+tbody td{padding:14px 16px;border-bottom:var(--border-subtle);font-size:13px;vertical-align:middle}
+tbody tr{transition:background .1s;cursor:pointer}
+tbody tr:hover{background:var(--bg-page)}
+tbody tr:last-child td{border-bottom:none}
+
+.chk{width:16px;height:16px;accent-color:var(--brand-base);cursor:pointer}
+.patient-cell{display:flex;align-items:center;gap:10px}
+.patient-avatar{width:34px;height:34px;border-radius:50%;background:var(--brand-soft);color:var(--brand-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;font-family:var(--font-sans);flex-shrink:0}
+.patient-name{font-weight:500;color:var(--text-primary)}
+.patient-code{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:1px}
+
+/* SUBTYPE badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500;white-space:nowrap;line-height:1.4}
+.badge i{font-size:13px}
+.badge--info{background:var(--info-bg);color:var(--info-text)}
+.badge--warn{background:var(--warning-bg);color:var(--warning-text)}
+.badge--success{background:var(--success-bg);color:var(--success-text)}
+.badge--danger{background:var(--danger-bg);color:var(--danger-text)}
+.badge--neutral{background:#F1EFE8;color:#524A42}
+.badge--brand{background:var(--brand-soft);color:var(--brand-strong)}
+
+/* SSS pill */
+.sss-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--radius-full);font-size:12px;font-weight:600;font-family:var(--font-mono)}
+.sss-pill--mild{background:var(--success-bg);color:var(--success-text)}
+.sss-pill--mod{background:var(--warning-bg);color:var(--warning-text)}
+.sss-pill--sev{background:var(--danger-bg);color:var(--danger-text)}
+
+/* Sparkline */
+.sparkline{width:96px;height:28px}
+
+/* Adherence bar */
+.adherence{display:flex;align-items:center;gap:8px}
+.adherence-bar{width:70px;height:6px;background:var(--bg-divider);border-radius:3px;overflow:hidden}
+.adherence-fill{height:100%;border-radius:3px}
+.adherence-value{font-size:12px;font-weight:600;font-family:var(--font-mono);color:var(--text-primary);min-width:32px}
+
+/* Alerts icons */
+.alerts-cell{display:flex;gap:4px}
+.alert-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+.alert-dot--red{background:var(--danger-bg);color:var(--danger-text)}
+.alert-dot--amber{background:var(--warning-bg);color:var(--warning-text)}
+.alert-dot--gray{background:var(--bg-subtle);color:var(--text-tertiary)}
+
+.row-actions{display:flex;gap:2px;justify-content:flex-end}
+.row-action{width:30px;height:30px;border-radius:6px;background:transparent;border:none;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.row-action:hover{background:var(--bg-subtle);color:var(--brand-base)}
+
+.time-cell{font-size:12px;color:var(--text-secondary);font-family:var(--font-mono);white-space:nowrap}
+.time-cell .rel{color:var(--text-tertiary);font-size:11px;display:block;margin-top:1px}
+
+/* Footer */
+.table-footer{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:var(--border-subtle);background:var(--bg-page);font-size:12px;color:var(--text-secondary)}
+.pagination{display:flex;gap:4px;align-items:center}
+.page-btn{width:30px;height:30px;border-radius:6px;background:transparent;border:none;color:var(--text-secondary);cursor:pointer;font-size:13px;font-family:var(--font-sans);display:flex;align-items:center;justify-content:center}
+.page-btn:hover{background:var(--bg-subtle)}
+.page-btn--active{background:var(--brand-base);color:#fff}
+.page-btn--active:hover{background:var(--brand-strong);color:#fff}
+.per-page{display:inline-flex;gap:6px;align-items:center}
+.per-page select{border:1px solid var(--bg-divider);border-radius:6px;padding:4px 8px;font-family:var(--font-sans);font-size:12px;background:var(--bg-card);color:var(--text-primary)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-mark"><i class="ti ti-stethoscope"></i></div>
+    <div>
+      <div class="sidebar-brand-title">IBS Dieta</div>
+      <div class="sidebar-brand-sub">Portal · v0.6.2</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Clínico</div>
+    <div class="sidebar-item"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+    <div class="sidebar-item sidebar-item--active"><i class="ti ti-users"></i>Pacientes<span class="sidebar-badge">28</span></div>
+    <div class="sidebar-item"><i class="ti ti-inbox"></i>Cola HITL<span class="sidebar-badge">7</span></div>
+    <div class="sidebar-item"><i class="ti ti-notes"></i>Recomendaciones</div>
+    <div class="sidebar-section">Gestión</div>
+    <div class="sidebar-item"><i class="ti ti-mail-forward"></i>Códigos invitación</div>
+    <div class="sidebar-item"><i class="ti ti-chart-histogram"></i>Métricas piloto</div>
+    <div class="sidebar-item"><i class="ti ti-shield-lock"></i>Auditoría</div>
+    <div class="sidebar-section">Cuenta</div>
+    <div class="sidebar-item"><i class="ti ti-settings"></i>Configuración</div>
+    <div class="sidebar-item"><i class="ti ti-help-circle"></i>Soporte</div>
+  </nav>
+  <div class="sidebar-user">
+    <div class="sidebar-avatar">MC</div>
+    <div>
+      <div class="sidebar-user-name">Dra. M. Contreras</div>
+      <div class="sidebar-user-role">Nutricionista · CHGKF</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div class="breadcrumb">
+    <i class="ti ti-home"></i><span class="sep">/</span><strong>Pacientes</strong>
+  </div>
+  <div class="topbar-search">
+    <i class="ti ti-search"></i>
+    <input type="text" placeholder="Buscar paciente por código, nombre o alerta…" />
+  </div>
+  <div class="topbar-actions">
+    <span class="kbd">Ctrl</span><span class="kbd">K</span>
+    <button class="icon-btn"><i class="ti ti-bell"></i><span class="icon-btn-dot"></span></button>
+    <button class="icon-btn"><i class="ti ti-help-circle"></i></button>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Pacientes</h1>
+      <p>28 pacientes activos en piloto CHGKF · <strong style="color:var(--text-primary)">3 nuevos</strong> esta semana</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-secondary"><i class="ti ti-download"></i>Exportar CSV</button>
+      <button class="btn btn-secondary"><i class="ti ti-mail-forward"></i>Generar invitación</button>
+      <button class="btn btn-primary"><i class="ti ti-user-plus"></i>Vincular paciente</button>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-search">
+      <i class="ti ti-search"></i>
+      <input type="text" placeholder="Filtrar por nombre o código de paciente…" value="" />
+    </div>
+    <div class="filter-sep"></div>
+
+    <div class="filter-chip active">
+      <i class="ti ti-filter"></i>Subtipo: IBS-D, IBS-C<span class="close"><i class="ti ti-x"></i></span>
+    </div>
+    <div class="filter-chip">
+      <i class="ti ti-alert-triangle"></i>Con alertas activas
+    </div>
+    <div class="filter-chip">
+      <i class="ti ti-calendar"></i>Última evaluación: 30 días
+    </div>
+    <div class="filter-chip">
+      <i class="ti ti-heart-rate-monitor"></i>Adherencia &lt; 70%
+    </div>
+    <div class="filter-chip">
+      <i class="ti ti-plus"></i>Añadir filtro
+    </div>
+
+    <div class="filter-count">Mostrando <strong>18</strong> de <strong>28</strong> pacientes</div>
+  </div>
+
+  <!-- SELECTION BAR (hidden by default) -->
+  <div class="selection-bar visible">
+    <input type="checkbox" class="chk" checked />
+    <strong>3 pacientes seleccionados</strong>
+    <div class="filter-sep"></div>
+    <button class="filter-chip"><i class="ti ti-message-2"></i>Enviar mensaje</button>
+    <button class="filter-chip"><i class="ti ti-file-text"></i>Exportar seleccionados</button>
+    <button class="filter-chip"><i class="ti ti-tag"></i>Etiquetar cohorte</button>
+    <button class="filter-chip" style="margin-left:auto"><i class="ti ti-x"></i>Deseleccionar</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" class="chk" /></th>
+          <th style="width:220px">Paciente <i class="ti ti-arrows-sort"></i></th>
+          <th>Subtipo</th>
+          <th>IBS-SSS actual <i class="ti ti-arrows-sort"></i></th>
+          <th>Evolución 8 sem</th>
+          <th>Adherencia</th>
+          <th>Alertas</th>
+          <th>Última actividad <i class="ti ti-arrow-down"></i></th>
+          <th style="width:80px;text-align:right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td><input type="checkbox" class="chk" checked /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">LG</div>
+              <div>
+                <div class="patient-name">Luis González P.</div>
+                <div class="patient-code">P-0019 · 34 años · M</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--info"><i class="ti ti-droplet"></i>IBS-D</span></td>
+          <td><span class="sss-pill sss-pill--sev">245 <span style="font-weight:400;opacity:0.7">· severo</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,10 12,12 24,8 36,14 48,10 60,15 72,12 84,18 96,20" stroke="#A32D2D" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:48%;background:var(--danger-text)"></div></div>
+              <div class="adherence-value">48%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--red" title="Dolor severo 3 días"><i class="ti ti-flame"></i></div>
+              <div class="alert-dot alert-dot--amber" title="Baja adherencia"><i class="ti ti-clock"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Hoy 10:15<span class="rel">hace 1h</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action" title="Ver detalle"><i class="ti ti-eye"></i></button>
+              <button class="row-action" title="Más opciones"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" checked /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">RN</div>
+              <div>
+                <div class="patient-name">Rocío Núñez A.</div>
+                <div class="patient-code">P-0022 · 42 años · F</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--warn"><i class="ti ti-arrows-shuffle"></i>IBS-M</span></td>
+          <td><span class="sss-pill sss-pill--mod">168 <span style="font-weight:400;opacity:0.7">· moderado</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,6 12,10 24,8 36,12 48,14 60,16 72,18 84,20 96,17" stroke="#854F0B" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:66%;background:var(--warning-text)"></div></div>
+              <div class="adherence-value">66%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--amber" title="Pérdida de peso"><i class="ti ti-scale"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Hoy 09:22<span class="rel">hace 2h</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" checked /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">JM</div>
+              <div>
+                <div class="patient-name">Juan Mendoza L.</div>
+                <div class="patient-code">P-0042 · 28 años · M</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--info"><i class="ti ti-droplet"></i>IBS-D</span></td>
+          <td><span class="sss-pill sss-pill--sev">185 <span style="font-weight:400;opacity:0.7">· severo</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,4 12,6 24,10 36,8 48,12 60,14 72,15 84,18 96,20" stroke="#993C1D" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:82%;background:var(--success-text)"></div></div>
+              <div class="adherence-value">82%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--gray"><i class="ti ti-check"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Hoy 10:42<span class="rel">hace 30min</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">CR</div>
+              <div>
+                <div class="patient-name">Carla Ramos T.</div>
+                <div class="patient-code">P-0037 · 31 años · F</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--brand"><i class="ti ti-mountain"></i>IBS-C</span></td>
+          <td><span class="sss-pill sss-pill--mild">95 <span style="font-weight:400;opacity:0.7">· leve</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,4 12,6 24,8 36,10 48,12 60,14 72,16 84,18 96,20" stroke="#27500A" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:91%;background:var(--success-text)"></div></div>
+              <div class="adherence-value">91%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--gray"><i class="ti ti-check"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Hoy 09:58<span class="rel">hace 2h</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">AS</div>
+              <div>
+                <div class="patient-name">Ana Salazar M.</div>
+                <div class="patient-code">P-0053 · 26 años · F</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--neutral"><i class="ti ti-question-mark"></i>IBS-U</span></td>
+          <td><span class="sss-pill sss-pill--mod">130 <span style="font-weight:400;opacity:0.7">· moderado</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,8 12,10 24,12 36,10 48,14 60,12 72,16 84,15 96,18" stroke="#854F0B" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:74%;background:var(--warning-text)"></div></div>
+              <div class="adherence-value">74%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--gray"><i class="ti ti-check"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Ayer 18:33<span class="rel">hace 16h</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">DM</div>
+              <div>
+                <div class="patient-name">Diego Miranda C.</div>
+                <div class="patient-code">P-0028 · 39 años · M</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--info"><i class="ti ti-droplet"></i>IBS-D</span></td>
+          <td><span class="sss-pill sss-pill--mod">142 <span style="font-weight:400;opacity:0.7">· moderado</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,6 12,8 24,7 36,10 48,9 60,12 72,11 84,13 96,15" stroke="#854F0B" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:58%;background:var(--warning-text)"></div></div>
+              <div class="adherence-value">58%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--amber" title="Baja adherencia"><i class="ti ti-clock"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Ayer 20:15<span class="rel">hace 14h</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar" style="background:var(--info-bg);color:var(--info-text)">MT</div>
+              <div>
+                <div class="patient-name">María Torres V. <span class="badge badge--info" style="margin-left:6px"><i class="ti ti-sparkles"></i>Nueva</span></div>
+                <div class="patient-code">P-0058 · 37 años · F</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--brand"><i class="ti ti-mountain"></i>IBS-C</span></td>
+          <td><span style="color:var(--text-tertiary);font-size:12px;font-family:var(--font-mono)">Sin evaluar</span></td>
+          <td>
+            <span style="color:var(--text-tertiary);font-size:12px;font-family:var(--font-mono)">—</span>
+          </td>
+          <td>
+            <span style="color:var(--text-tertiary);font-size:12px;font-family:var(--font-mono)">—</span>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--gray"><i class="ti ti-user-plus"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Hoy 09:12<span class="rel">hace 3h</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">FQ</div>
+              <div>
+                <div class="patient-name">Felipe Quiroga R.</div>
+                <div class="patient-code">P-0015 · 45 años · M</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--warn"><i class="ti ti-arrows-shuffle"></i>IBS-M</span></td>
+          <td><span class="sss-pill sss-pill--mild">88 <span style="font-weight:400;opacity:0.7">· leve</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,6 12,8 24,12 36,10 48,14 60,16 72,18 84,20 96,22" stroke="#27500A" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:87%;background:var(--success-text)"></div></div>
+              <div class="adherence-value">87%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--gray"><i class="ti ti-check"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">Ayer 19:44<span class="rel">hace 15h</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">SC</div>
+              <div>
+                <div class="patient-name">Silvana Cornejo B.</div>
+                <div class="patient-code">P-0007 · 52 años · F</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--brand"><i class="ti ti-mountain"></i>IBS-C</span></td>
+          <td><span class="sss-pill sss-pill--mod">155 <span style="font-weight:400;opacity:0.7">· moderado</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,8 12,10 24,9 36,12 48,11 60,14 72,13 84,15 96,14" stroke="#854F0B" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:72%;background:var(--warning-text)"></div></div>
+              <div class="adherence-value">72%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--gray"><i class="ti ti-check"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">2 días<span class="rel">hace 2d</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="checkbox" class="chk" /></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">RP</div>
+              <div>
+                <div class="patient-name">Rodrigo Palacios T.</div>
+                <div class="patient-code">P-0033 · 29 años · M</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--info"><i class="ti ti-droplet"></i>IBS-D</span></td>
+          <td><span class="sss-pill sss-pill--mild">72 <span style="font-weight:400;opacity:0.7">· leve</span></span></td>
+          <td>
+            <svg class="sparkline" viewBox="0 0 96 28" preserveAspectRatio="none">
+              <polyline points="0,4 12,6 24,10 36,12 48,14 60,16 72,18 84,20 96,23" stroke="#27500A" stroke-width="1.5" fill="none"/>
+            </svg>
+          </td>
+          <td>
+            <div class="adherence">
+              <div class="adherence-bar"><div class="adherence-fill" style="width:94%;background:var(--success-text)"></div></div>
+              <div class="adherence-value">94%</div>
+            </div>
+          </td>
+          <td>
+            <div class="alerts-cell">
+              <div class="alert-dot alert-dot--gray"><i class="ti ti-check"></i></div>
+            </div>
+          </td>
+          <td><div class="time-cell">3 días<span class="rel">hace 3d</span></div></td>
+          <td>
+            <div class="row-actions">
+              <button class="row-action"><i class="ti ti-eye"></i></button>
+              <button class="row-action"><i class="ti ti-dots-vertical"></i></button>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <div class="table-footer">
+      <div class="per-page">
+        <span>Filas por página:</span>
+        <select><option>10</option><option>25</option><option>50</option></select>
+      </div>
+      <div>Mostrando <strong>1–10</strong> de <strong>18</strong> pacientes filtrados</div>
+      <div class="pagination">
+        <button class="page-btn" disabled><i class="ti ti-chevron-left"></i></button>
+        <button class="page-btn page-btn--active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn"><i class="ti ti-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

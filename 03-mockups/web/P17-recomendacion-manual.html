@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440,initial-scale=1" />
+<title>P17 · Recomendación manual · Portal Nutricionista · IBS Dieta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+:root{
+  --bg-page:#FDFAF6; --bg-card:#FFFFFF; --bg-subtle:#F5EFE6; --bg-divider:#EDE5D7;
+  --text-primary:#1F1A15; --text-secondary:#524A42; --text-tertiary:#6E635A;
+  --brand-soft:#FAECE7; --brand-base:#993C1D; --brand-strong:#712B13; --brand-darkest:#4A1B0C;
+  --success-bg:#EAF3DE; --success-text:#27500A;
+  --warning-bg:#FAEEDA; --warning-text:#854F0B;
+  --danger-bg:#FCEBEB; --danger-text:#A32D2D;
+  --info-bg:#E6F1FB; --info-text:#0C447C;
+  --fodmap-low-bg:#EAF3DE; --fodmap-low-text:#27500A;
+  --fodmap-mod-bg:#FAEEDA; --fodmap-mod-text:#854F0B;
+  --fodmap-high-bg:#FCEBEB; --fodmap-high-text:#A32D2D;
+  --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"JetBrains Mono","Courier New",monospace;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-full:9999px;
+  --border-subtle:0.5px solid #EDE5D7;
+  --sidebar-w:240px; --topbar-h:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg-card);border-right:var(--border-subtle);display:flex;flex-direction:column;padding:20px 12px;z-index:10}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:4px 12px 20px;border-bottom:var(--border-subtle);margin-bottom:16px}
+.sidebar-brand-mark{width:34px;height:34px;border-radius:10px;background:var(--brand-base);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.sidebar-brand-title{font-size:15px;font-weight:600;line-height:1.2}
+.sidebar-brand-sub{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:2px}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.sidebar-section{font-size:11px;font-weight:500;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.6px;padding:14px 12px 6px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);color:var(--text-secondary);font-size:14px;font-weight:500;cursor:pointer}
+.sidebar-item i{font-size:18px}
+.sidebar-item:hover{background:var(--bg-subtle)}
+.sidebar-item--active{background:var(--brand-soft);color:var(--brand-strong)}
+.sidebar-badge{margin-left:auto;background:var(--brand-base);color:#fff;font-size:11px;padding:1px 7px;border-radius:var(--radius-full);font-weight:600;font-family:var(--font-mono)}
+.sidebar-user{border-top:var(--border-subtle);padding-top:12px;margin-top:8px;display:flex;align-items:center;gap:10px}
+.sidebar-avatar{width:34px;height:34px;border-radius:50%;background:var(--brand-soft);color:var(--brand-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.sidebar-user-name{font-size:13px;font-weight:500;line-height:1.2}
+.sidebar-user-role{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--bg-card);border-bottom:var(--border-subtle);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:9}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-tertiary)}
+.breadcrumb strong{color:var(--text-primary);font-weight:500}
+.breadcrumb .sep{color:var(--text-tertiary)}
+.topbar-search{flex:1;max-width:420px;position:relative}
+.topbar-search input{width:100%;height:38px;padding:0 12px 0 36px;border:1px solid var(--bg-divider);border-radius:var(--radius-sm);background:var(--bg-page);font-family:var(--font-sans);font-size:13px;outline:none}
+.topbar-search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:16px}
+.topbar-actions{display:flex;gap:6px;margin-left:auto;align-items:center}
+.icon-btn{width:38px;height:38px;border-radius:var(--radius-sm);background:transparent;border:none;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;position:relative}
+.icon-btn:hover{background:var(--bg-subtle)}
+.icon-btn-dot{position:absolute;top:8px;right:8px;width:8px;height:8px;background:var(--brand-base);border-radius:50%;border:1.5px solid var(--bg-card)}
+.kbd{font-family:var(--font-mono);font-size:11px;background:var(--bg-subtle);color:var(--text-tertiary);padding:2px 6px;border-radius:4px;border:var(--border-subtle)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);padding:calc(var(--topbar-h) + 24px) 24px 40px}
+
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;gap:16px}
+.page-title h1{font-size:24px;font-weight:600;letter-spacing:-0.2px;display:flex;align-items:center;gap:10px}
+.page-title p{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.page-actions{display:flex;gap:8px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:13px;font-weight:500;cursor:pointer;transition:background .12s;border:none}
+.btn i{font-size:16px}
+.btn-primary{background:var(--brand-base);color:#fff}
+.btn-primary:hover{background:var(--brand-strong)}
+.btn-secondary{background:var(--bg-card);color:var(--text-primary);border:1px solid var(--bg-divider)}
+.btn-secondary:hover{background:var(--bg-subtle)}
+.btn-ghost{background:transparent;color:var(--text-secondary)}
+.btn-ghost:hover{background:var(--bg-subtle)}
+.btn-success{background:var(--success-text);color:#fff}
+.btn-success:hover{background:#1D3D06}
+
+/* SPLIT LAYOUT: editor + preview */
+.editor-layout{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:flex-start}
+
+/* CARDS */
+.card{background:var(--bg-card);border:var(--border-subtle);border-radius:var(--radius-md);overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:var(--border-subtle);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.card-title i{color:var(--brand-base);font-size:16px;text-transform:none}
+.card-body{padding:18px}
+
+/* Form elements */
+.form-group{margin-bottom:16px}
+.form-group:last-child{margin-bottom:0}
+.label{display:block;font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.label .req{color:var(--danger-text);margin-left:2px}
+.label-hint{font-size:11px;color:var(--text-tertiary);font-weight:400;margin-left:6px}
+
+.input, .select, .textarea{
+  width:100%;
+  border:1.5px solid var(--bg-divider);
+  border-radius:var(--radius-sm);
+  padding:10px 12px;
+  font-family:var(--font-sans);
+  font-size:13px;
+  color:var(--text-primary);
+  background:var(--bg-card);
+  outline:none;
+  transition:border-color .12s, box-shadow .12s;
+}
+.input:focus, .select:focus, .textarea:focus{border-color:var(--brand-base);box-shadow:0 0 0 3px var(--brand-soft)}
+.input{height:40px}
+.select{height:40px;padding-right:32px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236E635A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.textarea{min-height:110px;resize:vertical;line-height:1.5}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.patient-picker{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--brand-base);border-radius:var(--radius-sm);background:var(--brand-soft)}
+.patient-picker .pp-avatar{width:36px;height:36px;border-radius:50%;background:#fff;color:var(--brand-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+.pp-info{flex:1;min-width:0}
+.pp-name{font-size:13px;font-weight:600;color:var(--text-primary)}
+.pp-code{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:1px}
+.pp-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.pp-change{background:transparent;border:1px solid var(--brand-base);color:var(--brand-base);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:var(--font-sans)}
+.pp-change:hover{background:#fff}
+
+/* Rec type chips */
+.type-chips{display:flex;flex-wrap:wrap;gap:6px}
+.type-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:var(--radius-sm);background:var(--bg-page);border:1px solid var(--bg-divider);color:var(--text-secondary);font-size:12px;font-weight:500;cursor:pointer;transition:background .1s}
+.type-chip i{font-size:14px}
+.type-chip:hover{background:var(--bg-subtle)}
+.type-chip--active{background:var(--brand-base);color:#fff;border-color:var(--brand-base)}
+
+/* Dynamic step list */
+.step-list{display:flex;flex-direction:column;gap:8px}
+.step-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 10px;background:var(--bg-page);border-radius:var(--radius-sm)}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--brand-base);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:var(--font-mono);flex-shrink:0}
+.step-input{border:1px solid var(--bg-divider);border-radius:6px;padding:8px 10px;font-family:var(--font-sans);font-size:13px;background:var(--bg-card);outline:none;width:100%}
+.step-input:focus{border-color:var(--brand-base)}
+.step-remove{width:28px;height:28px;border-radius:6px;background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step-remove:hover{background:var(--danger-bg);color:var(--danger-text)}
+.add-step{margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:transparent;border:1px dashed var(--brand-base);color:var(--brand-strong);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-sans)}
+.add-step:hover{background:var(--brand-soft)}
+
+/* Reference sources */
+.ref-source{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 12px;background:var(--bg-page);border-radius:var(--radius-sm);margin-bottom:6px;font-size:12px}
+.ref-source-icon{width:28px;height:28px;border-radius:6px;background:var(--info-bg);color:var(--info-text);display:flex;align-items:center;justify-content:center;font-size:14px}
+.ref-source-body strong{color:var(--text-primary);font-weight:500}
+.ref-source-body .meta{font-size:11px;color:var(--text-tertiary);margin-top:1px}
+.ref-remove{color:var(--text-tertiary);cursor:pointer;padding:4px}
+.ref-remove:hover{color:var(--danger-text)}
+
+/* Validity */
+.validity-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.validity-select{display:flex;gap:6px}
+.validity-btn{padding:6px 12px;background:var(--bg-page);border:1px solid var(--bg-divider);border-radius:6px;font-size:12px;color:var(--text-secondary);cursor:pointer;font-weight:500}
+.validity-btn:hover{background:var(--bg-subtle)}
+.validity-btn--active{background:var(--brand-base);color:#fff;border-color:var(--brand-base)}
+
+/* PREVIEW PANEL */
+.preview-wrap{position:sticky;top:calc(var(--topbar-h) + 24px)}
+
+.mobile-frame{background:#1F1A15;border-radius:32px;padding:12px;box-shadow:0 8px 32px rgba(31,26,21,0.15);max-width:340px;margin:0 auto}
+.mobile-screen{background:var(--bg-page);border-radius:24px;overflow:hidden;min-height:640px;display:flex;flex-direction:column}
+.mobile-notch{background:#1F1A15;width:80px;height:22px;border-radius:0 0 16px 16px;margin:0 auto;position:relative;top:-12px}
+.mobile-appbar{display:flex;align-items:center;gap:8px;padding:16px 16px 12px}
+.mobile-appbar-title{font-size:16px;font-weight:600;flex:1}
+.mobile-back{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-primary)}
+.mobile-body{padding:0 16px 24px;flex:1;overflow-y:auto}
+
+.rec-preview-card{background:var(--bg-card);border:var(--border-subtle);border-radius:var(--radius-md);padding:16px;margin-bottom:12px}
+.rec-preview-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--radius-full);background:var(--brand-soft);color:var(--brand-strong);font-size:11px;font-weight:600;margin-bottom:10px}
+.rec-preview-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:8px;line-height:1.35}
+.rec-preview-desc{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:12px}
+.rec-preview-steps{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.rec-preview-step{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--text-primary);line-height:1.4}
+.rec-preview-step .num{width:20px;height:20px;border-radius:50%;background:var(--brand-base);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-mono)}
+.rec-preview-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:var(--border-subtle)}
+.rec-preview-btn{flex:1;padding:10px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;text-align:center;background:var(--brand-base);color:#fff}
+.rec-preview-btn--ghost{background:transparent;color:var(--brand-strong);border:1px solid var(--brand-base)}
+.rec-preview-src{background:var(--bg-subtle);border-radius:8px;padding:10px;margin-top:10px;font-size:11px;color:var(--text-secondary)}
+.rec-preview-src-title{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+
+/* Info banner */
+.info-banner{background:var(--info-bg);border-left:3px solid var(--info-text);border-radius:6px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--text-primary);line-height:1.5}
+.info-banner i{color:var(--info-text);font-size:18px;flex-shrink:0}
+.info-banner strong{font-weight:600}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:500;white-space:nowrap;line-height:1.4}
+.badge i{font-size:12px}
+.badge--info{background:var(--info-bg);color:var(--info-text)}
+.badge--success{background:var(--success-bg);color:var(--success-text)}
+.badge--warning{background:var(--warning-bg);color:var(--warning-text)}
+.badge--danger{background:var(--danger-bg);color:var(--danger-text)}
+.badge--brand{background:var(--brand-soft);color:var(--brand-strong)}
+.badge--neutral{background:#F1EFE8;color:#524A42}
+
+/* Preview label */
+.preview-label{font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px}
+.preview-label i{color:var(--brand-base);font-size:14px}
+
+/* Compliance banner */
+.compliance-banner{margin-top:16px;padding:12px 14px;background:var(--success-bg);border-radius:var(--radius-sm);display:flex;gap:10px;align-items:flex-start;font-size:12px}
+.compliance-banner i{color:var(--success-text);font-size:16px;flex-shrink:0}
+.compliance-banner .title{font-weight:600;color:var(--success-text);margin-bottom:4px}
+.compliance-banner .desc{color:var(--text-secondary);line-height:1.5}
+
+/* Bottom action bar */
+.bottom-bar{position:sticky;bottom:0;background:var(--bg-card);border:var(--border-subtle);border-radius:var(--radius-md);padding:14px 18px;margin-top:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 -4px 12px rgba(31,26,21,0.04)}
+.bottom-bar-left{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-secondary)}
+.bottom-bar-left i{color:var(--brand-base);font-size:16px}
+.bottom-bar-actions{display:flex;gap:8px}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-mark"><i class="ti ti-stethoscope"></i></div>
+    <div>
+      <div class="sidebar-brand-title">IBS Dieta</div>
+      <div class="sidebar-brand-sub">Portal · v0.6.2</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Clínico</div>
+    <div class="sidebar-item"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+    <div class="sidebar-item"><i class="ti ti-users"></i>Pacientes<span class="sidebar-badge">28</span></div>
+    <div class="sidebar-item"><i class="ti ti-inbox"></i>Cola HITL<span class="sidebar-badge">7</span></div>
+    <div class="sidebar-item sidebar-item--active"><i class="ti ti-notes"></i>Recomendaciones</div>
+    <div class="sidebar-section">Gestión</div>
+    <div class="sidebar-item"><i class="ti ti-mail-forward"></i>Códigos invitación</div>
+    <div class="sidebar-item"><i class="ti ti-chart-histogram"></i>Métricas piloto</div>
+    <div class="sidebar-item"><i class="ti ti-shield-lock"></i>Auditoría</div>
+    <div class="sidebar-section">Cuenta</div>
+    <div class="sidebar-item"><i class="ti ti-settings"></i>Configuración</div>
+    <div class="sidebar-item"><i class="ti ti-help-circle"></i>Soporte</div>
+  </nav>
+  <div class="sidebar-user">
+    <div class="sidebar-avatar">MC</div>
+    <div>
+      <div class="sidebar-user-name">Dra. M. Contreras</div>
+      <div class="sidebar-user-role">Nutricionista · CHGKF</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div class="breadcrumb">
+    <i class="ti ti-home"></i><span class="sep">/</span>Clínico<span class="sep">/</span>Recomendaciones<span class="sep">/</span><strong>Nueva manual</strong>
+  </div>
+  <div class="topbar-search">
+    <i class="ti ti-search"></i>
+    <input type="text" placeholder="Buscar…" />
+  </div>
+  <div class="topbar-actions">
+    <span class="kbd">Ctrl</span><span class="kbd">K</span>
+    <button class="icon-btn"><i class="ti ti-bell"></i><span class="icon-btn-dot"></span></button>
+    <button class="icon-btn"><i class="ti ti-help-circle"></i></button>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-title">
+      <h1><i class="ti ti-writing" style="color:var(--brand-base);font-size:24px"></i>Nueva recomendación manual</h1>
+      <p>Redacta y aprueba directamente sin pasar por la cola HITL. Se registrará con estado <strong style="color:var(--brand-strong)">MANUAL_APPROVED</strong>.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-ghost"><i class="ti ti-x"></i>Cancelar</button>
+      <button class="btn btn-secondary"><i class="ti ti-device-floppy"></i>Guardar borrador</button>
+    </div>
+  </div>
+
+  <div class="info-banner" style="margin-bottom:20px">
+    <i class="ti ti-info-circle"></i>
+    <div>
+      <strong>Recomendación clínica bajo tu responsabilidad profesional.</strong> Este tipo de recomendación no requiere revisión HITL porque tú eres el nutricionista tratante. Se persistirá con estado <code style="font-family:var(--font-mono);font-size:11px;background:rgba(12,68,124,0.1);padding:2px 6px;border-radius:3px">MANUAL_APPROVED</code> y quedará auditada según DEC-011 y DEC-014.
+    </div>
+  </div>
+
+  <div class="editor-layout">
+
+    <!-- LEFT: EDITOR -->
+    <div style="display:flex;flex-direction:column;gap:20px">
+
+      <!-- Patient selector -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-user"></i>Paciente destinatario</div>
+          <span class="badge badge--info"><i class="ti ti-lock"></i>Requerido</span>
+        </div>
+        <div class="card-body">
+          <div class="patient-picker">
+            <div class="pp-avatar">JM</div>
+            <div class="pp-info">
+              <div class="pp-name">Juan Mendoza L.</div>
+              <div class="pp-code">P-0042 · 28 años · M · Vinculado 15/06/2026</div>
+              <div class="pp-badges">
+                <span class="badge badge--info"><i class="ti ti-droplet"></i>IBS-D</span>
+                <span class="badge badge--danger">IBS-SSS 185 · severo</span>
+                <span class="badge badge--success">Adh. 82%</span>
+              </div>
+            </div>
+            <button class="pp-change"><i class="ti ti-arrows-exchange" style="font-size:12px"></i> Cambiar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Type + basic info -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-category"></i>Tipo y clasificación</div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="label">Tipo de recomendación <span class="req">*</span><span class="label-hint">selecciona una categoría</span></label>
+            <div class="type-chips">
+              <div class="type-chip type-chip--active"><i class="ti ti-salt"></i>Ajuste dietario</div>
+              <div class="type-chip"><i class="ti ti-refresh"></i>Reintroducción</div>
+              <div class="type-chip"><i class="ti ti-adjustments-horizontal"></i>Porciones</div>
+              <div class="type-chip"><i class="ti ti-arrow-right-bar"></i>Sustitución</div>
+              <div class="type-chip"><i class="ti ti-calendar-event"></i>Horarios</div>
+              <div class="type-chip"><i class="ti ti-bowl-spoon"></i>Preparación</div>
+              <div class="type-chip"><i class="ti ti-mood-smile"></i>Motivacional</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="label">Prioridad clínica <span class="req">*</span></label>
+              <select class="select">
+                <option>Alta · requiere acción inmediata</option>
+                <option selected>Media · aplicar esta semana</option>
+                <option>Baja · educativa u opcional</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="label">Fase FODMAP</label>
+              <select class="select">
+                <option selected>Eliminación</option>
+                <option>Reintroducción</option>
+                <option>Personalización</option>
+                <option>No aplica</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-edit"></i>Contenido de la recomendación</div>
+          <span class="badge badge--neutral"><i class="ti ti-eye"></i>Visible al paciente</span>
+        </div>
+        <div class="card-body">
+
+          <div class="form-group">
+            <label class="label">Título <span class="req">*</span><span class="label-hint">máx. 80 caracteres</span></label>
+            <input type="text" class="input" value="Ajuste dietario · reducción de FODMAP altos esta semana" />
+          </div>
+
+          <div class="form-group">
+            <label class="label">Descripción breve <span class="req">*</span><span class="label-hint">contexto para el paciente</span></label>
+            <textarea class="textarea">Basado en tus últimos registros, notamos que algunos alimentos con FODMAP alto podrían estar detrás del malestar. Te sugerimos probar los siguientes ajustes durante los próximos 7 días.</textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="label">Pasos concretos <span class="req">*</span><span class="label-hint">añade los pasos que verá el paciente</span></label>
+            <div class="step-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <input class="step-input" value="Sustituir cebolla y ajo por su versión infusionada en aceite (sin el bulbo)." />
+                <button class="step-remove"><i class="ti ti-trash"></i></button>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <input class="step-input" value="Reducir manzana a máximo 1/2 unidad por día durante esta semana." />
+                <button class="step-remove"><i class="ti ti-trash"></i></button>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <input class="step-input" value="Priorizar quinua blanca y arroz blanco cocido como base de al menos 2 comidas principales." />
+                <button class="step-remove"><i class="ti ti-trash"></i></button>
+              </div>
+              <div class="step-item">
+                <div class="step-num">4</div>
+                <input class="step-input" value="Registrar síntomas en la app durante las 4 horas posteriores a cada comida." />
+                <button class="step-remove"><i class="ti ti-trash"></i></button>
+              </div>
+            </div>
+            <button class="add-step"><i class="ti ti-plus" style="font-size:14px"></i>Añadir paso</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Sources -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-books"></i>Datos de sustento <span class="label-hint" style="text-transform:none;font-weight:400">opcional</span></div>
+          <button class="btn btn-secondary" style="padding:6px 10px;font-size:12px"><i class="ti ti-plus"></i>Añadir fuente</button>
+        </div>
+        <div class="card-body">
+          <div class="ref-source">
+            <div class="ref-source-icon"><i class="ti ti-file-text"></i></div>
+            <div class="ref-source-body">
+              <strong>Liljebo et al. 2020 · BMC Nutrition</strong>
+              <div class="meta">Low-FODMAP diet for IBS · evidencia nivel I</div>
+            </div>
+            <i class="ti ti-x ref-remove"></i>
+          </div>
+          <div class="ref-source">
+            <div class="ref-source-icon"><i class="ti ti-database"></i></div>
+            <div class="ref-source-body">
+              <strong>Monash FODMAP Database 2019</strong>
+              <div class="meta">Clasificación cebolla, ajo, manzana como high-FODMAP</div>
+            </div>
+            <i class="ti ti-x ref-remove"></i>
+          </div>
+          <div class="ref-source">
+            <div class="ref-source-icon" style="background:var(--brand-soft);color:var(--brand-strong)"><i class="ti ti-user-heart"></i></div>
+            <div class="ref-source-body">
+              <strong>Registros propios del paciente</strong>
+              <div class="meta">14 síntomas y 21 comidas registradas en los últimos 7 días</div>
+            </div>
+            <i class="ti ti-x ref-remove"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Validity + note -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-calendar-time"></i>Vigencia y notas</div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="label">Válida durante <span class="req">*</span><span class="label-hint">al caducar se archivará automáticamente · DEC-017</span></label>
+            <div class="validity-select">
+              <div class="validity-btn">3 días</div>
+              <div class="validity-btn validity-btn--active">7 días</div>
+              <div class="validity-btn">14 días</div>
+              <div class="validity-btn">30 días</div>
+              <div class="validity-btn"><i class="ti ti-calendar" style="font-size:12px"></i> Personalizado</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label">Nota clínica <span class="req">*</span><span class="label-hint">obligatoria para MANUAL_APPROVED · DEC-014 · mín. 10 caracteres</span></label>
+            <textarea class="textarea">Paciente reportó dolor postprandial ≥6/10 tras comidas con cebolla, ajo y manzana en los últimos 5 días. Recomiendo ajuste conservador de 7 días con reevaluación clínica al finalizar la ventana.</textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: PREVIEW -->
+    <div class="preview-wrap">
+
+      <div class="preview-label"><i class="ti ti-device-mobile"></i>Vista previa en el móvil del paciente</div>
+
+      <div class="mobile-frame">
+        <div class="mobile-notch"></div>
+        <div class="mobile-screen">
+
+          <div class="mobile-appbar">
+            <div class="mobile-back"><i class="ti ti-arrow-left"></i></div>
+            <div class="mobile-appbar-title">Recomendación</div>
+            <div class="mobile-back"><i class="ti ti-dots-vertical"></i></div>
+          </div>
+
+          <div class="mobile-body">
+
+            <div class="rec-preview-card">
+              <div class="rec-preview-badge"><i class="ti ti-sparkles" style="font-size:12px"></i>Recomendación de tu nutricionista</div>
+              <div class="rec-preview-title">Ajuste dietario · reducción de FODMAP altos esta semana</div>
+              <div class="rec-preview-desc">Basado en tus últimos registros, notamos que algunos alimentos con FODMAP alto podrían estar detrás del malestar. Te sugerimos probar los siguientes ajustes durante los próximos 7 días.</div>
+
+              <ol class="rec-preview-steps">
+                <li class="rec-preview-step"><span class="num">1</span>Sustituir cebolla y ajo por su versión infusionada en aceite (sin el bulbo).</li>
+                <li class="rec-preview-step"><span class="num">2</span>Reducir manzana a máximo 1/2 unidad por día durante esta semana.</li>
+                <li class="rec-preview-step"><span class="num">3</span>Priorizar quinua blanca y arroz blanco cocido como base de al menos 2 comidas principales.</li>
+                <li class="rec-preview-step"><span class="num">4</span>Registrar síntomas en la app durante las 4 horas posteriores a cada comida.</li>
+              </ol>
+
+              <div class="rec-preview-src">
+                <div class="rec-preview-src-title">Basado en</div>
+                Liljebo et al. 2020 · Monash FODMAP 2019 · tus últimos 7 días
+              </div>
+
+              <div class="rec-preview-actions">
+                <div class="rec-preview-btn rec-preview-btn--ghost">Comentar</div>
+                <div class="rec-preview-btn">Entendido</div>
+              </div>
+            </div>
+
+            <div style="text-align:center;font-size:11px;color:var(--text-tertiary);margin-top:12px">Válida hasta el 18/07/2026</div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="compliance-banner">
+        <i class="ti ti-shield-check"></i>
+        <div>
+          <div class="title">Compliance verificado</div>
+          <div class="desc">Consentimiento v2.1 aceptado · Audit trail activo · Retención 5 años según Ley 29733 · Encriptación en tránsito y reposo.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM ACTION BAR -->
+  <div class="bottom-bar">
+    <div class="bottom-bar-left">
+      <i class="ti ti-shield-check"></i>
+      Al aprobar, la recomendación se persistirá con estado <strong style="color:var(--brand-strong)">MANUAL_APPROVED</strong> y se notificará al paciente en su próximo login. Acción inmutable post-aprobación (DEC-016).
+    </div>
+    <div class="bottom-bar-actions">
+      <button class="btn btn-ghost"><i class="ti ti-eye"></i>Vista previa completa</button>
+      <button class="btn btn-secondary"><i class="ti ti-device-floppy"></i>Guardar borrador</button>
+      <button class="btn btn-success"><i class="ti ti-check"></i>Aprobar y notificar al paciente</button>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

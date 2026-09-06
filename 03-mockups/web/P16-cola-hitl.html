@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440,initial-scale=1" />
+<title>P16 · Cola HITL · Portal Nutricionista · IBS Dieta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+:root{
+  --bg-page:#FDFAF6; --bg-card:#FFFFFF; --bg-subtle:#F5EFE6; --bg-divider:#EDE5D7;
+  --text-primary:#1F1A15; --text-secondary:#524A42; --text-tertiary:#6E635A;
+  --brand-soft:#FAECE7; --brand-base:#993C1D; --brand-strong:#712B13; --brand-darkest:#4A1B0C;
+  --success-bg:#EAF3DE; --success-text:#27500A;
+  --warning-bg:#FAEEDA; --warning-text:#854F0B;
+  --danger-bg:#FCEBEB; --danger-text:#A32D2D;
+  --info-bg:#E6F1FB; --info-text:#0C447C;
+  --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"JetBrains Mono","Courier New",monospace;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-full:9999px;
+  --border-subtle:0.5px solid #EDE5D7;
+  --sidebar-w:240px; --topbar-h:64px;
+  --queue-w:320px; --actions-w:340px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-page);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* Reusable navbar (compact) */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg-card);border-right:var(--border-subtle);display:flex;flex-direction:column;padding:20px 12px;z-index:10}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:4px 12px 20px;border-bottom:var(--border-subtle);margin-bottom:16px}
+.sidebar-brand-mark{width:34px;height:34px;border-radius:10px;background:var(--brand-base);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.sidebar-brand-title{font-size:15px;font-weight:600;line-height:1.2}
+.sidebar-brand-sub{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:2px}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.sidebar-section{font-size:11px;font-weight:500;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.6px;padding:14px 12px 6px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);color:var(--text-secondary);font-size:14px;font-weight:500;cursor:pointer}
+.sidebar-item i{font-size:18px}
+.sidebar-item:hover{background:var(--bg-subtle)}
+.sidebar-item--active{background:var(--brand-soft);color:var(--brand-strong)}
+.sidebar-badge{margin-left:auto;background:var(--brand-base);color:#fff;font-size:11px;padding:1px 7px;border-radius:var(--radius-full);font-weight:600;font-family:var(--font-mono)}
+.sidebar-user{border-top:var(--border-subtle);padding-top:12px;margin-top:8px;display:flex;align-items:center;gap:10px}
+.sidebar-avatar{width:34px;height:34px;border-radius:50%;background:var(--brand-soft);color:var(--brand-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.sidebar-user-name{font-size:13px;font-weight:500;line-height:1.2}
+.sidebar-user-role{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:var(--bg-card);border-bottom:var(--border-subtle);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:9}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-tertiary)}
+.breadcrumb strong{color:var(--text-primary);font-weight:500}
+.breadcrumb .sep{color:var(--text-tertiary)}
+.topbar-search{flex:1;max-width:420px;position:relative}
+.topbar-search input{width:100%;height:38px;padding:0 12px 0 36px;border:1px solid var(--bg-divider);border-radius:var(--radius-sm);background:var(--bg-page);font-family:var(--font-sans);font-size:13px;outline:none}
+.topbar-search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:16px}
+.topbar-actions{display:flex;gap:6px;margin-left:auto;align-items:center}
+.icon-btn{width:38px;height:38px;border-radius:var(--radius-sm);background:transparent;border:none;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;position:relative}
+.icon-btn:hover{background:var(--bg-subtle)}
+.icon-btn-dot{position:absolute;top:8px;right:8px;width:8px;height:8px;background:var(--brand-base);border-radius:50%;border:1.5px solid var(--bg-card)}
+.kbd{font-family:var(--font-mono);font-size:11px;background:var(--bg-subtle);color:var(--text-tertiary);padding:2px 6px;border-radius:4px;border:var(--border-subtle)}
+.kbd-inline{font-family:var(--font-mono);font-size:10px;background:var(--bg-page);color:var(--text-tertiary);padding:1px 5px;border-radius:3px;border:var(--border-subtle);margin-left:6px}
+
+/* MASTER-DETAIL-CONTEXT LAYOUT */
+.hitl-layout{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);display:grid;grid-template-columns:var(--queue-w) 1fr var(--actions-w);height:calc(100vh - var(--topbar-h))}
+
+/* QUEUE PANEL (left) */
+.queue-panel{background:var(--bg-card);border-right:var(--border-subtle);display:flex;flex-direction:column;overflow:hidden}
+.queue-header{padding:16px 18px;border-bottom:var(--border-subtle);display:flex;flex-direction:column;gap:12px;flex-shrink:0}
+.queue-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.queue-title i{color:var(--brand-base);font-size:18px}
+.queue-title .count{background:var(--brand-base);color:#fff;font-size:11px;padding:2px 8px;border-radius:var(--radius-full);font-weight:600;font-family:var(--font-mono);margin-left:auto}
+.queue-tabs{display:flex;gap:4px;font-size:12px}
+.queue-tab{padding:5px 10px;border-radius:6px;color:var(--text-secondary);cursor:pointer;font-weight:500}
+.queue-tab:hover{background:var(--bg-subtle)}
+.queue-tab--active{background:var(--brand-soft);color:var(--brand-strong)}
+.queue-tab .n{font-family:var(--font-mono);font-size:10px;margin-left:4px;opacity:0.7}
+
+.queue-list{overflow-y:auto;flex:1}
+.queue-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:12px 18px;border-bottom:var(--border-subtle);cursor:pointer;transition:background .1s;position:relative}
+.queue-item:hover{background:var(--bg-page)}
+.queue-item--active{background:var(--brand-soft)}
+.queue-item--active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand-base)}
+.q-avatar{width:32px;height:32px;border-radius:50%;background:var(--brand-soft);color:var(--brand-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;font-family:var(--font-sans);flex-shrink:0}
+.queue-item--active .q-avatar{background:#fff}
+.q-body{min-width:0}
+.q-line1{font-size:13px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:6px}
+.q-code{font-size:10px;color:var(--text-tertiary);font-family:var(--font-mono)}
+.q-summary{font-size:12px;color:var(--text-secondary);margin-top:2px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.q-meta{display:flex;align-items:center;gap:6px;margin-top:6px}
+.q-time{font-size:10px;color:var(--text-tertiary);font-family:var(--font-mono);white-space:nowrap;text-align:right;padding-top:2px}
+
+/* DETAIL PANEL (center) */
+.detail-panel{overflow-y:auto;display:flex;flex-direction:column;background:var(--bg-page)}
+.detail-header{background:var(--bg-card);border-bottom:var(--border-subtle);padding:20px 28px;flex-shrink:0}
+.detail-title{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.detail-title h1{font-size:20px;font-weight:600;letter-spacing:-0.2px}
+.detail-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)}
+.detail-meta span{display:inline-flex;align-items:center;gap:6px}
+.detail-meta i{color:var(--text-tertiary);font-size:14px}
+
+.detail-tabs{display:flex;gap:2px;padding:0 28px;border-bottom:var(--border-subtle);background:var(--bg-card)}
+.detail-tab{padding:12px 14px;font-size:13px;font-weight:500;color:var(--text-tertiary);cursor:pointer;border-bottom:2px solid transparent}
+.detail-tab:hover{color:var(--text-primary)}
+.detail-tab--active{color:var(--brand-strong);border-bottom-color:var(--brand-base)}
+
+.detail-body{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+
+.card{background:var(--bg-card);border:var(--border-subtle);border-radius:var(--radius-md);overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:var(--border-subtle);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:0.5px}
+.card-title i{color:var(--brand-base);font-size:16px;text-transform:none}
+.card-body{padding:16px 18px}
+
+.rec-content{background:var(--brand-soft);border:1.5px solid var(--brand-base);border-radius:var(--radius-md);padding:20px}
+.rec-content-label{font-size:11px;font-weight:600;color:var(--brand-strong);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px}
+.rec-content-title{font-size:17px;font-weight:600;color:var(--text-primary);margin-bottom:10px;letter-spacing:-0.1px}
+.rec-content-desc{font-size:14px;color:var(--text-primary);line-height:1.6}
+.rec-content-steps{margin-top:12px;padding-left:18px}
+.rec-content-steps li{font-size:14px;color:var(--text-primary);margin-bottom:6px;line-height:1.5}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* Patient context */
+.patient-context{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.patient-context .pc-avatar{width:52px;height:52px;border-radius:50%;background:var(--brand-soft);color:var(--brand-strong);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px}
+.pc-info h3{font-size:15px;font-weight:600}
+.pc-info .code{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:2px}
+.pc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:14px 18px;border-top:var(--border-subtle);background:var(--bg-page)}
+.pc-stat-label{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;font-weight:500}
+.pc-stat-value{font-size:16px;font-weight:600;margin-top:3px;color:var(--text-primary);font-family:var(--font-sans);letter-spacing:-0.2px}
+.pc-stat-value .u{font-size:11px;color:var(--text-tertiary);font-weight:500;margin-left:2px}
+
+/* Feature importance */
+.feat{display:grid;grid-template-columns:150px 1fr 50px;gap:12px;align-items:center;padding:8px 0;font-size:12px}
+.feat-name{color:var(--text-primary);font-weight:500;font-size:12px}
+.feat-bar{height:8px;background:var(--bg-divider);border-radius:4px;overflow:hidden;position:relative}
+.feat-fill{height:100%;background:linear-gradient(90deg,var(--brand-base),var(--brand-strong));border-radius:4px}
+.feat-value{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);text-align:right;font-weight:500}
+
+/* XAI explanation */
+.xai-box{background:var(--info-bg);border-left:3px solid var(--info-text);border-radius:6px;padding:14px 16px}
+.xai-label{font-size:10px;font-weight:600;color:var(--info-text);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.xai-label i{font-size:14px}
+.xai-text{font-size:13px;color:var(--text-primary);line-height:1.6}
+.xai-text em{font-style:normal;background:rgba(12,68,124,0.1);padding:1px 4px;border-radius:3px;font-family:var(--font-mono);font-size:12px}
+
+/* Template block */
+.template-block{background:var(--bg-page);border:var(--border-subtle);border-radius:6px;padding:10px 12px;margin-top:8px;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);white-space:pre-wrap;line-height:1.5;overflow-x:auto}
+.template-tag{display:inline-block;background:var(--brand-soft);color:var(--brand-strong);padding:1px 6px;border-radius:3px;font-family:var(--font-mono);font-size:10px;font-weight:600;margin-right:4px}
+
+.sql-block{background:#1F1A15;color:#F5EFE6;border-radius:6px;padding:12px 14px;font-family:var(--font-mono);font-size:11px;line-height:1.6;overflow-x:auto;white-space:pre}
+.sql-block .kw{color:#FF9966;font-weight:500}
+.sql-block .str{color:#9CD976}
+.sql-block .num{color:#7EC3E9}
+.sql-block .cmt{color:#8A7F73;font-style:italic}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500;white-space:nowrap;line-height:1.4}
+.badge i{font-size:13px}
+.badge--pending{background:#FAEEDA;color:#854F0B}
+.badge--approved{background:#EAF3DE;color:#27500A}
+.badge--rejected{background:#FCEBEB;color:#A32D2D}
+.badge--modified{background:#FAECE7;color:#712B13}
+.badge--info{background:#E6F1FB;color:#0C447C}
+.badge--danger{background:var(--danger-bg);color:var(--danger-text)}
+.badge--warning{background:var(--warning-bg);color:var(--warning-text)}
+.badge--success{background:var(--success-bg);color:var(--success-text)}
+.badge--neutral{background:#F1EFE8;color:#524A42}
+
+/* Confidence indicator */
+.confidence{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500}
+.confidence-bars{display:flex;gap:2px}
+.confidence-bar{width:6px;height:12px;border-radius:1px}
+
+/* ACTIONS PANEL (right) */
+.actions-panel{background:var(--bg-card);border-left:var(--border-subtle);display:flex;flex-direction:column;overflow-y:auto}
+.actions-header{padding:18px;border-bottom:var(--border-subtle)}
+.actions-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-secondary);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.actions-title i{font-size:16px;color:var(--brand-base);text-transform:none}
+
+.action-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid;font-family:var(--font-sans);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;justify-content:space-between;background:transparent;margin-bottom:8px;transition:background .12s}
+.action-btn i{font-size:20px}
+.action-btn:last-child{margin-bottom:0}
+.action-approve{background:var(--success-text);border-color:var(--success-text);color:#fff}
+.action-approve:hover{background:#1D3D06;border-color:#1D3D06}
+.action-modify{background:var(--bg-card);border-color:var(--brand-base);color:var(--brand-base)}
+.action-modify:hover{background:var(--brand-soft)}
+.action-reject{background:var(--bg-card);border-color:var(--danger-text);color:var(--danger-text)}
+.action-reject:hover{background:var(--danger-bg)}
+
+.note-section{padding:18px;border-bottom:var(--border-subtle)}
+.note-label{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.note-required{color:var(--danger-text);font-family:var(--font-mono);font-size:11px}
+.note-textarea{width:100%;min-height:100px;border:1.5px solid var(--bg-divider);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-sans);font-size:13px;color:var(--text-primary);resize:vertical;outline:none;transition:border-color .12s}
+.note-textarea:focus{border-color:var(--brand-base)}
+.note-counter{font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);text-align:right;margin-top:4px}
+.note-hint{font-size:11px;color:var(--text-tertiary);margin-top:8px;line-height:1.5}
+
+.side-section{padding:18px;border-bottom:var(--border-subtle)}
+.side-section:last-child{border-bottom:none}
+.side-label{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.side-row{display:flex;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:var(--border-subtle)}
+.side-row:last-child{border-bottom:none}
+.side-row .k{color:var(--text-tertiary)}
+.side-row .v{color:var(--text-primary);font-weight:500;font-family:var(--font-mono)}
+
+.shortcut-help{background:var(--bg-page);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text-secondary)}
+.shortcut-help .row{display:flex;justify-content:space-between;padding:3px 0}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-mark"><i class="ti ti-stethoscope"></i></div>
+    <div>
+      <div class="sidebar-brand-title">IBS Dieta</div>
+      <div class="sidebar-brand-sub">Portal · v0.6.2</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Clínico</div>
+    <div class="sidebar-item"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+    <div class="sidebar-item"><i class="ti ti-users"></i>Pacientes<span class="sidebar-badge">28</span></div>
+    <div class="sidebar-item sidebar-item--active"><i class="ti ti-inbox"></i>Cola HITL<span class="sidebar-badge">7</span></div>
+    <div class="sidebar-item"><i class="ti ti-notes"></i>Recomendaciones</div>
+    <div class="sidebar-section">Gestión</div>
+    <div class="sidebar-item"><i class="ti ti-mail-forward"></i>Códigos invitación</div>
+    <div class="sidebar-item"><i class="ti ti-chart-histogram"></i>Métricas piloto</div>
+    <div class="sidebar-item"><i class="ti ti-shield-lock"></i>Auditoría</div>
+    <div class="sidebar-section">Cuenta</div>
+    <div class="sidebar-item"><i class="ti ti-settings"></i>Configuración</div>
+    <div class="sidebar-item"><i class="ti ti-help-circle"></i>Soporte</div>
+  </nav>
+  <div class="sidebar-user">
+    <div class="sidebar-avatar">MC</div>
+    <div>
+      <div class="sidebar-user-name">Dra. M. Contreras</div>
+      <div class="sidebar-user-role">Nutricionista · CHGKF</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div class="breadcrumb">
+    <i class="ti ti-home"></i><span class="sep">/</span>Clínico<span class="sep">/</span><strong>Cola HITL</strong>
+  </div>
+  <div class="topbar-search">
+    <i class="ti ti-search"></i>
+    <input type="text" placeholder="Buscar recomendación por código o paciente…" />
+  </div>
+  <div class="topbar-actions">
+    <span class="kbd">Ctrl</span><span class="kbd">K</span>
+    <button class="icon-btn"><i class="ti ti-bell"></i><span class="icon-btn-dot"></span></button>
+    <button class="icon-btn"><i class="ti ti-help-circle"></i></button>
+  </div>
+</header>
+
+<div class="hitl-layout">
+
+  <!-- QUEUE PANEL -->
+  <aside class="queue-panel">
+    <div class="queue-header">
+      <div class="queue-title">
+        <i class="ti ti-inbox"></i>Cola de revisión<span class="count">7</span>
+      </div>
+      <div class="queue-tabs">
+        <div class="queue-tab queue-tab--active">Pendientes<span class="n">7</span></div>
+        <div class="queue-tab">Modificadas<span class="n">3</span></div>
+        <div class="queue-tab">Aprobadas<span class="n">142</span></div>
+      </div>
+    </div>
+
+    <div class="queue-list">
+
+      <div class="queue-item queue-item--active">
+        <div class="q-avatar">JM</div>
+        <div class="q-body">
+          <div class="q-line1">Juan Mendoza L.<span class="q-code">P-0042</span></div>
+          <div class="q-summary">Reducir FODMAP altos (cebolla, ajo, manzana). Aumentar consumo de quinua y arroz blanco.</div>
+          <div class="q-meta">
+            <span class="badge badge--warning"><i class="ti ti-alert-triangle"></i>Media</span>
+            <span class="badge badge--neutral"><i class="ti ti-tag"></i>DIET-ADJ</span>
+          </div>
+        </div>
+        <div class="q-time">8min</div>
+      </div>
+
+      <div class="queue-item">
+        <div class="q-avatar">CR</div>
+        <div class="q-body">
+          <div class="q-line1">Carla Ramos T.<span class="q-code">P-0037</span></div>
+          <div class="q-summary">Fase reintroducción: probar lactosa 5g en yogur natural, monitoreo 48h.</div>
+          <div class="q-meta">
+            <span class="badge badge--success"><i class="ti ti-sparkles"></i>Alta</span>
+            <span class="badge badge--neutral"><i class="ti ti-tag"></i>REINTRO</span>
+          </div>
+        </div>
+        <div class="q-time">34min</div>
+      </div>
+
+      <div class="queue-item">
+        <div class="q-avatar">LG</div>
+        <div class="q-body">
+          <div class="q-line1">Luis González P.<span class="q-code">P-0019</span></div>
+          <div class="q-summary">Patrón de dolor postprandial &gt;7/10 detectado 3 días consecutivos. Evaluar refuerzo dietario.</div>
+          <div class="q-meta">
+            <span class="badge badge--danger"><i class="ti ti-flag"></i>Bandera roja</span>
+            <span class="badge badge--neutral"><i class="ti ti-tag"></i>SAFETY</span>
+          </div>
+        </div>
+        <div class="q-time">1h</div>
+      </div>
+
+      <div class="queue-item">
+        <div class="q-avatar">AS</div>
+        <div class="q-body">
+          <div class="q-line1">Ana Salazar M.<span class="q-code">P-0053</span></div>
+          <div class="q-summary">Ajuste porciones: reducir arroz cocido de 200g a 150g por comida principal.</div>
+          <div class="q-meta">
+            <span class="badge badge--success"><i class="ti ti-sparkles"></i>Alta</span>
+            <span class="badge badge--neutral"><i class="ti ti-tag"></i>PORTION</span>
+          </div>
+        </div>
+        <div class="q-time">2h</div>
+      </div>
+
+      <div class="queue-item">
+        <div class="q-avatar">DM</div>
+        <div class="q-body">
+          <div class="q-line1">Diego Miranda C.<span class="q-code">P-0028</span></div>
+          <div class="q-summary">Sustituir leche entera por bebida de almendras sin endulzar en desayuno.</div>
+          <div class="q-meta">
+            <span class="badge badge--warning"><i class="ti ti-alert-triangle"></i>Media</span>
+            <span class="badge badge--neutral"><i class="ti ti-tag"></i>SUBST</span>
+          </div>
+        </div>
+        <div class="q-time">3h</div>
+      </div>
+
+      <div class="queue-item">
+        <div class="q-avatar">RN</div>
+        <div class="q-body">
+          <div class="q-line1">Rocío Núñez A.<span class="q-code">P-0022</span></div>
+          <div class="q-summary">Incrementar densidad calórica de meriendas ante pérdida de peso &gt;3% en 4 semanas.</div>
+          <div class="q-meta">
+            <span class="badge badge--danger"><i class="ti ti-flag"></i>Bandera roja</span>
+            <span class="badge badge--neutral"><i class="ti ti-tag"></i>SAFETY</span>
+          </div>
+        </div>
+        <div class="q-time">5h</div>
+      </div>
+
+      <div class="queue-item">
+        <div class="q-avatar">FQ</div>
+        <div class="q-body">
+          <div class="q-line1">Felipe Quiroga R.<span class="q-code">P-0015</span></div>
+          <div class="q-summary">Mantener protocolo actual: adherencia 87%, IBS-SSS descendiendo consistentemente.</div>
+          <div class="q-meta">
+            <span class="badge badge--success"><i class="ti ti-sparkles"></i>Alta</span>
+            <span class="badge badge--neutral"><i class="ti ti-tag"></i>MAINTAIN</span>
+          </div>
+        </div>
+        <div class="q-time">1d</div>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- DETAIL PANEL -->
+  <section class="detail-panel">
+
+    <div class="detail-header">
+      <div class="detail-title">
+        <h1>Recomendación pendiente</h1>
+        <span class="badge badge--pending"><i class="ti ti-clock"></i>PENDING</span>
+        <span class="badge badge--warning"><i class="ti ti-alert-triangle"></i>Confianza media</span>
+        <div class="confidence" style="margin-left:auto">
+          <div class="confidence-bars">
+            <div class="confidence-bar" style="background:var(--warning-text)"></div>
+            <div class="confidence-bar" style="background:var(--warning-text)"></div>
+            <div class="confidence-bar" style="background:var(--bg-divider)"></div>
+          </div>
+          <span style="color:var(--warning-text)">0.68 confianza</span>
+        </div>
+      </div>
+      <div class="detail-meta">
+        <span><i class="ti ti-id"></i>REC-2026-07-000834</span>
+        <span><i class="ti ti-user"></i>Juan Mendoza L. · P-0042</span>
+        <span><i class="ti ti-cpu"></i>rule-v1.0.0 + XGBoost-v0.3.2</span>
+        <span><i class="ti ti-clock-hour-4"></i>Generada hace 8 min</span>
+        <span><i class="ti ti-calendar-x"></i>Válida hasta 14/07/2026</span>
+      </div>
+    </div>
+
+    <div class="detail-tabs">
+      <div class="detail-tab detail-tab--active">Recomendación</div>
+      <div class="detail-tab">Contexto del paciente</div>
+      <div class="detail-tab">Motor de decisión</div>
+      <div class="detail-tab">Historial</div>
+    </div>
+
+    <div class="detail-body">
+
+      <!-- Recommendation content -->
+      <div class="rec-content">
+        <div class="rec-content-label">Contenido generado que verá el paciente si se aprueba</div>
+        <div class="rec-content-title">Ajuste dietario · reducción de FODMAP altos esta semana</div>
+        <div class="rec-content-desc">
+          Basado en tus últimos registros, notamos que algunos alimentos con FODMAP alto podrían estar detrás del malestar. Te sugerimos probar los siguientes ajustes durante los próximos 7 días:
+        </div>
+        <ol class="rec-content-steps">
+          <li>Sustituir <strong>cebolla y ajo</strong> por su versión infusionada en aceite (sin el bulbo).</li>
+          <li>Reducir <strong>manzana</strong> a máximo 1/2 unidad por día durante esta semana.</li>
+          <li>Priorizar <strong>quinua blanca y arroz blanco cocido</strong> como base de al menos 2 comidas principales.</li>
+          <li>Registrar síntomas en la app durante las 4 horas posteriores a cada comida.</li>
+        </ol>
+      </div>
+
+      <!-- Patient context summary -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-user-circle"></i>Datos del paciente que motivaron la recomendación</div>
+          <a style="font-size:12px;color:var(--brand-strong);font-weight:500;cursor:pointer">Ver ficha completa →</a>
+        </div>
+        <div class="card-body">
+          <div class="patient-context">
+            <div class="pc-avatar">JM</div>
+            <div class="pc-info">
+              <h3>Juan Mendoza L. <span class="badge badge--info" style="margin-left:6px"><i class="ti ti-droplet"></i>IBS-D</span></h3>
+              <div class="code">P-0042 · 28 años · M · Vinculado el 15/06/2026</div>
+            </div>
+          </div>
+        </div>
+        <div class="pc-stats">
+          <div>
+            <div class="pc-stat-label">IBS-SSS actual</div>
+            <div class="pc-stat-value" style="color:var(--danger-text)">185<span class="u">pts</span></div>
+          </div>
+          <div>
+            <div class="pc-stat-label">Δ 4 semanas</div>
+            <div class="pc-stat-value" style="color:var(--warning-text)">+22<span class="u">pts</span></div>
+          </div>
+          <div>
+            <div class="pc-stat-label">Adherencia</div>
+            <div class="pc-stat-value">82<span class="u">%</span></div>
+          </div>
+          <div>
+            <div class="pc-stat-label">Síntomas 7 días</div>
+            <div class="pc-stat-value">14<span class="u">reg.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- XAI Explanation -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-message-2-share"></i>Explicación XAI · Llama 3.1 8B</div>
+          </div>
+          <div class="card-body">
+            <div class="xai-box">
+              <div class="xai-label"><i class="ti ti-brain"></i>Razonamiento del modelo</div>
+              <div class="xai-text">
+                Se identificaron <em>3 comidas con contenido FODMAP alto</em> en los últimos 5 días (cebolla en cena del 06/07, manzana en desayuno del 07/07, ajo en almuerzo del 09/07). En cada caso, el paciente registró <em>dolor abdominal ≥6/10</em> dentro de la ventana postprandial de 4 horas. Esta correlación es estadísticamente relevante para un patrón IBS-D. La recomendación prioriza sustitutos <em>low-FODMAP</em> validados por la base Monash 2019, manteniendo el aporte calórico esperado.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature importance -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-chart-bar"></i>Feature importance · XGBoost</div>
+            <span class="badge badge--neutral">SHAP · top 5</span>
+          </div>
+          <div class="card-body">
+            <div class="feat">
+              <div class="feat-name">fodmap_score_7d</div>
+              <div class="feat-bar"><div class="feat-fill" style="width:92%"></div></div>
+              <div class="feat-value">0.412</div>
+            </div>
+            <div class="feat">
+              <div class="feat-name">postprandial_pain_avg</div>
+              <div class="feat-bar"><div class="feat-fill" style="width:71%"></div></div>
+              <div class="feat-value">0.318</div>
+            </div>
+            <div class="feat">
+              <div class="feat-name">ibs_subtype_D</div>
+              <div class="feat-bar"><div class="feat-fill" style="width:38%"></div></div>
+              <div class="feat-value">0.170</div>
+            </div>
+            <div class="feat">
+              <div class="feat-name">bristol_scale_avg</div>
+              <div class="feat-bar"><div class="feat-fill" style="width:15%"></div></div>
+              <div class="feat-value">0.067</div>
+            </div>
+            <div class="feat">
+              <div class="feat-name">meal_frequency</div>
+              <div class="feat-bar"><div class="feat-fill" style="width:7%"></div></div>
+              <div class="feat-value">0.033</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clinical templates + SQL -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-template"></i>Plantillas clínicas invocadas</div>
+          </div>
+          <div class="card-body">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px">
+              <strong>Template ID:</strong> TPL-FODMAP-D-01 · v1.2
+            </div>
+            <div class="template-block"><span class="template-tag">FODMAP</span>Si <span class="template-tag">fodmap_score_7d</span> &gt; 0.6 AND <span class="template-tag">ibs_subtype</span> = 'D':
+  → Sugerir sustitución de {top_3_high_fodmap_foods}
+    por {matched_low_fodmap_alternatives}
+  → Ventana de observación: {postprandial_window_h} horas
+  → Duración piloto: 7 días</div>
+            <div style="margin-top:10px;font-size:11px;color:var(--text-tertiary)">Referencia clínica: Liljebo et al. 2020 · BMC Nutrition</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-database"></i>Query SQL ejecutada</div>
+          </div>
+          <div class="card-body">
+            <div class="sql-block"><span class="cmt">-- Detección de patrón FODMAP-síntoma</span>
+<span class="kw">SELECT</span> f.food_id, f.fodmap_level, COUNT(s.symptom_id)
+<span class="kw">FROM</span> meals m
+<span class="kw">JOIN</span> meal_foods mf <span class="kw">ON</span> mf.meal_id = m.meal_id
+<span class="kw">JOIN</span> foods f <span class="kw">ON</span> f.food_id = mf.food_id
+<span class="kw">JOIN</span> symptoms s <span class="kw">ON</span> s.patient_id = m.patient_id
+<span class="kw">WHERE</span> m.patient_id = <span class="str">'P-0042'</span>
+  <span class="kw">AND</span> m.consumed_at &gt;= <span class="kw">NOW</span>() - <span class="kw">INTERVAL</span> <span class="str">'7 days'</span>
+  <span class="kw">AND</span> s.recorded_at <span class="kw">BETWEEN</span>
+    m.consumed_at <span class="kw">AND</span> m.consumed_at + <span class="kw">INTERVAL</span> <span class="str">'4 hours'</span>
+  <span class="kw">AND</span> s.pain_intensity &gt;= <span class="num">6</span>
+<span class="kw">GROUP BY</span> f.food_id, f.fodmap_level;</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ACTIONS PANEL -->
+  <aside class="actions-panel">
+    <div class="actions-header">
+      <div class="actions-title"><i class="ti ti-gavel"></i>Decisión clínica</div>
+      <button class="action-btn action-approve">
+        <span style="display:flex;align-items:center;gap:10px"><i class="ti ti-check"></i>Aprobar tal cual</span>
+        <span class="kbd" style="background:rgba(255,255,255,0.2);color:#fff;border-color:transparent">A</span>
+      </button>
+      <button class="action-btn action-modify">
+        <span style="display:flex;align-items:center;gap:10px"><i class="ti ti-edit"></i>Modificar y aprobar</span>
+        <span class="kbd">M</span>
+      </button>
+      <button class="action-btn action-reject">
+        <span style="display:flex;align-items:center;gap:10px"><i class="ti ti-x"></i>Rechazar</span>
+        <span class="kbd">R</span>
+      </button>
+    </div>
+
+    <div class="note-section">
+      <div class="note-label">
+        <i class="ti ti-message-circle" style="font-size:16px;color:var(--brand-base)"></i>
+        Nota clínica <span class="note-required">obligatoria si modificas o rechazas</span>
+      </div>
+      <textarea class="note-textarea" placeholder="Describe brevemente el motivo de tu decisión clínica. Este campo queda auditado y forma parte del expediente del paciente. Mínimo 10 caracteres."></textarea>
+      <div class="note-counter">0 / mín. 10 caracteres</div>
+      <div class="note-hint">
+        <i class="ti ti-info-circle" style="font-size:12px;vertical-align:middle"></i>
+        La nota es requerida por DEC-014 y queda registrada de forma inmutable en la tabla <code style="font-family:var(--font-mono);font-size:11px">audit_events</code>.
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Metadatos técnicos</div>
+      <div class="side-row"><span class="k">Engine</span><span class="v">rule-v1.0.0</span></div>
+      <div class="side-row"><span class="k">Modelo XGBoost</span><span class="v">v0.3.2-onnx</span></div>
+      <div class="side-row"><span class="k">Llama version</span><span class="v">3.1-8B-Q4</span></div>
+      <div class="side-row"><span class="k">Templates</span><span class="v">TPL-FODMAP-D-01</span></div>
+      <div class="side-row"><span class="k">Latencia gen.</span><span class="v">2.34s</span></div>
+      <div class="side-row"><span class="k">Trace ID</span><span class="v" style="font-size:10px">a3f9…c2e1</span></div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Cumplimiento normativo</div>
+      <div class="side-row"><span class="k">Ley 29733</span><span class="v" style="color:var(--success-text)"><i class="ti ti-check" style="font-size:14px;vertical-align:middle"></i>OK</span></div>
+      <div class="side-row"><span class="k">Consentimiento</span><span class="v" style="color:var(--success-text)">v2.1 aceptado</span></div>
+      <div class="side-row"><span class="k">Audit trail</span><span class="v" style="color:var(--success-text)">Activo</span></div>
+      <div class="side-row"><span class="k">Retención</span><span class="v">5 años</span></div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Atajos de teclado</div>
+      <div class="shortcut-help">
+        <div class="row"><span>Aprobar</span><span><span class="kbd-inline">A</span></span></div>
+        <div class="row"><span>Modificar</span><span><span class="kbd-inline">M</span></span></div>
+        <div class="row"><span>Rechazar</span><span><span class="kbd-inline">R</span></span></div>
+        <div class="row"><span>Siguiente</span><span><span class="kbd-inline">J</span></span></div>
+        <div class="row"><span>Anterior</span><span><span class="kbd-inline">K</span></span></div>
+        <div class="row"><span>Ver paciente</span><span><span class="kbd-inline">P</span></span></div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+</body>
+</html>
