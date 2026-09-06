@@ -1,0 +1,423 @@
+,,,,,,,,,,,,,
+,TAREAS PENDIENTES DE PRODUCTOS ,,,,,,,,,,,,
+,INFORME DE TAREAS PENDIENTES DE PRODUCTOS ,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,ID,Título,Descripción,Criterios de Aceptación,Prioridad,Story Points,Sprint,Estado,Épica asociada,,Estado,,Prioridad (MOsCoW)
+,TS01,Configuración de Keycloak y Roles de Acceso,"Como desarrollador, quiero configurar Keycloak como servidor de identidad con clientes OIDC diferenciados para la aplicación móvil y el portal del nutricionista, definiendo los roles de paciente y nutricionista con sus permisos correspondientes y configurando las políticas de expiración de sesión y bloqueo por intentos fallidos, para que el sistema pueda distinguir qué puede hacer cada tipo de usuario y garantizar que el control de acceso sea robusto y auditable.","CA01 — Autenticación funcional con roles diferenciados
+Dado que la infraestructura de Keycloak está desplegada y configurada,
+Cuando un usuario con rol de paciente y otro con rol de nutricionista se autentican correctamente,
+Entonces cada uno recibe un token JWT con los claims de rol correspondientes, el backend valida el token en cada petición, y las rutas protegidas por rol rechazan con código 403 cualquier token con rol incorrecto.
+
+CA02 — Bloqueo por intentos fallidos y registro en audit log
+Dado que la política de bloqueo está configurada en Keycloak,
+Cuando un usuario supera cinco intentos de autenticación fallidos consecutivos,
+Entonces Keycloak bloquea la cuenta temporalmente, el sistema registra el evento en el audit log con timestamp e IP de origen, y el usuario no puede autenticarse hasta que expire el bloqueo o el desarrollador lo reactive manualmente.",Must Have,5,1,Completado,EP01,,No se ha iniciado,,Must Have
+,TS02,Alta Controlada de Cuentas de Nutricionistas,"Como desarrollador, quiero tener un proceso seguro y controlado para registrar las cuentas de los nutricionistas participantes en el piloto mediante un mecanismo de acceso administrativo protegido, para garantizar que solo profesionales verificados accedan al portal clínico sin necesidad de una interfaz de administración adicional.","CA01 — Cuenta de nutricionista creada correctamente mediante proceso controlado
+Dado que el desarrollador ejecuta el proceso de alta de un nuevo nutricionista utilizando el endpoint administrativo protegido,
+Cuando proporciona el nombre completo, correo institucional válido y rol del profesional con la API key correcta,
+Entonces el sistema crea la cuenta con estado activo, genera una contraseña temporal, envía las credenciales al correo del nutricionista con instrucciones de primer acceso, y registra la acción en el audit log con timestamp.
+
+CA02 — Rechazo por datos inválidos, correo duplicado o API key incorrecta
+Dado que se intenta crear una cuenta de nutricionista,
+Cuando el correo ya existe en el sistema, falta algún dato obligatorio, o la API key proporcionada es incorrecta,
+Entonces el sistema rechaza la operación con el código de error correspondiente, informa el motivo específico del rechazo, y no crea ningún registro parcial de la cuenta.",Must Have,3,1,Completado,EP01,,En curso,,Should Have
+,TS03,Esquema Relacional de Base de Datos en PostgreSQL,"Como desarrollador, quiero diseñar e implementar en PostgreSQL el esquema relacional completo del sistema siguiendo el modelo definido en nuestra etapa de diseño, y que debe incluir los tipos de datos, las restricciones de integridad, los índices y las relaciones de todas las tablas del modelo, para garantizar la consistencia, la trazabilidad y la seguridad de todos los datos clínicos que maneja el sistema.","CA01 — Esquema desplegado con integridad referencial completa.
+Dado que las migraciones del esquema se ejecutan en el entorno de desarrollo,
+Cuando se insertan registros en las tablas principales con datos válidos,
+Entonces todas las relaciones de clave foránea se respetan, las restricciones NOT NULL y CHECK se aplican correctamente, y los índices definidos para las consultas frecuentes están activos y funcionando.
+
+CA02 — Migrations versionadas y reproducibles.
+Dado que el esquema está versionado mediante migraciones,
+Cuando se ejecutan las migraciones en un entorno limpio,
+Entonces el esquema completo se despliega en el orden correcto sin errores, es idempotente ante ejecuciones repetidas, y el estado final de la base de datos es idéntico en todos los entornos donde se aplica.",Must Have,5,1,Completado,EP02,,Completado,,Could Have
+,TS04,Audit Log Inmutable y Trazabilidad Normativa,"Como desarrollador, quiero implementar un sistema de audit logging inmutable mediante triggers de base de datos y middleware de aplicación que registre todas las operaciones críticas sobre datos clínicos con el actor responsable, el timestamp, la acción realizada y los valores modificados, para cumplir con los requisitos de trazabilidad de la Ley 29733 y la RM 688-2020/MINSA y poder responder a cualquier auditoría normativa.","CA01 — Registro automático de operaciones críticas mediante trigger
+Dado que cualquier actor del sistema ejecuta una operación de inserción, modificación o eliminación sobre las tablas profiles o recommendations,
+Cuando la operación se completa exitosamente,
+Entonces el trigger registra automáticamente en la tabla audit_logs el identificador del actor, el tipo de operación, la tabla afectada, el identificador del registro, el timestamp UTC y un hash de los valores modificados, sin que la capa de aplicación necesite invocar ese registro de forma explícita.
+
+CA02 — Inmutabilidad del audit log para todos los roles
+Dado que existen registros en la tabla audit_logs,
+Cuando cualquier rol de la aplicación, incluyendo el desarrollador desde la capa de aplicación, intenta modificar o eliminar un registro del audit log,
+Entonces el sistema rechaza la operación con un error de permisos, los registros permanecen intactos, y el intento queda registrado en un log de seguridad de nivel superior separado del audit log principal.",Must Have,5,1,Completado,EP06,,Atrasado,,Won't Have
+,TS05,Persistencia Local Offline con SQLite,"Como desarrollador, quiero implementar SQLite en la aplicación Flutter mediante sqflite con un esquema local que replique las entidades críticas de ingesta y síntomas incluyendo el campo client_guid para garantizar idempotencia en la sincronización, para que el paciente pueda registrar sus datos sin conexión sin riesgo de pérdida ni duplicación al sincronizar.","CA01 — Escritura local exitosa sin conexión a internet
+Dado que el dispositivo del paciente no tiene conexión a internet,
+Cuando el paciente registra una comida o síntoma,
+Entonces el registro se escribe en SQLite con un client_guid único generado en el cliente, el timestamp local del dispositivo y el estado sync_pending, y la interfaz confirma visualmente al usuario que el dato fue guardado correctamente de forma local.
+
+CA02 — Idempotencia garantizada en la sincronización al recuperar conexión
+Dado que el dispositivo recupera la conexión a internet con registros en estado sync_pending,
+Cuando el worker de sincronización envía los registros al endpoint de batch sync,
+Entonces el backend verifica el client_guid de cada registro y si ya existe en la base de datos central no crea un duplicado, responde con confirmación del registro existente, y el cliente actualiza el estado local a sync_completed.",Must Have,5,2,Completado,EP02,,En espera,,
+,TS06,"API REST de Ingesta, Síntomas, Sincronización e Historial","Como desarrollador, quiero implementar los endpoints POST /meals, POST /symptoms, POST /sync/batch y GET /history con validación de esquema, autenticación JWT y manejo de errores estandarizado, para que la aplicación móvil pueda enviar y consultar datos clínicos de forma segura, estructurada e idempotente.","CA01 — Endpoints funcionales con autenticación y validación de esquema
+Dado que los endpoints están desplegados y disponibles,
+Cuando se realiza una petición válida con un token JWT correcto al cuerpo de cualquiera de los cuatro endpoints,
+Entonces el sistema valida el esquema del cuerpo de la petición, procesa la operación correspondiente, persiste o consulta los datos según el caso, y responde con el código HTTP semánticamente correcto (201 para creación exitosa, 200 para consulta exitosa).
+
+CA02 — Rechazo de peticiones sin autenticación válida o con esquema incorrecto
+Dado que llega una petición a cualquiera de los endpoints protegidos,
+Cuando el token JWT está ausente, expirado o malformado, o el cuerpo de la petición no cumple el esquema definido,
+Entonces el sistema responde con código 401 para problemas de autenticación o 422 para problemas de validación, acompañado de un mensaje de error estructurado que describe el problema sin exponer detalles internos del servidor.",Must Have,5,2,Completado,EP02,,,,
+,TS07,Pipeline de Exportación ONNX e Inferencia en Backend,"Como desarrollador, quiero implementar un script automatizado que exporte el modelo predictivo entrenado en PyTorch al formato ONNX e integrar ONNX Runtime en el backend ASP.NET Core para ejecutar inferencia con baja latencia, registrando automáticamente la versión del modelo activo en cada recomendación generada, para que el motor opere sin depender de servicios externos y mantenga trazabilidad completa del modelo utilizado.","CA01 — Exportación exitosa con consistencia de predicciones entre PyTorch y ONNX
+Dado que el modelo PyTorch está entrenado y el script de exportación se ejecuta,
+Cuando el modelo se exporta al formato ONNX y se carga en ONNX Runtime dentro del backend,
+Entonces las predicciones del modelo ONNX para un conjunto de entradas de referencia son numéricamente equivalentes a las del modelo PyTorch original con una tolerancia de diferencia menor a 0.001.
+
+CA02 — Versionado automático del modelo en cada despliegue
+Dado que se despliega una nueva versión del modelo ONNX en el servicio de inferencia,
+Cuando el servicio carga el nuevo modelo,
+Entonces registra automáticamente en la tabla model_versions el hash del archivo, la fecha y hora de despliegue y el identificador del responsable del cambio, y todas las recomendaciones generadas a partir de ese momento quedan vinculadas a ese version_id para trazabilidad completa.",Must Have,5,3,No se ha iniciado,EP03,,,,
+,TS08,Módulo LLM con Guardrails para Explicaciones Clínicas,"Como desarrollador, quiero implementar un orquestador de prompts que combine el output del modelo predictivo ONNX con plantillas clínicas estructuradas para llamar al servicio LLM local, y que debe aplicar guardrails que prevengan la generación de afirmaciones médicas fuera del alcance definido, para producir explicaciones comprensibles y clínicamente seguras para cada recomendación.","CA01 — Generación de explicación dentro de los límites clínicos definidos.
+Dado que el modelo predictivo genera una recomendación con su score de confianza,
+Cuando el orquestador construye el prompt con la plantilla clínica correspondiente y llama al servicio LLM local,
+Entonces la explicación generada se refiere únicamente a los patrones identificados en el historial del paciente, no realiza afirmaciones diagnósticas ni prescriptivas fuera del alcance definido en las plantillas, y tiene una extensión máxima de 200 palabras.
+
+CA02 — Fallback funcional ante error o timeout del servicio LLM local.
+Dado que el orquestador llama al servicio LLM local y este retorna un error o supera el timeout configurado,
+Cuando el sistema detecta el fallo tras el número de reintentos definido,
+Entonces el sistema entrega al paciente una explicación plantilla pre redactada que indica la recomendación sin texto generado dinámicamente, y registra el evento de fallback en el audit log con el motivo del fallo.",Must Have,5,3,No se ha iniciado,EP03,,,,
+,TS09,Máquina de Estados para el Ciclo de Vida de Recomendaciones,"Como desarrollador, quiero implementar una máquina de estados en el backend que gestione el ciclo de vida completo de cada recomendación con los estados Generated, Pending_Review, Approved, Rejected, Delivered, Feedback_Received y Expired, para que el flujo entre el motor de IA, el nutricionista y el paciente sea controlado, auditable y sin posibilidad de estados inconsistentes.","CA01 — Transiciones de estado válidas ejecutadas y registradas correctamente
+Dado que una recomendación existe en cualquier estado del ciclo de vida,
+Cuando se ejecuta una transición válida según la matriz de estados definida,
+Entonces el sistema actualiza el estado en la base de datos, registra la transición en el audit log con el actor responsable, el timestamp y el estado anterior, y desencadena el evento correspondiente a esa transición.
+
+CA02 — Rechazo de transiciones de estado inválidas
+Dado que existe una recomendación en estado Approved o Rejected,
+Cuando el sistema o cualquier actor intenta moverla de regreso a Pending_Review o Generated,
+Entonces el sistema rechaza la transición con un error descriptivo, no modifica el estado actual de la recomendación, y registra el intento fallido en los logs de auditoría para revisión.",Must Have,5,3,No se ha iniciado,EP03,,,,
+,TS10,Servicio de Notificaciones Push y Correo Electrónico,"Como desarrollador, quiero integrar FCM para notificaciones push y un servicio SMTP para correos electrónicos con colas de entrega gestionadas mediante KeyDB Streams y política de reintentos con backoff exponencial, para garantizar que los eventos críticos como nuevas recomendaciones, recordatorios de cuestionario y alertas del nutricionista lleguen al usuario de forma confiable incluso ante fallos temporales de entrega.","CA01 — Entrega exitosa de notificación push y registro del resultado
+Dado que el sistema genera un evento que requiere notificación al paciente,
+Cuando el worker de notificaciones procesa el evento,
+Entonces envía la notificación push vía FCM, registra el resultado de entrega (exitoso o fallido) en la tabla de notificaciones, y si FCM retorna un token inválido marca automáticamente el token del dispositivo como expirado para evitar reintentos innecesarios.
+
+CA02 — Reintento con backoff exponencial ante fallo temporal y envío a Dead Letter Queue
+Dado que el primer intento de entrega de una notificación falla por un error temporal,
+Cuando el worker detecta el fallo,
+Entonces encola el reintento con backoff exponencial (primer reintento a 1 minuto, segundo a 5 minutos, tercero a 30 minutos), registra cada intento en el log con su resultado, y tras tres reintentos fallidos consecutivos mueve el mensaje a la Dead Letter Queue para revisión manual del equipo de desarrollo.",Should Have,5,2,No se ha iniciado,EP03,,,,
+,TS11,Generación Server-Side de Reportes PDF,"Como desarrollador, quiero implementar un endpoint en el backend que consolide el historial clínico del paciente, renderice los gráficos de evolución IBS-SSS y genere un documento PDF protegido con contraseña generada automáticamente, para facilitar la exportación segura de información clínica tanto para nutricionistas como para los propios pacientes, garantizando la protección del documento conforme a la Ley 29733.","CA01 — PDF generado correctamente con contenido del período y protección activa
+Dado que el endpoint recibe una solicitud válida de generación de reporte con el rango de fechas y el identificador del paciente,
+Cuando el sistema procesa la solicitud y existen datos en el período indicado,
+Entonces genera el PDF con el contenido clínico correcto del período solicitado, aplica protección de apertura con una contraseña generada automáticamente, retorna el archivo y la contraseña de forma separada en la respuesta, y registra la generación en el audit log con el solicitante y el timestamp.
+
+CA02 — Rechazo con mensaje descriptivo cuando no hay datos en el período solicitado
+Dado que el endpoint recibe una solicitud de reporte para un período sin registros del paciente,
+Cuando el sistema verifica la disponibilidad de datos antes de iniciar la generación,
+Entonces retorna un error 422 con un mensaje descriptivo que indica que no existen datos para el período solicitado, sugiere ampliar el rango de fechas, y no genera ningún archivo PDF vacío ni parcial.",Should Have,5,4,No se ha iniciado,EP04,,,,
+,TS12,Carga Inicial y Mantenimiento del Catálogo de Alimentos Peruanos,"Como desarrollador, quiero preparar e importar el catálogo inicial de alimentos peruanos con su información nutricional por porción y sus etiquetas FODMAP mediante un script de carga de datos semilla, para que los pacientes puedan registrar sus comidas desde el primer día del piloto con datos clínicamente validados y culturalmente pertinentes.","CA01 — Catálogo cargado correctamente en el entorno del piloto
+Dado que el script de carga de datos semilla se ejecuta sobre la base de datos del entorno del piloto,
+Cuando el proceso finaliza sin errores,
+Entonces todos los alimentos del catálogo quedan registrados con estado activo, con sus macronutrientes por porción estándar y sus etiquetas FODMAP correctamente asignadas, y están disponibles inmediatamente para búsqueda en la aplicación móvil.
+
+CA02 — Reproducibilidad del script en distintos entornos
+Dado que el script de carga se ejecuta en un entorno limpio de desarrollo o pruebas,
+Cuando se ejecuta por segunda vez sobre el mismo entorno,
+Entonces el script detecta los registros ya existentes, no crea duplicados, y el estado final del catálogo es idéntico al resultado de la primera ejecución.",Must Have,5,1,Completado,EP02,,,,
+,US01,Registro de Paciente,"Como paciente, quiero registrarme en la aplicación móvil con mi nombre completo, correo electrónico y una contraseña segura, para crear mi cuenta personal, aceptar el consentimiento informado y acceder a las funcionalidades clínicas del sistema.","CA01 — Registro exitoso con datos válidos
+Dado que un usuario no registrado accede al formulario de registro en la aplicación móvil,
+Cuando ingresa un nombre completo, un correo electrónico con formato válido y una contraseña de al menos 8 caracteres con una mayúscula y un número, y acepta el consentimiento informado,
+Entonces el sistema crea la cuenta, almacena la aceptación del consentimiento con timestamp y versión del documento, envía un correo de verificación al usuario y redirige al flujo de perfil clínico inicial.
+
+CA02 — Rechazo por datos inválidos o correo duplicado
+Dado que un usuario accede al formulario de registro,
+Cuando ingresa un correo con formato inválido, una contraseña que no cumple los requisitos, deja campos obligatorios vacíos, o utiliza un correo ya registrado en el sistema,
+Entonces el sistema no crea la cuenta, muestra un mensaje de error específico por cada campo incorrecto indicando el motivo del rechazo, y conserva los datos válidos ya ingresados en el formulario.
+
+CA03 — Bloqueo sin aceptación del consentimiento informado
+Dado que un usuario completa todos los campos del registro correctamente,
+Cuando intenta completar el registro sin haber aceptado el consentimiento informado,
+Entonces el sistema no permite avanzar, muestra una indicación clara de que el consentimiento es obligatorio y no crea ningún registro parcial de la cuenta.
+
+CA04 — Persistencia inmutable del consentimiento aceptado
+Dado que un usuario completa el registro y acepta el consentimiento informado, cuando el sistema confirma la creación de la cuenta, entonces persiste el consentimiento en la tabla consent_records con la versión del documento, timestamp, hash SHA-256 del texto íntegro aceptado e IP de origen, los triggers de base de datos impiden cualquier modificación o eliminación posterior del registro, y el usuario puede descargar en formato PDF la versión exacta del documento que aceptó desde la sección de privacidad.",Must Have,3,1,Completado,EP01,,,,
+,US02,Activación de Cuenta del Nutricionista,"Como dietista-nutricionista, quiero recibir un correo de activación con mis credenciales de acceso iniciales, para poder ingresar al portal clínico desde el primer día sin necesidad de registrarme manualmente.","CA01 — Primer acceso exitoso con credenciales temporales
+Dado que el desarrollador creó la cuenta del nutricionista en el sistema,
+Cuando el nutricionista accede al portal con las credenciales temporales recibidas por correo,
+Entonces el sistema valida las credenciales, solicita el cambio obligatorio de contraseña en ese mismo ingreso y redirige al panel de trabajo una vez completado el cambio.
+
+CA02 — Rechazo por credenciales incorrectas o cuenta inactiva
+Dado que alguien intenta acceder al portal del dietista-nutricionista,
+Cuando las credenciales son incorrectas o la cuenta no está en estado activo,
+Entonces el sistema deniega el acceso, muestra un mensaje diferenciado según la causa sin revelar si el correo existe en el sistema, y registra el intento en el audit log.",Must Have,2,1,Completado,EP01,,,,
+,US03,Perfil Clínico Inicial del Paciente,"Como paciente, quiero completar mi perfil clínico inicial indicando mi edad, sexo biológico, peso, talla, subtipo de SII diagnosticado, alergias alimentarias e intolerancias conocidas, para que el motor de recomendaciones pueda personalizar sus sugerencias desde el primer ciclo de análisis.","CA01 — Perfil clínico guardado correctamente
+Dado que un paciente recién registrado accede al formulario de perfil clínico inicial,
+Cuando ingresa todos los campos obligatorios (edad, sexo biológico, peso, talla y subtipo de SII) con valores dentro de rangos clínicamente válidos y confirma el guardado,
+Entonces el sistema almacena el perfil asociado al usuario, actualiza el progreso del onboarding al porcentaje correspondiente y habilita el acceso al diario de comidas y síntomas.
+
+CA02 — Bloqueo por campos incompletos o valores fuera de rango
+Dado que un paciente está completando el formulario de perfil clínico,
+Cuando intenta guardar sin haber completado al menos un campo obligatorio, o ingresa un valor imposible como peso negativo o edad mayor a 120 años,
+Entonces el sistema identifica y señala cada campo problemático, no guarda el perfil de forma parcial y conserva los datos válidos ya ingresados sin resetear el formulario.
+
+CA03 — Edición posterior del perfil
+Dado que un paciente ya tiene su perfil clínico guardado,
+Cuando accede a la configuración de perfil, modifica uno o más campos con valores válidos y confirma,
+Entonces el sistema actualiza el perfil, registra la fecha de la modificación y si el subtipo de SII fue modificado notifica internamente al nutricionista asignado.
+
+CA04 — Cálculo en vivo del Índice de Masa Corporal
+Dado que un paciente está completando el paso de datos demográficos del onboarding, cuando ingresa peso y talla con valores dentro del rango válido, entonces el sistema calcula automáticamente el BMI en tiempo real, muestra el valor numérico y la clasificación clínica correspondiente (bajo peso, normal, sobrepeso u obesidad), y actualiza ambos cada vez que el paciente modifica alguno de los dos valores.
+
+CA05 — Aplazamiento del onboarding sin bloqueo de acceso
+Dado que un paciente recién registrado accede al wizard de onboarding clínico, cuando selecciona la opción ""Después"" desde cualquier paso, entonces el sistema persiste el progreso parcial alcanzado, marca el onboarding como incompleto, permite el acceso al resto de la aplicación con funcionalidades clínicas restringidas, y mantiene un recordatorio visible en el dashboard hasta que el paciente complete la configuración.",Must Have,3,1,Completado,EP01,,,,
+,US04,Evaluación de Línea Base IBS-SSS,"Como paciente, quiero completar el cuestionario estandarizado IBS-SSS inmediatamente después de configurar mi perfil clínico, para registrar la severidad inicial de mis síntomas antes de iniciar cualquier cambio en mi dieta y establecer el punto de comparación del piloto clínico.","CA01 — Línea base registrada exitosamente
+Dado que un paciente acaba de completar su perfil clínico por primera vez,
+Cuando responde todas las preguntas del cuestionario IBS-SSS con los valores requeridos y confirma el envío,
+Entonces el sistema calcula el puntaje total, lo almacena con timestamp como registro de tipo baseline asociado al perfil del paciente, notifica al nutricionista asignado del nuevo ingreso y activa el ciclo de evaluaciones periódicas programando la fecha de la próxima evaluación.
+
+CA02 — Bloqueo por cuestionario incompleto
+Dado que un paciente está respondiendo el cuestionario IBS-SSS inicial,
+Cuando intenta enviarlo habiendo dejado una o más preguntas sin responder,
+Entonces el sistema identifica las preguntas pendientes, las señala visualmente, no guarda ningún puntaje parcial y mantiene al paciente en el cuestionario hasta que lo complete.",Must Have,3,1,Completado,EP01,,,,
+,US05,Inicio de Sesión del Paciente,"Como paciente, quiero iniciar sesión en la aplicación móvil con mi correo y contraseña, para acceder de forma segura y continua a mi diario clínico, mis recomendaciones y mi historial de síntomas.","CA01 — Autenticación exitosa
+Dado que un paciente registrado y con correo verificado accede a la pantalla de inicio de sesión,
+Cuando ingresa su correo y contraseña correctos,
+Entonces el sistema valida las credenciales contra Keycloak, inicia una sesión segura con tiempo de expiración definido y redirige al paciente a su pantalla principal personalizada.
+
+CA02 — Bloqueo por intentos fallidos consecutivos
+Dado que un paciente intenta iniciar sesión,
+Cuando ingresa credenciales incorrectas cinco veces consecutivas,
+Entonces el sistema bloquea temporalmente el acceso, muestra un mensaje que indica el bloqueo y el tiempo de espera, y registra el evento en el audit log como alerta de seguridad.",Must Have,2,1,Completado,EP01,,,,
+,US06,Inicio de Sesión del Nutricionista,"Como dietista-nutricionista, quiero iniciar sesión en el portal web con mis credenciales profesionales, para acceder a mi panel de trabajo y gestionar la información clínica de mis pacientes asignados.","CA01 — Acceso exitoso al portal clínico
+Dado que un nutricionista con cuenta activa accede a la pantalla de login del portal web,
+Cuando ingresa su correo y contraseña correctos,
+Entonces el sistema autentica al usuario con el rol de nutricionista, inicia una sesión con los permisos correspondientes a ese rol y redirige al panel de triaje de pacientes.
+
+CA02 — Rechazo por cuenta inactiva o credenciales incorrectas
+Dado que alguien intenta acceder al portal del nutricionista,
+Cuando las credenciales son incorrectas o la cuenta está en estado inactivo o pendiente de activación,
+Entonces el sistema deniega el acceso, muestra un mensaje diferenciado según la causa sin revelar si el correo existe en el sistema, y registra el intento en el audit log.",Must Have,2,1,Completado,EP01,,,,
+,US07,Recuperación de Contraseña,"Como paciente o dietista-nutricionista, quiero solicitar la recuperación de mi contraseña mediante mi correo electrónico registrado, para restablecer mi acceso de forma autónoma y segura sin necesidad de intervención externa.","CA01 — Enlace de recuperación enviado exitosamente
+Dado que un usuario accede al flujo de recuperación de contraseña,
+Cuando ingresa un correo electrónico correspondiente a una cuenta registrada y activa,
+Entonces el sistema genera un token único de recuperación con expiración de 30 minutos, envía el enlace de restablecimiento al correo del usuario, muestra un mensaje genérico de confirmación que no revela si el correo existe en el sistema, y registra la solicitud en el audit log.
+
+CA02 — Enlace expirado o ya utilizado
+Dado que un usuario recibe un enlace de recuperación de contraseña,
+Cuando intenta utilizarlo después de transcurridos los 30 minutos de vigencia, o intenta reutilizar un enlace ya empleado anteriormente,
+Entonces el sistema invalida el token, informa que el enlace ya no es válido o fue utilizado, y ofrece la opción de solicitar uno nuevo.",Should Have,2,1,Completado,EP01,,,,
+,US08,Cierre de Sesión Seguro,"Como paciente o dietista-nutricionista, quiero poder cerrar sesión de forma explícita desde cualquier pantalla de la aplicación, para garantizar que mi información clínica no quede accesible en dispositivos compartidos o desatendidos.","CA01 — Cierre de sesión exitoso
+Dado que un usuario autenticado selecciona la opción de cerrar sesión y confirma la acción,
+Cuando el sistema procesa la solicitud,
+Entonces invalida el token JWT activo en Keycloak, elimina los datos de sesión del almacenamiento local del dispositivo, redirige al usuario a la pantalla de inicio de sesión y bloquea la navegación hacia atrás para impedir el acceso a pantallas autenticadas.
+
+CA02 — Cierre automático de sesión por inactividad
+Dado que un usuario autenticado no interactúa con la aplicación durante el período de inactividad configurado,
+Cuando el token JWT expira sin haberse renovado,
+Entonces el sistema detecta la expiración en la siguiente acción del usuario, cierra la sesión automáticamente, muestra un mensaje informando que la sesión terminó por inactividad y redirige al login sin pérdida de datos ya sincronizados.",Must Have,1,1,Completado,EP01,,,,
+,US09,Registro de Comidas desde el Catálogo,"Como paciente, quiero buscar alimentos del catálogo peruano de la aplicación y registrar lo que comí indicando la cantidad y la unidad de medida, para llevar un diario preciso de mi ingesta diaria y proporcionar al sistema los datos que necesita para identificar mis desencadenantes alimentarios.","CA01 — Registro exitoso de comida con porción definida
+Dado que un paciente accede al módulo de registro de comidas,
+Cuando busca un alimento en el catálogo, lo selecciona, especifica la cantidad, la unidad de medida (gramos, tazas, unidades u otra unidad disponible) y el momento del día (desayuno, almuerzo, cena o snack), y confirma el registro,
+Entonces el sistema almacena el registro con el identificador del alimento, la cantidad, la unidad, el timestamp de registro y el identificador del momento del día, y lo marca como pendiente de sincronización (sync_pending) si el dispositivo está offline en ese momento.
+
+CA02 — Registro offline con sincronización diferida
+Dado que un paciente registra una comida sin conexión a internet,
+Cuando el sistema detecta ausencia de conectividad en el momento del guardado,
+Entonces el registro se almacena localmente en SQLite con un client_guid único y estado sync_pending, el sistema confirma visualmente al usuario que el dato fue guardado localmente, y cuando se recupera la conexión el worker de sincronización envía el registro al servidor de forma automática sin intervención del usuario.
+
+CA03 — Búsqueda con sugerencias contextuales por tres dimensiones
+Dado que un paciente abre el modal de búsqueda de alimentos, cuando aún no ha empezado a escribir, entonces el sistema muestra tres secciones de sugerencias diferenciadas: alimentos más frecuentes del propio paciente en los últimos 30 días, alimentos registrados recientemente (últimas 24 horas) y alimentos peruanos sugeridos del catálogo oficial, y al empezar a escribir las sugerencias se reemplazan por los resultados del autocomplete sobre el catálogo completo.",Must Have,5,2,Completado,EP02,,,,
+,US10,Creación de Alimentos Personalizados,"Como paciente, quiero crear un plato casero o compuesto que no existe en el catálogo oficial seleccionando sus ingredientes base del mismo catálogo y asignándole un nombre descriptivo, para poder registrar mis comidas habituales con precisión sin perder la trazabilidad nutricional que el modelo necesita.","CA01 — Creación exitosa de alimento personalizado con ingredientes del catálogo
+Dado que un paciente no encuentra un alimento en el catálogo y accede al flujo de creación personalizada,
+Cuando ingresa un nombre descriptivo para el plato y selecciona al menos un ingrediente base del catálogo oficial asignando su proporción aproximada,
+Entonces el sistema crea el alimento personalizado vinculado al perfil del paciente, calcula automáticamente el perfil nutricional estimado basado en los ingredientes seleccionados, lo marca como alimento de usuario no validado para diferenciarlo del catálogo oficial, y lo hace disponible para futuros registros del mismo paciente.
+
+CA02 — Rechazo por nombre duplicado o sin ingredientes seleccionados
+Dado que un paciente intenta crear un alimento personalizado,
+Cuando ingresa un nombre que ya existe en sus alimentos personalizados o intenta guardar sin haber seleccionado ningún ingrediente base,
+Entonces el sistema rechaza la operación, informa al usuario del motivo específico del error, y conserva el formulario con los datos ya ingresados para que pueda corregir sin rehacer el proceso completo.
+
+CA03 — Advertencia por alérgeno detectado en ingredientes seleccionados
+
+Dado que un paciente está creando un alimento personalizado, cuando selecciona un ingrediente que contiene un alérgeno previamente declarado por el paciente en su perfil clínico, entonces el sistema muestra una advertencia inline indicando el alérgeno detectado, no bloquea la creación del plato pero requiere confirmación explícita del paciente para incluir el ingrediente, y registra la decisión en el audit log.",Should Have,5,2,Completado,EP02,,,,
+,US11,Registro de Síntomas e Intensidad,"Como paciente, quiero registrar los síntomas gastrointestinales que experimento indicando el tipo de síntoma y su intensidad en una escala validada del 1 al 100 alineada con la escala VAS del IBS-SSS, para generar el dato de respuesta que el modelo necesita para correlacionar mis comidas con mis reacciones clínicas.","CA01 — Registro exitoso de síntoma con catálogo clínicamente extendido
+Dado que un paciente accede al módulo de registro de síntomas, cuando selecciona el tipo de síntoma de la lista predefinida ampliada de nueve opciones (dolor abdominal, distensión abdominal, flatulencia, diarrea, estreñimiento, náuseas, reflujo o acidez, urgencia para evacuar u otro síntoma no listado), asigna un valor de intensidad entre 1 y 100, y confirma el registro, entonces el sistema almacena el síntoma con su tipo, valor de intensidad y timestamp, lo asocia automáticamente al identificador de la comida más reciente registrada dentro de las cuatro horas previas si existe, y lo encola para sincronización si el dispositivo está offline.
+
+CA02 — Registro de síntoma sin comida reciente asociada
+Dado que un paciente registra un síntoma sin haber registrado ninguna comida en las últimas cuatro horas,
+Cuando confirma el registro del síntoma,
+Entonces el sistema guarda el síntoma sin asociación de comida, lo marca internamente con el flag sin_comida_asociada para que el modelo lo trate como dato de contexto sin correlación directa, y no muestra ningún error al paciente dado que el síntoma sigue siendo clínicamente relevante.",Must Have,3,2,Completado,EP02,,,,
+,US12,Cuestionario IBS-SSS Periódico,"Como paciente, quiero recibir una notificación cada dos semanas que me invite a completar el cuestionario IBS-SSS dentro de la aplicación, para que el sistema y mi nutricionista puedan evaluar objetivamente si mi condición está mejorando, estabilizándose o empeorando con el tiempo.","CA01 — Cuestionario periódico completado exitosamente
+Dado que han transcurrido 14 días desde el último cuestionario IBS-SSS completado y el paciente recibe la notificación correspondiente,
+Cuando el paciente accede al cuestionario desde la notificación o desde el menú principal y responde todas las preguntas,
+Entonces el sistema calcula el puntaje total, lo almacena con tipo periódico y el número de ciclo correspondiente, actualiza el gráfico de evolución del paciente, notifica al nutricionista asignado del nuevo resultado, y programa automáticamente la siguiente evaluación en 14 días.
+
+CA02 — Recordatorio ante cuestionario no completado en el plazo inicial
+Dado que el sistema generó la notificación de evaluación periódica y el paciente no la completó en las primeras 48 horas,
+Cuando transcurre ese tiempo sin respuesta,
+Entonces el sistema envía un recordatorio adicional, registra el estado del ciclo como pendiente en el panel del nutricionista, y si el cuestionario no se completa en los 7 días siguientes lo registra como ciclo no completado sin bloquear el uso normal de la aplicación.
+
+CA03 — Visualización de resultado post-envío con clasificación clínica y MCID
+Dado que un paciente envía el cuestionario IBS-SSS quincenal completo, cuando el backend calcula el puntaje total y lo persiste, entonces el sistema navega automáticamente a una pantalla de resultado que muestra el puntaje sobre 500, el cambio absoluto desde la línea base del paciente, y si la reducción acumulada alcanza o supera los 50 puntos muestra explícitamente ""Respuesta clínica significativa alcanzada"", junto con un sparkline de evolución cuando hay al menos tres puntos históricos registrados.
+
+CA04 — Sin exposición del puntaje antes del envío
+Dado que un paciente está respondiendo el cuestionario IBS-SSS quincenal, cuando el paciente ha respondido las cinco preguntas, entonces el sistema no muestra el puntaje calculado, no muestra la diferencia respecto a la línea base ni la categoría de severidad, y el puntaje solo se revela en la pantalla de resultado posterior al envío inmutable de las respuestas.",Should Have,3,2,No se ha iniciado,EP02,,,,
+,US13,Notas Clínicas de Contexto,"Como paciente, quiero añadir notas de texto libre a mis registros de comidas o síntomas indicando factores contextuales como mi nivel de estrés, medicamentos tomados o contexto del ciclo menstrual, para enriquecer los datos con información que el sistema y mi nutricionista necesitan para interpretar correctamente mis reacciones.","CA01 — Nota de contexto guardada y asociada correctamente
+Dado que un paciente tiene un registro de comida o síntoma guardado,
+Cuando accede a ese registro, escribe una nota de hasta 500 caracteres y la guarda,
+Entonces el sistema almacena la nota vinculada al registro correspondiente con timestamp, la hace visible para el nutricionista asignado en la vista de detalle del paciente, y la incluye en el contexto que se envía al motor de IA en el próximo ciclo de análisis.
+
+CA02 — Nota vacía o que supera el límite de caracteres
+Dado que un paciente intenta guardar una nota de contexto,
+Cuando el campo está vacío o supera los 500 caracteres permitidos,
+Entonces el sistema no guarda la nota, muestra al usuario un contador de caracteres visible con la indicación del límite, y conserva el texto escrito para que el paciente pueda ajustarlo sin perder lo que ya escribió.",Should Have,2,2,No se ha iniciado,EP02,,,,
+,US14,Recepción de Recomendación Dietética,"Como paciente, quiero recibir una notificación cuando haya una recomendación dietética aprobada para mí y poder acceder a ella con el detalle de los alimentos sugeridos y los cambios propuestos, para ajustar mi dieta de forma informada y reducir la probabilidad de sufrir crisis gastrointestinales.","CA01 — Entrega exitosa de recomendación aprobada
+Dado que el motor de recomendaciones generó una sugerencia y fue aprobada, ya sea automáticamente por superar el umbral de confianza o manualmente por el nutricionista,
+Cuando el sistema actualiza el estado de la recomendación a Approved en la máquina de estados,
+Entonces el sistema envía una notificación push al dispositivo del paciente, la recomendación aparece en la pantalla principal marcada como nueva, y al abrirla el paciente puede ver los alimentos sugeridos, los que debe reducir o evitar y los sustitutos propuestos con una justificación breve.
+
+CA02 — Notificación de espera cuando la recomendación está en revisión HITL
+Dado que el motor generó una recomendación con score de confianza por debajo del umbral configurado o con indicadores de riesgo nutricional,
+Cuando la recomendación entra al flujo de revisión humana con estado Pending_Review,
+Entonces el sistema notifica al paciente que hay una recomendación en preparación siendo revisada por su nutricionista, muestra un tiempo estimado de espera, y no bloquea el uso del resto de la aplicación durante ese período.
+
+CA03 — Filtrado estricto por estado HITL al exponer al paciente
+Dado que el paciente accede a cualquier superficie que muestre recomendaciones (dashboard, lista, detalle), cuando el sistema carga el contenido, entonces filtra estrictamente por estado APPROVED, MODIFIED_APPROVED o MANUAL_APPROVED, las recomendaciones con estado PENDING o REJECTED no aparecen en ninguna superficie visible al paciente, y los intentos directos de acceder a una recomendación con estado no autorizado por URL o deep link retornan error de no encontrada.
+
+CA04 — Visualización resumida de evolución en dashboard
+Dado que un paciente accede al dashboard principal, cuando tiene al menos tres puntos históricos de evaluación IBS-SSS registrados, entonces el sistema muestra un sparkline integrado a la tarjeta de estado clínico con los puntajes conectados en orden cronológico, una línea horizontal punteada que marca el umbral de respuesta clínica significativa (50 puntos por debajo de la línea base), y celebración visual cuando el puntaje actual cruza el umbral.",Must Have,5,3,No se ha iniciado,EP03,,,,
+,US15,Explicabilidad de la Recomendación (XAI),"Como paciente, quiero leer una explicación en lenguaje comprensible de por qué el sistema me hace cada recomendación y ver un indicador del nivel de confianza del modelo, para entender el razonamiento clínico, sentirme seguro al aplicar los cambios propuestos y poder comunicarlo a mi médico tratante si lo necesito.","CA01 — Explicación y nivel de confianza visibles correctamente
+Dado que un paciente accede al detalle de una recomendación aprobada,
+Cuando el sistema carga el contenido de la recomendación,
+Entonces muestra una explicación en lenguaje comprensible que describe los patrones identificados en su historial que motivaron la recomendación, junto con un indicador visual del nivel de confianza del modelo expresado en tres niveles (alto, medio y bajo) con una descripción de qué significa cada nivel en términos prácticos.
+
+CA02 — Indicación visible de revisión por el nutricionista
+Dado que una recomendación fue revisada y aprobada o editada por el nutricionista antes de llegar al paciente,
+Cuando el paciente accede al detalle de esa recomendación,
+Entonces la explicación indica de forma visible que fue revisada y validada por su nutricionista, muestra el nombre del profesional que la aprobó y, si el nutricionista dejó una nota clínica, la presenta diferenciada del contenido generado por el sistema.
+
+CA03 — Detalle estructurado en cuatro bloques diferenciados
+Dado que un paciente accede al detalle de una recomendación aprobada, cuando el sistema carga el contenido, entonces muestra cuatro bloques visualmente diferenciados: una explicación XAI generada por el LLM con atribución académica fija al pie cuando se mencionan clasificaciones FODMAP, una nota clínica del nutricionista (obligatoria si la recomendación es MODIFIED_APPROVED o MANUAL_APPROVED), una lista de pasos para aplicar la recomendación cuando el template los provee o el nutricionista los redactó manualmente, y un bloque de datos de sustento con cifras extraídas por queries SQL deterministas (conteos de síntomas, comidas y ventana temporal de correlación).",Must Have,3,3,No se ha iniciado,EP03,,,,
+,US16,Retroalimentación del Usuario (Feedback Loop),"Como paciente, quiero indicar si apliqué la recomendación recibida y registrar cómo me afectaron mis síntomas después de hacerlo, para que el sistema incorpore mi experiencia real en el ajuste continuo del modelo y las recomendaciones futuras sean más precisas para mi perfil individual.","CA01 — Retroalimentación registrada exitosamente
+Dado que han transcurrido al menos 24 horas desde que el paciente recibió una recomendación aprobada,
+Cuando el sistema envía la notificación de seguimiento y el paciente indica si aplicó la recomendación, selecciona el resultado percibido entre mejora, sin cambio o empeoramiento, y opcionalmente agrega una nota,
+Entonces el sistema almacena el feedback vinculado a la recomendación con timestamp, actualiza el estado de la recomendación a Feedback_Received, y encola los datos para el siguiente ciclo de actualización del modelo.
+
+CA02 — Retroalimentación guardada localmente sin conexión
+Dado que un paciente intenta enviar su retroalimentación sin conexión a internet,
+Cuando confirma el envío estando offline,
+Entonces el sistema almacena el feedback en SQLite local con estado sync_pending, confirma al paciente que quedó registrado correctamente, y lo sincroniza de forma automática cuando se recupera la conexión.reintentar el envío o conservar temporalmente la información hasta que la conexión se restablezca.                                                       
+",Should Have,3,3,No se ha iniciado,EP03,,,,
+,US17,Validación de Recomendaciones por el Nutricionista,"Como dietista-nutricionista, quiero revisar cada recomendación generada por el sistema que entre en el flujo de revisión clínica, consultar el razonamiento del modelo y decidir si la apruebo, edito o rechazo añadiendo una nota clínica obligatoria, para garantizar que ninguna sugerencia con riesgo nutricional llegue a mis pacientes sin validación profesional.","CA01 — Aprobación exitosa de recomendación con nota clínica
+Dado que el nutricionista accede a una recomendación en estado Pending_Review desde su panel,
+Cuando revisa el historial del paciente, el razonamiento del modelo y la explicación generada, y selecciona la acción de aprobar con una nota clínica de al menos 20 caracteres,
+Entonces el sistema cambia el estado de la recomendación a Approved, registra la acción con el identificador del nutricionista, el timestamp y la nota en el audit log, y desencadena el envío de la notificación al paciente.
+
+CA02 — Rechazo de recomendación con justificación clínica obligatoria
+Dado que el nutricionista determina que una recomendación representa un riesgo para el paciente,
+Cuando selecciona la acción de rechazar e intenta confirmar sin haber ingresado una nota clínica,
+Entonces el sistema no permite completar la acción, indica que la nota clínica es obligatoria para rechazos, y una vez ingresada y confirmada cambia el estado a Rejected, lo registra en el audit log, y notifica al paciente que la recomendación de ese ciclo no está disponible sin exponer el contenido clínico de la nota.
+
+CA03 — Validación obligatoria de nota clínica al modificar
+Dado que un nutricionista decide modificar una recomendación antes de aprobarla, cuando intenta confirmar la modificación, entonces el sistema valida que la nota clínica acompañante tenga al menos 10 caracteres de longitud, rechaza la operación si el campo está vacío o por debajo del mínimo, e impide que cualquier recomendación con estado MODIFIED_APPROVED o MANUAL_APPROVED quede persistida sin nota visible al paciente.
+
+CA04 — Inmutabilidad post-aprobación
+Dado que una recomendación ya alcanzó cualquiera de los estados terminales (APPROVED, MODIFIED_APPROVED, MANUAL_APPROVED, REJECTED), cuando el nutricionista o cualquier rol intenta modificar los campos clínicos sustantivos (título, descripción, pasos de aplicación, explicación o nota clínica), entonces el sistema rechaza la operación, indica que la única acción posible es archivar y crear una nueva recomendación, y registra el intento en el audit log.",Must Have,5,3,No se ha iniciado,EP03,,,,
+,US18,Panel de Triaje de Pacientes,"Como dietista-nutricionista, quiero ver al ingresar al portal una lista de mis pacientes asignados ordenada automáticamente por prioridad clínica calculada, para identificar de inmediato a quienes requieren atención urgente y organizar mejor mi carga de trabajo.","CA01 — Panel cargado con priorización clínica correcta
+Dado que un nutricionista autenticado accede a su portal,
+Cuando el sistema carga el panel principal,
+Entonces muestra la lista de pacientes asignados ordenada por prioridad clínica calculada en base a los tres criterios definidos: puntaje IBS-SSS reciente mayor a 300 como prioridad alta, ausencia de registros de comida o síntomas en los últimos 3 días como prioridad media, y recomendaciones en estado Pending_Review con más de 24 horas sin revisión como prioridad alta.
+
+CA02 — Panel informativo sin pacientes asignados
+Dado que un nutricionista accede al portal sin tener pacientes asignados,
+Cuando el sistema carga el panel,
+Entonces muestra un estado vacío con un mensaje que indica que no hay pacientes asignados actualmente y orienta sobre cómo gestionar las asignaciones mediante el código de invitación, sin mostrar errores del sistema.
+
+CA03 — Manejo de error al cargar el panel
+Dado que el nutricionista intenta acceder al panel principal,
+Cuando ocurre un error de conectividad o disponibilidad del sistema durante la carga,
+Entonces el sistema muestra un mensaje claro indicando que no fue posible cargar el panel en ese momento, ofrece la opción de reintentar la carga, y no cierra ni invalida la sesión activa del nutricionista.",Must Have,5,3,No se ha iniciado,EP04,,,,
+,US19,Generación de Código de Invitación para Paciente,"Como dietista-nutricionista, quiero generar un código único de invitación para compartirlo con un nuevo paciente, para que al registrarse quede vinculado directamente a mi seguimiento sin necesidad de intermediarios.","CA01 — Código de invitación generado correctamente
+Dado que el dietista-nutricionista accede al módulo de gestión de pacientes desde su portal,
+Cuando solicita generar un código de invitación para un nuevo paciente,
+Entonces el sistema genera un código alfanumérico único con validez de 72 horas, lo muestra al dietista-nutricionista para que pueda compartirlo, y registra la generación con fecha, hora e identificador del nutricionista que lo generó.
+
+CA02 — Código expirado o ya utilizado al intentar registrarse
+Dado que un paciente intenta registrarse ingresando un código de invitación,
+Cuando el código ya fue utilizado por otro paciente o su período de validez de 72 horas expiró,
+Entonces el sistema informa al paciente que el código no es válido, sugiere contactar a su nutricionista para obtener uno nuevo, y no crea la cuenta ni el vínculo clínico.",Should Have,2,2,No se ha iniciado,EP04,,,,
+,US20,Vinculación de Paciente mediante Código de Invitación,"Como paciente, quiero ingresar el código de invitación que me proporcionó mi nutricionista durante el registro, para quedar vinculado a su seguimiento clínico desde el primer día de uso de la aplicación.","CA01 — Vinculación exitosa con código válido
+Dado que un paciente está completando su registro y tiene un código de invitación vigente proporcionado por su nutricionista,
+Cuando ingresa el código en el campo correspondiente y confirma,
+Entonces el sistema valida el código, establece la relación clínica entre el paciente y el nutricionista, marca el código como utilizado para evitar reusos, notifica al nutricionista del nuevo ingreso y hace que el paciente aparezca en su panel.
+
+CA02 — Registro sin código de invitación
+Dado que un paciente intenta registrarse sin disponer de un código de invitación,
+Cuando omite ese campo durante el registro,
+Entonces el sistema le permite completar el registro y acceder a la aplicación, lo marca internamente como paciente no asignado, le informa que sin código no tiene nutricionista asignado y que puede ingresar el código más adelante desde la configuración de su perfil.",Must Have,2,2,No se ha iniciado,EP04,,,,
+,US21,Métricas de Evolución del Paciente,"Como dietista-nutricionista, quiero acceder a la vista de detalle de un paciente y ver gráficos que muestren la evolución de su puntaje IBS-SSS a lo largo del tiempo y la frecuencia con la que registra comidas y síntomas, para evaluar objetivamente si la intervención está produciendo mejoras clínicas sostenidas.","CA01 — Gráfico de evolución disponible con datos suficientes
+Dado que el nutricionista accede al perfil de un paciente con al menos dos evaluaciones IBS-SSS registradas,
+Cuando abre la sección de métricas de evolución,
+Entonces el sistema muestra una línea de tiempo con todos los puntajes IBS-SSS ordenados cronológicamente, la diferencia porcentual entre la línea base y el resultado más reciente, y un indicador de frecuencia de registro de los últimos 14 días.
+
+CA02 — Vista informativa cuando solo existe la línea base
+Dado que el nutricionista accede a las métricas de un paciente que únicamente tiene la evaluación de línea base registrada,
+Cuando abre la sección de métricas,
+Entonces el sistema muestra el puntaje de línea base disponible con un mensaje que indica que se necesita al menos una evaluación periódica adicional para mostrar tendencia, e informa la fecha estimada de la próxima evaluación programada.",Should Have,5,4,No se ha iniciado,EP04,,,,
+,US22,Reporte Clínico PDF para el Nutricionista,"Como dietista-nutricionista, quiero generar un reporte PDF por paciente con la evolución de su puntaje IBS-SSS, el historial de recomendaciones con mis notas clínicas y la frecuencia de registro del período seleccionado, para llevar información estructurada a las consultas clínicas y mantener un respaldo documentado de la intervención.","CA01 — Reporte PDF generado correctamente con protección
+Dado que el nutricionista accede al perfil de un paciente con datos suficientes en el período seleccionado,
+Cuando selecciona el rango de fechas y solicita la generación del reporte,
+Entonces el sistema genera un PDF que incluye la evolución IBS-SSS del período, las recomendaciones aprobadas con las notas clínicas correspondientes y la frecuencia de registro, aplica protección de apertura con contraseña generada automáticamente, y entrega el archivo y la contraseña al nutricionista de forma separada, registrando la generación en el audit log.
+
+CA02 — Error de generación por datos insuficientes en el período
+Dado que el nutricionista solicita un reporte de un período sin registros del paciente,
+Cuando el sistema intenta generar el PDF,
+Entonces informa al nutricionista que no existen datos suficientes para el período seleccionado, sugiere ampliar el rango de fechas, y no genera ningún archivo vacío.",Could Have,5,4,No se ha iniciado,EP04,,,,
+,US23,Gráficos de Evolución de Síntomas,"Como paciente, quiero visualizar un gráfico que muestre la evolución de mis puntajes IBS-SSS a lo largo de las semanas en relación con mis registros de alimentos, para comprender visualmente si los cambios en mi dieta están produciendo mejoras en mis síntomas.","CA01 — Gráfico de evolución disponible con datos suficientes
+Dado que un paciente tiene al menos dos evaluaciones IBS-SSS completadas y registros de comida en el período,
+Cuando accede a la sección de evolución,
+Entonces el sistema muestra una línea de tiempo con los puntajes IBS-SSS ordenados cronológicamente, un indicador del cambio porcentual respecto a la línea base, y la opción de seleccionar un rango de fechas para filtrar la vista.
+
+CA02 — Estado informativo con una sola evaluación disponible
+Dado que el paciente únicamente tiene la evaluación de línea base registrada,
+Cuando accede a la sección de evolución,
+Entonces el sistema muestra el puntaje de línea base con un mensaje que explica que el gráfico completo estará disponible después de la primera evaluación periódica, e indica la fecha estimada de esa próxima evaluación.",Should Have,5,4,No se ha iniciado,EP05,,,,
+,US24,Reporte PDF Personal del Paciente,"Como paciente, quiero generar y descargar un documento PDF con mi historial de comidas, mis picos de síntomas y las recomendaciones que he recibido en el período que elija, para poder compartirlo con mi médico tratante o nutricionista en consultas externas a la aplicación.","CA01 — Reporte personal generado correctamente
+Dado que un paciente con al menos 7 días de registros accede a la opción de generar su reporte,
+Cuando selecciona el período deseado y confirma la generación,
+Entonces el sistema genera un PDF que incluye el historial de comidas del período, los síntomas registrados con sus intensidades, los puntajes IBS-SSS correspondientes y las recomendaciones recibidas, aplica protección al documento y lo entrega para descarga directa desde la aplicación.
+
+CA02 — Sin datos en el período seleccionado
+Dado que el paciente solicita un reporte de un período en el que no tiene registros,
+Cuando el sistema procesa la solicitud,
+Entonces informa al paciente que no hay datos disponibles en ese período, sugiere seleccionar un rango diferente, y no genera ningún PDF vacío.",Should Have,5,4,No se ha iniciado,EP05,,,,
+,US25,Descarga de Datos Personales,"Como paciente, quiero solicitar la descarga completa de todos mis datos registrados en la aplicación en un formato estructurado, para ejercer mi derecho a la portabilidad de datos reconocido por la Ley 29733 y poder llevar mi información clínica a otra plataforma si así lo decido.","CA01 — Exportación exitosa de todos los datos del paciente
+Dado que un paciente solicita la exportación de sus datos desde la configuración de su cuenta y confirma la solicitud,
+Cuando el sistema procesa la exportación,
+Entonces genera un archivo comprimido con archivos CSV separados para comidas, síntomas, cuestionarios IBS-SSS, recomendaciones recibidas y perfil clínico, lo entrega para descarga directa, y registra la exportación en el audit log con fecha y hora.
+
+CA02 — Exportación cuando solo existe el perfil clínico sin registros adicionales
+Dado que un paciente solicita la exportación teniendo únicamente el perfil clínico sin registros adicionales,
+Cuando el sistema procesa la solicitud,
+Entonces genera igualmente el archivo comprimido incluyendo todos los archivos CSV con sus encabezados correctos aunque estén vacíos, e informa al paciente de qué datos están incluidos en la exportación.",Should Have,3,5,Completado,EP06,,,,
+,US26,Eliminación de Cuenta y Datos Identificables,"Como paciente, quiero solicitar la eliminación de mi cuenta y mis datos identificables, para ejercer mi derecho al olvido conforme a la Ley 29733, siendo informado de antemano qué datos se eliminarán y cuáles deberán conservarse de forma anonimizada por obligación normativa clínica.","CA01 — Eliminación exitosa con retención normativa informada al paciente
+Dado que un paciente solicita la eliminación de su cuenta desde la configuración,
+Cuando lee y confirma el aviso que detalla que sus datos identificables serán eliminados pero que los datos anonimizados vinculados al protocolo clínico activo serán retenidos durante el período mínimo exigido por la normativa sanitaria peruana,
+Entonces el sistema elimina los datos identificables, anonimiza los registros clínicos que deben conservarse, desactiva el acceso a la cuenta de forma inmediata, envía una confirmación al correo del usuario, y registra la operación completa en el audit log.
+
+CA02 — Confirmación adicional cuando existe un piloto clínico activo
+Dado que un paciente con participación activa en el piloto clínico solicita la eliminación de su cuenta,
+Cuando el sistema detecta que hay un protocolo clínico activo asociado a su cuenta,
+Entonces informa al paciente de las implicaciones de la eliminación durante el período del piloto, describe qué datos se conservarán y por qué razón normativa, requiere una confirmación adicional explícita antes de proceder, y solo ejecuta la eliminación completa si el paciente confirma habiendo leído esa información.",Could Have,2,5,Completado,EP06,,,,
+,US27,Glosario de Terminología Clínica,"Como paciente o dietista-nutricionista, quiero acceder a un glosario dentro de la aplicación que defina los términos médicos y nutricionales usados en las recomendaciones y reportes, para interpretar correctamente la información clínica sin necesidad de buscar definiciones externas.","CA01 — Consulta exitosa de un término del glosario
+Dado que un usuario accede al glosario desde el menú de ayuda o desde un término marcado dentro de una recomendación,
+Cuando busca o selecciona un término,
+Entonces el sistema muestra la definición estandarizada en español con lenguaje comprensible para el perfil del actor que consulta, diferenciando si es un término nutricional, clínico del SII o propio del sistema.
+
+CA02 — Término no encontrado en el glosario
+Dado que un usuario busca un término en el glosario,
+Cuando ese término no existe en el catálogo actual,
+Entonces el sistema informa que el término no está en el glosario, ofrece términos similares si los hay, y en el caso específico del nutricionista ofrece la opción de solicitar su adición al catálogo.",Could Have,2,5,Completado,EP06,,,,
+,US28,Perfil de paciente,"Como paciente, quiero acceder a una pantalla que muestre mi información personal, el estado actual de mi seguimiento clínico, mi perfil de SII y un resumen de mi evolución del puntaje IBS-SSS desde la línea base, para tener visibilidad permanente de mi estado dentro del piloto y poder editar mi información personal cuando lo necesite.","CA01 — Visualización exitosa del perfil completo
+Dado que un paciente autenticado con perfil clínico completo accede al tab ""Perfil"" del menú inferior, cuando el sistema carga la pantalla, entonces muestra el nombre completo y código del paciente, la fecha de inicio del piloto y nutricionista asignada, el subtipo de SII y alergias declaradas, los puntajes IBS-SSS de línea base y último, el cambio acumulado y, si la reducción supera los 50 puntos, una indicación visible de respuesta clínica significativa alcanzada.
+
+CA02 — Edición de información personal
+Dado que un paciente accede a su pantalla de perfil, cuando selecciona la opción ""Editar mi información"" y modifica uno o más campos con valores válidos, entonces el sistema valida los datos, persiste los cambios, registra la modificación en el audit log y refresca la información mostrada sin cerrar la sesión.",Could Have,3,4,Completado,EP06,,,,
+,US29,Creación Manual de Recomendación por el Nutricionista,"Como dietista-nutricionista, quiero crear una recomendación dietética desde cero para un paciente específico sin pasar por el motor de IA, especificando título, descripción, pasos de aplicación opcionales y una nota clínica obligatoria, para atender situaciones donde mi juicio profesional indica una intervención que el sistema no generaría automáticamente.","CA01 — Creación exitosa de recomendación manual
+Dado que un nutricionista accede al panel de un paciente asignado y selecciona la opción de crear recomendación manual, cuando completa el título, la descripción, una nota clínica de al menos 10 caracteres y confirma, entonces el sistema persiste la recomendación con source manual, statys aprobado, registra al nutricionista como autor, dispara la notificación al paciente y deja constancia en el audit log.
+
+CA02 — Rechazo por nota clínica insuficiente o paciente no asignado
+Dado que un nutricionista intenta crear una recomendación manual, cuando la nota clínica tiene menos de 10 caracteres o el paciente seleccionado no está en su lista de asignados activos, entonces el sistema rechaza la creación, indica el motivo específico del error, no persiste ningún registro parcial y conserva los datos válidos ya ingresados.",Must Have,5,3,No se ha iniciado,EP03,,,,
+,US30,Archivado de Recomendación con Motivo Registrado,"Como dietista-nutricionista, quiero archivar una recomendación previamente aprobada indicando el motivo del archivado (caducidad temporal, sustitución manual, cumplimiento del objetivo o cambio de plan clínico), para mantener actualizado el plan vigente del paciente sin perder la trazabilidad histórica de las recomendaciones anteriores.","CA01 — Archivado exitoso con motivo registrado
+Dado que un nutricionista accede a una recomendación activa de su paciente, cuando selecciona la acción de archivar, elige uno de los motivos del catálogo cerrado y confirma, entonces el sistema actualiza is_active = false, registra archived_at, persiste el motivo en archive_reason, la recomendación deja de mostrarse en la lista activa del paciente y aparece en la sección histórica, y la operación queda registrada en el audit log.
+
+CA02 — Archivado automático por caducidad temporal
+Dado que el sistema ejecuta el job diario de archivado, cuando detecta recomendaciones con campo valid_until vencido, entonces las marca automáticamente como archivadas con motivo temporal_expiration, sin requerir intervención del nutricionista, y la información queda visible en la sección histórica del paciente.",Should Have,5,4,No se ha iniciado,EP03,,,,
+,,,,,,159,,,,,,,
