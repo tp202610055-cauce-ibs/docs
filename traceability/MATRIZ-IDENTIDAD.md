@@ -1,6 +1,7 @@
 # Matriz de Trazabilidad — Bloque de Identidad
 
-**Fecha:** 13 de julio de 2026 · **Backend:** tag `v0.6.2-dev-seed` · **Mobile:** `develop`, Mobile-1a cerrado (solo foundations)
+**Fecha de la verificación original:** 13 de julio de 2026 · **Backend entonces:** tag `v0.6.2-dev-seed` · **Mobile:** `develop`, Mobile-1a cerrado (solo foundations)
+**Última actualización:** 2026-09-08 · **Backend ahora:** tag `v0.8.0-backend-fix-2` · Ver el historial al final
 
 **Propósito.** Establecer el estado real, verificado contra el código, de los criterios de aceptación del
 bloque de identidad, antes de arrancar Mobile-1b. Es artefacto de tesis: cada fila lleva evidencia en
@@ -48,7 +49,7 @@ Las rutas de evidencia del backend son relativas a `backend/`. Las del mobile, a
 | **TS01-CA02** | Bloqueo por intentos fallidos y registro en audit log: Keycloak bloquea la cuenta tras cinco fallos, el sistema registra el evento en el audit log con timestamp e IP, y el usuario no puede autenticarse hasta que expire el bloqueo. | Backend + Keycloak | **VERDE** | `realm.json` (`bruteForceProtected: true`, `failureFactor: 5`, `waitIncrementSeconds: 60`, `maxFailureWaitSeconds: 900`, `permanentLockout: false`) · `AuditingMiddleware.cs:108,140-148` (`FAILED_LOGIN` con `ipAddress` y `OccurredAt`) | Ninguno, **condicionado** a que el login pase por `POST /auth/login`. Con PKCE directo contra Keycloak el audit log quedaría vacío. La decisión de usar el passthrough sostiene este CA. |
 | **TS05-CA01** | Escritura local sin conexión: el registro se guarda en SQLite con un `client_guid` único generado en el cliente, timestamp local y estado `sync_pending`, y la interfaz confirma el guardado. | Mobile | **ROJO** | **NO EXISTE** (Mobile-1a solo dejó foundations; `drift` está declarado en `pubspec.yaml` pero no hay esquema ni DAOs) | Implementar el esquema `drift` con `client_guid` y `sync_status`, los DAOs y la confirmación visual. |
 | **TS05-CA02** | Idempotencia en la sincronización: el backend verifica el `client_guid`, no crea duplicados, confirma el registro existente, y el cliente pasa a `sync_completed`. | Compartido | **PARCIAL** | Backend: `POST /api/v1/sync/batch` existe y deduplica por `client_guid` (contrato `openapi-v1.0.0.json`) · Mobile: **NO EXISTE** | El backend ya garantiza la idempotencia. Falta el worker de sincronización del móvil y la transición de estado local. |
-| **US20-CA02** | Registro sin código de invitación: permite completar el registro, marca al paciente como no asignado, le informa que no tiene nutricionista y **que puede ingresar el código más adelante desde la configuración de su perfil**. | Compartido | **PARCIAL** | Código opcional: `RegisterPatientCommand.cs:24` (`string? InvitationCode`) · `RegisterPatientCommandValidator.cs:33-36` · Canje posterior: **NO EXISTE** | El registro sin código ya funciona y el paciente queda sin nutricionista asignado. **No existe ningún endpoint para canjear un código después del registro**: el código solo se acepta en `auth/register` (`AuthController.cs:70`). Falta ese endpoint y la pantalla de perfil. |
+| **US20-CA02** | Registro sin código de invitación: permite completar el registro, marca al paciente como no asignado, le informa que no tiene nutricionista y **que puede ingresar el código más adelante desde la configuración de su perfil**. | Compartido | **VERDE** *(backend)* | Código opcional: `RegisterPatientCommand.cs:24` (`string? InvitationCode`) · `RegisterPatientCommandValidator.cs:33-36` · Canje posterior: `PatientsController.cs` → `POST /api/v1/patients/me/nutritionist-assignment` · `AssignNutritionistCommandHandler.cs` | Cerrado en Backend-Fix-2 (acta A41). El registro sin código ya funcionaba; **ahora existe el endpoint de canje posterior**, con `Policy=Patient`, que consume el código y crea el vínculo en la misma transacción. Rechaza con 409 si el paciente ya tiene nutricionista o si el nutricionista del código no está disponible, y en ese caso **no consume el código**. Queda pendiente la pantalla de perfil en el móvil, fuera del alcance del backend. |
 
 **Recuento:** 15 filas. El prompt de origen enunció "14 criterios" pero su tabla enumera 15 (US01 aporta 4,
 US05 2, US07 2, US08 2, TS01 2, TS05 2, US20 1). Se documentan los 15 enumerados.
@@ -59,9 +60,13 @@ US05 2, US07 2, US08 2, TS01 2, TS05 2, US20 1). Se documentan los 15 enumerados
 
 | Estado | Cantidad | CAs |
 |---|---|---|
-| VERDE | 1 | TS01-CA02 |
-| PARCIAL | 11 | US01-CA01, US01-CA02, US01-CA04, US05-CA01, US05-CA02, US07-CA01, US07-CA02, US08-CA01, TS01-CA01, TS05-CA02, US20-CA02 |
+| VERDE | 2 | TS01-CA02, **US20-CA02** *(cerrado en Backend-Fix-2)* |
+| PARCIAL | 10 | US01-CA01, US01-CA02, US01-CA04, US05-CA01, US05-CA02, US07-CA01, US07-CA02, US08-CA01, TS01-CA01, TS05-CA02 |
 | ROJO | 3 | US01-CA03, US08-CA02, TS05-CA01 |
+
+> El recuento de los CA distintos de US20-CA02 corresponde a la verificación del 13 de julio y no se
+> revisó en Backend-Fix-2. Varios de ellos dependen de brechas que el bloque de agosto ya cerró, así que
+> conviene releerlos antes de citarlos.
 
 ---
 
@@ -78,8 +83,15 @@ configuración de Keycloak.
 | 4 | No existe endpoint de renovación de token. El access token dura 900 segundos. | US08-CA02 | Sin acción de refresh en `AuthController.cs`; `KeycloakTokenClient` solo tiene `LoginAsync` y `LogoutAsync` |
 | 5 | El enlace del correo de recuperación apunta al backend, que no sirve esa ruta. Sin deep link, el paciente no puede cerrar el flujo desde la app. | US07-CA01, US07-CA02 | `ClientUrlProvider.cs:28-29` arma `{AppBaseUrl}/auth/password-reset?token=...`; `appsettings.Development.json:29` fija `AppBaseUrl = "http://localhost:5074"` |
 
-Brecha adicional, fuera del alcance de los 15 CA de esta matriz: no existe endpoint de canje de código de
-invitación posterior al registro (US20-CA02), ni de reenvío del correo de verificación.
+**Ambas brechas adicionales quedaron cerradas en Backend-Fix-2 (2026-09-08):**
+
+- **Canje de código de invitación posterior al registro.** Corresponde a US20-CA02, cuya fila pasó a
+  VERDE. Resuelto por el acta A41.
+- **Reenvío del correo de verificación.** Resuelto por el acta A40, con el endpoint anónimo
+  `POST /api/v1/auth/verification-email/resend`. **No se le asigna un CA en esta matriz**: es una
+  capacidad que ninguno de los 15 CA verificados enuncia. US19 es *Generación de Código de Invitación
+  para Paciente*, una historia del nutricionista, y no cubre este caso. Registrarlo bajo un CA ajeno
+  sería un vínculo de trazabilidad falso.
 
 ---
 
@@ -145,3 +157,4 @@ si corresponde corregir el anexo antes de la defensa del OE3.
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 1.0 | 2026-07-13 | Versión inicial. Levantada del código en el tag `v0.6.2-dev-seed` para habilitar Mobile-1b. |
+| 1.1 | 2026-09-08 | Cierre de Backend-Fix-2 (tag `v0.8.0-backend-fix-2`). **US20-CA02 pasa de PARCIAL a VERDE** por el endpoint de canje post-registro (acta A41), y el recuento del resumen se ajusta a 2 VERDE y 10 PARCIAL. Las dos brechas adicionales de la nota de cierre quedan resueltas: el canje posterior y el reenvío del correo de verificación (acta A40), este último **sin asignarle un CA**, porque ninguno de los 15 verificados lo enuncia. Se advierte que el resto del recuento sigue reflejando la verificación del 13 de julio. |
